@@ -18,7 +18,7 @@ First - we have provided a script that provisions a SharePoint list which is use
 * This registration is used once to create the necessary SharePoint list for Converge. After this site is created, this registration can be deleted.
 
 
-![SharePoint Permissions](./screenshots/add-sharepoint-permissions.PNG)
+![SharePoint Permissions](./screenshots/add-sharepoint-permissions.png)
 
 Second - the Converge Teams application requires permission to access data stored in [Microsoft Graph](https://docs.microsoft.com/en-us/graph/overview) both on behalf of the logged in user and as an application. A new registration must be created for each environment in which the Converge application is run. We recommend registrations for local development, a test deployment for administrators, and a production deployment for your entire organization.
 
@@ -40,7 +40,7 @@ Second - the Converge Teams application requires permission to access data store
     * 5e3ce6c0-2b1f-4285-8d4b-75ee78787346 
     * 1fec8e78-bce4-4aaf-ab1b-5451cc387264 
 
-![Teams SSO Scope](./screenshots/add-teams-sso.PNG)
+![Teams SSO Scope](./screenshots/add-teams-sso.png)
 
 ### Enable relevant Graph permissions
 * Go to “API permissions” -> “Add a permission” -> “Microsoft Graph” and add the permissions from the below table.
