@@ -1,0 +1,72 @@
+/* toast  */
+#toast-container-main {
+  position: fixed;
+  top: 0;
+  right: 50px;
+  z-index: 9999999;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  padding: 1em;
+}
+
+#toast-container-main > div {
+  background-color:#6264A7;
+  color: white;
+  width: 100%;
+  margin-bottom: 10px;
+  min-height: 68px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px;
+  animation: slide-in 0.2s;
+  transition: all 0.3s ease;
+  font-size: 12px;  
+  border-radius: 5px;
+}
+
+.toast-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+
+button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-weight: 900;
+  outline: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* timpicker options list container  */
+.ms-ComboBox-optionsContainerWrapper {
+  max-height: 50vh;
+}
+
+/* Datepicker modal */
+.ui-popup__content[role="dialog"]{
+  z-index: 10000000;
+}

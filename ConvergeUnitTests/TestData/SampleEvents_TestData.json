@@ -1,0 +1,2239 @@
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+[
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [],
+    "body": {
+      "content": "",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-12T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00800000000B42C83C406D5D7010000000000000000100000006A6F838DE2F7C8408B8EE3720B5F6136",
+    "importance": "normal",
+    "isAllDay": true,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": true,
+    "location": {
+      "address": {
+        "city": "Lake Joanie",
+        "countryOrRegion": "United States",
+        "postalCode": 60963,
+        "state": "NE ",
+        "street": "7552 Orn Walk",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Lake Joanie/42",
+      "locationType": "default",
+      "locationUri": "TestRoom1@example.com",
+      "uniqueId": "71b93bee-c6d1-45fc-9fa5-647de4574f2c",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "Lake Joanie",
+          "countryOrRegion": "United States",
+          "postalCode": 60963,
+          "state": "NE ",
+          "street": "7552 Orn Walk",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Lake Joanie/42",
+        "locationType": "default",
+        "locationUri": "MTestRoom1@example.com",
+        "uniqueId": "71b93bee-c6d1-45fc-9fa5-647de4574f2c",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "UTC",
+    "originalStartTimeZone": "UTC",
+    "reminderMinutesBeforeStart": 420,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "showAs": "free",
+    "start": {
+      "dateTime": "2021-11-11T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Add Day Macon",
+    "transactionId": "25fdccaf-56b2-ebd7-5197-0d30d096dab9",
+    "type": "singleInstance",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAABuK1yWAAA%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1YA==",
+    "createdDateTime": "2021-11-09T01:11:47.4150067+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:08.5413946+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAABuK1yWAAA=",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1YA==\"",
+    "occurrenceId": null
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:58.0691042+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LidiaH@example.com",
+          "name": "Lidia Holloway",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:34:13.1996812+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "TestRoom2@example.com",
+          "name": "Workspace Lake Joanie/37",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-16T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0F474E9DAD3382D701000000000000000010000000E3AAC5D21993984A8F6CAEFA57D3E74A",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": true,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Lake Joanie/37",
+      "locationType": "conferenceRoom",
+      "locationUri": "Workspace Lake Joanie/37",
+      "uniqueId": "70fc49d7-04d1-4ce2-b05b-8155574e6135",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Lake Joanie/37",
+        "locationType": "conferenceRoom",
+        "locationUri": "ConfRoomAtlanta34@example.com",
+        "uniqueId": "70fc49d7-04d1-4ce2-b05b-8155574e6135",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3wcAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-15T23:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Lidia",
+    "transactionId": "{2C4239D3-EA76-4230-ABD5-36350F552BF7}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2afK3gkAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAKMN8HAAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1ZA==",
+    "createdDateTime": "2021-07-26T15:34:09.8409535+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:08.6863134+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2afK3gkAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAKMN8HAAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1ZA==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3wcAAA=.2021-11-15"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:58.0691042+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LidiaH@example.com",
+          "name": "Lidia Holloway",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:34:13.1996812+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "TestRoom2@example.com",
+          "name": "Workspace Lake Joanie/37",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-23T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B16474E9DAD3382D701000000000000000010000000E3AAC5D21993984A8F6CAEFA57D3E74A",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": true,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Lake Joanie/37",
+      "locationType": "conferenceRoom",
+      "locationUri": "TestRoom2@example.com",
+      "uniqueId": "70fc49d7-04d1-4ce2-b05b-8155574e6135",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Lake Joanie/37",
+        "locationType": "conferenceRoom",
+        "locationUri": "TestRoom2@example.com",
+        "uniqueId": "70fc49d7-04d1-4ce2-b05b-8155574e6135",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3wcAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-22T23:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Lidia",
+    "transactionId": "{2C4239D3-EA76-4230-ABD5-36350F552BF7}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2a1LBu1AAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAKMN8HAAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1ZA==",
+    "createdDateTime": "2021-07-26T15:34:09.8409535+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:08.6863134+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2a1LBu1AAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAKMN8HAAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1ZA==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3wcAAA=.2021-11-22"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:32:45.3547625+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "TestRoom1@example.com",
+          "name": "Workspace Lake Joanie/37",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-15T20:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0F363D64773382D70100000000000000001000000008870BFD454C0849B3670F0D9F98D803",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": true,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Lake Joanie/37",
+      "locationType": "conferenceRoom",
+      "locationUri": "TestRoom2@example.com",
+      "uniqueId": "cc34439e-6ea5-4101-ab4b-b2d34180164c",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Lake Joanie/37",
+        "locationType": "conferenceRoom",
+        "locationUri": "TestRoom2@example.com",
+        "uniqueId": "cc34439e-6ea5-4101-ab4b-b2d34180164c",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3waAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-15T19:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Grady",
+    "transactionId": "{E242AA93-9004-4FF0-8540-483C31764494}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2afK3gkAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAKMN8GgAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1aA==",
+    "createdDateTime": "2021-07-26T15:32:38.8699945+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:08.8462235+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2afK3gkAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAKMN8GgAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1aA==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3waAAA=.2021-11-15"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:32:45.3547625+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "TestRoom1@example.com",
+          "name": "Workspace Atlanta/42",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-22T20:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B16363D64773382D70100000000000000001000000008870BFD454C0849B3670F0D9F98D803",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": true,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Atlanta/42",
+      "locationType": "conferenceRoom",
+      "locationUri": "TestRoom1@example.com",
+      "uniqueId": "cc34439e-6ea5-4101-ab4b-b2d34180164c",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Atlanta/42",
+        "locationType": "conferenceRoom",
+        "locationUri": "TestRoom1@example.com",
+        "uniqueId": "cc34439e-6ea5-4101-ab4b-b2d34180164c",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3waAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-22T19:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Grady",
+    "transactionId": "{E242AA93-9004-4FF0-8540-483C31764494}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2a1LBu1AAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAKMN8GgAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1aA==",
+    "createdDateTime": "2021-07-26T15:32:38.8699945+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:08.8462235+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2a1LBu1AAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAKMN8GgAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1aA==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAow3waAAA=.2021-11-22"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-11T21:30:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0BBE4D88D40B7FD701000000000000000010000000173717E0AA5FAB4C936ED8C39C032739",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": { "@odata.type": "microsoft.graph.physicalAddress" },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "",
+      "locationType": "default",
+      "uniqueIdType": "unknown",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyhAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-11T21:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Grady ",
+    "transactionId": "{2FA27903-B57F-4266-9BD3-DC3591D85DED}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsoQAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4g==",
+    "createdDateTime": "2021-07-22T15:11:21.7769402+00:00",
+    "lastModifiedDateTime": "2021-10-08T15:17:55.4200275+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsoQAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4g==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyhAAA=.2021-11-11"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-18T21:30:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B12BE4D88D40B7FD701000000000000000010000000173717E0AA5FAB4C936ED8C39C032739",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": { "@odata.type": "microsoft.graph.physicalAddress" },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "",
+      "locationType": "default",
+      "uniqueIdType": "unknown",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyhAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-18T21:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Grady ",
+    "transactionId": "{2FA27903-B57F-4266-9BD3-DC3591D85DED}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsoQAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4g==",
+    "createdDateTime": "2021-07-22T15:11:21.7769402+00:00",
+    "lastModifiedDateTime": "2021-10-08T15:17:55.4200275+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsoQAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4g==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyhAAA=.2021-11-18"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-11T21:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0B276BFDAC0B7FD701000000000000000010000000CF1B43A271CA48428861D9F70647F21C",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": { "@odata.type": "microsoft.graph.physicalAddress" },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "",
+      "locationType": "default",
+      "uniqueIdType": "unknown",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqygAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-11T20:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Grady",
+    "transactionId": "{0A154B3B-81D2-43F7-86F4-79B7BA508C9B}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsoAAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4Q==",
+    "createdDateTime": "2021-07-22T15:10:15.4356+00:00",
+    "lastModifiedDateTime": "2021-10-08T15:17:55.3510667+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsoAAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4Q==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqygAAA=.2021-11-11"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-18T21:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B12276BFDAC0B7FD701000000000000000010000000CF1B43A271CA48428861D9F70647F21C",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": { "@odata.type": "microsoft.graph.physicalAddress" },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "",
+      "locationType": "default",
+      "uniqueIdType": "unknown",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqygAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-18T20:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Grady",
+    "transactionId": "{0A154B3B-81D2-43F7-86F4-79B7BA508C9B}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsoAAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4Q==",
+    "createdDateTime": "2021-07-22T15:10:15.4356+00:00",
+    "lastModifiedDateTime": "2021-10-08T15:17:55.3510667+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsoAAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAWXnY4Q==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqygAAA=.2021-11-18"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:25.8537448+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LeeG@example.com",
+          "name": "Lee Gu",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T16:56:23.9109802+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "TestRoom2@example.com",
+          "name": "Workspace Atlanta/37",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:55:16.7124119+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "HenriettaM@example.com",
+          "name": "Henrietta Mueller",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-12T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0B626F0EDB0A7FD701000000000000000010000000784CC89E6A92494DBFF066DFB8506B08",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Atlanta/37",
+      "locationType": "conferenceRoom",
+      "locationUri": "TestRoom2@example.com",
+      "uniqueId": "eda1b640-c058-4282-986a-bce5c6567518",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Atlanta/37",
+        "locationType": "conferenceRoom",
+        "locationUri": "TestRoom2@example.com",
+        "uniqueId": "eda1b640-c058-4282-986a-bce5c6567518",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyfAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-11T22:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Lee at Atlanta",
+    "transactionId": "{59CCB2C7-2747-47B7-846C-4452B78E09E4}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsnwAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bA==",
+    "createdDateTime": "2021-07-22T15:04:23.2255845+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.0651+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsnwAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bA==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyfAAA=.2021-11-11"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:25.8537448+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LeeG@example.com",
+          "name": "Lee Gu",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T16:56:23.9109802+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "TestRoom2@example.com",
+          "name": "Workspace Atlanta/37",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:55:16.7124119+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "HenriettaM@example.com",
+          "name": "Henrietta Mueller",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-19T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B12626F0EDB0A7FD701000000000000000010000000784CC89E6A92494DBFF066DFB8506B08",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Atlanta/37",
+      "locationType": "conferenceRoom",
+      "locationUri": "TestRoom2@example.com",
+      "uniqueId": "eda1b640-c058-4282-986a-bce5c6567518",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Atlanta/37",
+        "locationType": "conferenceRoom",
+        "locationUri": "TestRoom2@example.com",
+        "uniqueId": "eda1b640-c058-4282-986a-bce5c6567518",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyfAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-18T22:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Lee at Atlanta",
+    "transactionId": "{59CCB2C7-2747-47B7-846C-4452B78E09E4}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsnwAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bA==",
+    "createdDateTime": "2021-07-22T15:04:23.2255845+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.0651+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsnwAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bA==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyfAAA=.2021-11-18"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:11.1428939+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "JohannaL@example.com",
+          "name": "Johanna Lorenz",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:29:43.1339653+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "ConfRoomBrusnwick22@example.com",
+          "name": "Conf Room Brusnwick/22",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-13T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0C36B795A70A7FD701000000000000000010000000412002CF6EE42F48B2F7B3DD29915EE3",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Conf Room Brusnwick/22",
+      "locationType": "conferenceRoom",
+      "locationUri": "ConfRoomBrusnwick22@example.com",
+      "uniqueId": "ConfRoomBrusnwick22@example.com",
+      "uniqueIdType": "directory",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Conf Room Brusnwick/22",
+        "locationType": "conferenceRoom",
+        "locationUri": "ConfRoomBrusnwick22@example.com",
+        "uniqueId": "",
+        "uniqueIdType": "unknown",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyeAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-12T21:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Johanna at Brusnwick",
+    "transactionId": "{1D63B642-575E-4C35-9FF0-8A177DEB6C19}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aVvXsvAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsngAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bw==",
+    "createdDateTime": "2021-07-22T15:02:56.8706351+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.162045+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aVvXsvAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsngAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bw==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyeAAA=.2021-11-12"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:11.1428939+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "JohannaL@example.com",
+          "name": "Johanna Lorenz",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:29:43.1339653+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "ConfRoomBrusnwick22@example.com",
+          "name": "Conf Room Brusnwick/22",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-20T00:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B1336B795A70A7FD701000000000000000010000000412002CF6EE42F48B2F7B3DD29915EE3",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Conf Room Brusnwick/22",
+      "locationType": "conferenceRoom",
+      "locationUri": "ConfRoomBrusnwick22@example.com",
+      "uniqueId": "ConfRoomBrusnwick22@example.com",
+      "uniqueIdType": "directory",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Conf Room Brusnwick/22",
+        "locationType": "conferenceRoom",
+        "locationUri": "ConfRoomBrusnwick22@example.com",
+        "uniqueId": "",
+        "uniqueIdType": "unknown",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyeAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-19T21:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Johanna at Brusnwick",
+    "transactionId": "{1D63B642-575E-4C35-9FF0-8A177DEB6C19}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2arvh7AAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsngAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bw==",
+    "createdDateTime": "2021-07-22T15:02:56.8706351+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.162045+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2arvh7AAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsngAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1bw==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqyeAAA=.2021-11-19"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LeeG@example.com",
+          "name": "Lee Gu",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:55:00.2108821+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "HenriettaM@example.com",
+          "name": "Henrietta Mueller",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "ADebeer@example.com",
+          "name": "Agymah Debeer",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "Armahni.Erxleben@example.com",
+          "name": "Armahni Erxleben",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "DiegoS@example.com",
+          "name": "Diego Siciliani",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:29:50.5511578+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "MaconWorkspace1@example.com",
+          "name": "Workspace Macon/9",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:26:56.4277978+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "JohannaL@example.com",
+          "name": "Johanna Lorenz",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:44.1372533+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LidiaH@example.com",
+          "name": "Lidia Holloway",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:25:26.9334105+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-14T01:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0D70539C7D0A7FD7010000000000000000100000001C8418BA35F8774A98EE098C5EA86C20",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "Macon",
+        "countryOrRegion": "United States",
+        "postalCode": 31204,
+        "state": "WA ",
+        "street": "7775 Franklin St.",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Macon/9",
+      "locationType": "default",
+      "locationUri": "MaconWorkspace1@example.com",
+      "uniqueId": "71b93bee-c6d1-45fc-9fa5-647de4574f2c",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "Macon",
+          "countryOrRegion": "United States",
+          "postalCode": 31204,
+          "state": "WA ",
+          "street": "7775 Franklin St.",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Macon/9",
+        "locationType": "default",
+        "locationUri": "MaconWorkspace1@example.com",
+        "uniqueId": "71b93bee-c6d1-45fc-9fa5-647de4574f2c",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqydAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-13T17:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Macon Happy Hour",
+    "transactionId": "{AAEB34FF-BBB0-4BE2-B1C7-74536F8508E4}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aY4iTWAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsnQAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1cw==",
+    "createdDateTime": "2021-07-22T15:01:46.4496491+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.2859747+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aY4iTWAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsnQAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1cw==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqydAAA=.2021-11-13"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LeeG@example.com",
+          "name": "Lee Gu",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:55:00.2108821+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "HenriettaM@example.com",
+          "name": "Henrietta Mueller",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "ADebeer@example.com",
+          "name": "Agymah Debeer",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "Armahni.Erxleben@example.com",
+          "name": "Armahni Erxleben",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "DiegoS@example.com",
+          "name": "Diego Siciliani",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:29:50.5511578+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "MaconWorkspace1@example.com",
+          "name": "Workspace Macon/9",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:26:56.4277978+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "JohannaL@example.com",
+          "name": "Johanna Lorenz",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:44.1372533+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LidiaH@example.com",
+          "name": "Lidia Holloway",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:25:26.9334105+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "GradyA@example.com",
+          "name": "Grady Archie",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-21T01:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B1470539C7D0A7FD7010000000000000000100000001C8418BA35F8774A98EE098C5EA86C20",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "Macon",
+        "countryOrRegion": "United States",
+        "postalCode": 31204,
+        "state": "WA ",
+        "street": "7775 Franklin St.",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Workspace Macon/9",
+      "locationType": "default",
+      "locationUri": "MaconWorkspace1@example.com",
+      "uniqueId": "71b93bee-c6d1-45fc-9fa5-647de4574f2c",
+      "uniqueIdType": "locationStore",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "Macon",
+          "countryOrRegion": "United States",
+          "postalCode": 31204,
+          "state": "WA ",
+          "street": "7775 Franklin St.",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Workspace Macon/9",
+        "locationType": "default",
+        "locationUri": "MaconWorkspace1@example.com",
+        "uniqueId": "71b93bee-c6d1-45fc-9fa5-647de4574f2c",
+        "uniqueIdType": "locationStore",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqydAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-20T17:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Macon Happy Hour",
+    "transactionId": "{AAEB34FF-BBB0-4BE2-B1C7-74536F8508E4}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2au4shnAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsnQAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1cw==",
+    "createdDateTime": "2021-07-22T15:01:46.4496491+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.2859747+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2au4shnAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsnQAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1cw==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqydAAA=.2021-11-20"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:55:15.522637+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "HenriettaM@example.com",
+          "name": "Henrietta Mueller",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:29:13.7190498+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "ConfRoom1@example.com",
+          "name": "Conf Room Atlanta/11",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:41.1698355+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LeeG@example.com",
+          "name": "Lee Gu",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-11T20:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B0B5E625C290A7FD701000000000000000010000000D37F14519CEB4F49BC433870A6E7AA3D",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Conf Room Atlanta/11",
+      "locationType": "conferenceRoom",
+      "locationUri": "ConfRoom1@example.com",
+      "uniqueId": "ConfRoom1@example.com",
+      "uniqueIdType": "directory",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Conf Room Atlanta/11",
+        "locationType": "conferenceRoom",
+        "locationUri": "ConfRoom1@example.com",
+        "uniqueId": "",
+        "uniqueIdType": "unknown",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqycAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-11T19:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Henrietta",
+    "transactionId": "{72650D61-ABD5-4F9F-A355-D39C7672D01C}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsnAAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1dg==",
+    "createdDateTime": "2021-07-22T14:59:25.1019865+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.4408867+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aSmNGIAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsnAAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1dg==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqycAAA=.2021-11-11"
+  },
+  {
+    "allowNewTimeProposals": true,
+    "attendees": [
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:55:15.522637+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "HenriettaM@example.com",
+          "name": "Henrietta Mueller",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-07-26T15:29:13.7190498+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "resource",
+        "emailAddress": {
+          "address": "ConfRoom1@example.com",
+          "name": "Conf Room Atlanta/11",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      },
+      {
+        "status": {
+          "response": "accepted",
+          "time": "2021-08-10T23:27:41.1698355+00:00",
+          "@odata.type": "microsoft.graph.responseStatus"
+        },
+        "type": "required",
+        "emailAddress": {
+          "address": "LeeG@example.com",
+          "name": "Lee Gu",
+          "@odata.type": "microsoft.graph.emailAddress"
+        },
+        "@odata.type": "microsoft.graph.attendee"
+      }
+    ],
+    "body": {
+      "content": "<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n<meta name=\"Generator\" content=\"Microsoft Word 15 (filtered medium)\">\r\n<style>\r\n<!--\r\n@font-face\r\n\t{font-family:\"Cambria Math\"}\r\n@font-face\r\n\t{font-family:Calibri}\r\np.MsoNormal, li.MsoNormal, div.MsoNormal\r\n\t{margin:0in;\r\n\tfont-size:11.0pt;\r\n\tfont-family:\"Calibri\",sans-serif}\r\nspan.EmailStyle17\r\n\t{font-family:\"Calibri\",sans-serif;\r\n\tcolor:windowtext}\r\n.MsoChpDefault\r\n\t{font-family:\"Calibri\",sans-serif}\r\n@page WordSection1\r\n\t{margin:1.0in 1.0in 1.0in 1.0in}\r\ndiv.WordSection1\r\n\t{}\r\n-->\r\n</style>\r\n</head>\r\n<body lang=\"EN-US\" link=\"#0563C1\" vlink=\"#954F72\" style=\"word-wrap:break-word\">\r\n<div class=\"WordSection1\">\r\n<p class=\"MsoNormal\">&nbsp;</p>\r\n</div>\r\n</body>\r\n</html>\r\n",
+      "contentType": "html",
+      "@odata.type": "microsoft.graph.itemBody"
+    },
+    "bodyPreview": "",
+    "end": {
+      "dateTime": "2021-11-18T20:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "hasAttachments": false,
+    "hideAttendees": false,
+    "iCalUId": "040000008200E00074C5B7101A82E00807E50B125E625C290A7FD701000000000000000010000000D37F14519CEB4F49BC433870A6E7AA3D",
+    "importance": "normal",
+    "isAllDay": false,
+    "isCancelled": false,
+    "isDraft": false,
+    "isOnlineMeeting": false,
+    "isOrganizer": true,
+    "isReminderOn": false,
+    "location": {
+      "address": {
+        "city": "",
+        "countryOrRegion": "",
+        "postalCode": "",
+        "state": "",
+        "street": "",
+        "@odata.type": "microsoft.graph.physicalAddress"
+      },
+      "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+      "displayName": "Conf Room Atlanta/11",
+      "locationType": "conferenceRoom",
+      "locationUri": "ConfRoom1@example.com",
+      "uniqueId": "ConfRoom1@example.com",
+      "uniqueIdType": "directory",
+      "@odata.type": "microsoft.graph.location"
+    },
+    "locations": [
+      {
+        "address": {
+          "city": "",
+          "countryOrRegion": "",
+          "postalCode": "",
+          "state": "",
+          "street": "",
+          "@odata.type": "microsoft.graph.physicalAddress"
+        },
+        "coordinates": { "@odata.type": "microsoft.graph.outlookGeoCoordinates" },
+        "displayName": "Conf Room Atlanta/11",
+        "locationType": "conferenceRoom",
+        "locationUri": "ConfRoom1@example.com",
+        "uniqueId": "",
+        "uniqueIdType": "unknown",
+        "@odata.type": "microsoft.graph.location"
+      }
+    ],
+    "onlineMeetingProvider": "unknown",
+    "organizer": {
+      "emailAddress": {
+        "address": "admin@example.com",
+        "name": "Galbraith Nanda",
+        "@odata.type": "microsoft.graph.emailAddress"
+      },
+      "@odata.type": "microsoft.graph.recipient"
+    },
+    "originalEndTimeZone": "Pacific Standard Time",
+    "originalStartTimeZone": "Pacific Standard Time",
+    "reminderMinutesBeforeStart": 15,
+    "responseRequested": true,
+    "responseStatus": {
+      "response": "organizer",
+      "time": "0001-01-01T00:00:00+00:00",
+      "@odata.type": "microsoft.graph.responseStatus"
+    },
+    "sensitivity": "normal",
+    "seriesMasterId": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqycAAA=",
+    "showAs": "busy",
+    "start": {
+      "dateTime": "2021-11-18T19:00:00.0000000",
+      "timeZone": "UTC",
+      "@odata.type": "microsoft.graph.dateTimeTimeZone"
+    },
+    "subject": "Meeting with Henrietta",
+    "transactionId": "{72650D61-ABD5-4F9F-A355-D39C7672D01C}",
+    "type": "occurrence",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L%2BBeyJq0wcAWjU7aNzEDE%2Bn5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE%2Bn5Dw7yPHdIgAAJTKsnAAAEA%3D%3D&exvsurl=1&path=/calendar/item",
+    "categories": [],
+    "changeKey": "WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1dg==",
+    "createdDateTime": "2021-07-22T14:59:25.1019865+00:00",
+    "lastModifiedDateTime": "2021-11-12T01:35:09.4408867+00:00",
+    "id": "AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQFRAAgI2aomXUZAAEYAAAAAE7n26ljCNkW84L_BeyJq0wcAWjU7aNzEDE_n5Dw7yPHdIgAAAAABDQAAWjU7aNzEDE_n5Dw7yPHdIgAAJTKsnAAAEA==",
+    "@odata.type": "microsoft.graph.event",
+    "@odata.etag": "W/\"WjU7aNzEDE+n5Dw7yPHdIgAAcJ+1dg==\"",
+    "occurrenceId": "OID.AAMkADY4NTRiOGUyLTNhOTEtNGJkMS05OWRmLTIwMzNiZjU0MDdjOQBGAAAAAAATufbqWMI2Rbzgv4F7ImrTBwBaNTto3MQMT6fkPDvI8d0iAAAAAAENAABaNTto3MQMT6fkPDvI8d0iAAAlMqycAAA=.2021-11-18"
+  }
+]

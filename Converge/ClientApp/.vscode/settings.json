@@ -1,0 +1,16 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+{
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "editor.tabSize": 2,
+    "eslint.format.enable": true,
+    "eslint.run": "onSave",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "eslint.validate": [
+      "javascript", 
+      "typescript"
+    ]
+}

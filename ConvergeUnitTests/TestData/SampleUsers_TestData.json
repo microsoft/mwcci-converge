@@ -1,0 +1,185 @@
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+{
+  "users": [
+    {
+      "businessPhones": [
+        "12067072547"
+      ],
+      "displayName": "Admin",
+      "givenName": "Admin",
+      "mail": "admin@example.com",
+      "surname": "",
+      "userPrincipalName": "admin@example.com",
+      "extensions": [
+        {
+          "extensionName": "Com.Microsoft.Converge",
+          "id": "Com.Microsoft.Converge",
+          "@odata.type": "#microsoft.graph.openTypeExtension",
+          "PreferredBuildings": [
+            "TestRoom1@example.com"
+          ],
+          "ZipCode": "98133",
+          "GeoCoordinates": {
+            "Latitude": 47.736656188964847,
+            "Longitude": -122.34243774414063
+          },
+          "IsConvergeUser": true,
+          "MyList": [
+            "Oda@example.com",
+            "Bojana.Feline@example.com",
+            "HenriettaM@example.com",
+            "GradyA@example.com",
+            "NAdriana@example.com",
+            "Nedelcho.Klytaimnestra@example.com",
+            "LidiaH@example.com"
+          ],
+          "LikedSections": [
+            "Reservations",
+            "ConnectWithTeammates",
+            "WorkspaceHome"
+          ],
+          "DislikedSections": [
+            "CollaborationTab"
+          ],
+          "LastNPSDate@odata.type": "#DateTimeOffset",
+          "LastNPSDate": "2021-10-01T23:17:04.954Z",
+          "FavoriteVenuesToCollaborate": [
+            "tqJsEgg1o8Z27fJr86M-ng",
+            "NxwrJPJLzTs0k0DQ-QCo1A"
+          ],
+          "FavoriteCampusesToCollaborate": [
+            "Pop Pop Thai Street Food",
+            "TestBuilding@example.com"
+          ],
+          "ConvergeInstalledDate@odata.type": "#DateTimeOffset",
+          "ConvergeInstalledDate": "2021-09-17T22:20:02.2996922Z"
+        }
+      ],
+      "id": "ccf7de27-ac7c-4dfe-9ef6-fd847c56f41f",
+      "@odata.type": "microsoft.graph.user",
+      "extensions@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('ccf7de27-ac7c-4dfe-9ef6-fd847c56f41f')/extensions"
+    },
+    {
+      "businessPhones": [
+        "17201234567"
+      ],
+      "displayName": "Natalie Adriana",
+      "givenName": "Natalie",
+      "mail": "NAdriana@example.com",
+      "surname": "Adriana",
+      "userPrincipalName": "NAdriana@example.com",
+      "extensions": [
+        {
+          "extensionName": "Com.Microsoft.Converge",
+          "id": "Com.Microsoft.Converge",
+          "@odata.type": "#microsoft.graph.openTypeExtension",
+          "ZipCode": "98133",
+          "GeoCoordinates": {
+            "Latitude": 47.736656188964847,
+            "Longitude": -122.34243774414063
+          },
+          "IsConvergeUser": true,
+          "MyList": [
+            "ChrisRigby@example.com",
+            "Bojana.Feline@example.com"
+          ],
+          "LikedSections": [
+            "Reservations",
+            "ConnectWithTeammates",
+            "WorkspaceHome"
+          ],
+          "DislikedSections": [
+            "CollaborationTab"
+          ],
+          "LastNPSDate@odata.type": "#DateTimeOffset",
+          "LastNPSDate": "2021-10-01T23:17:04.954Z",
+          "FavoriteVenuesToCollaborate": [
+            "tqJsEgg1o8Z27fJr86M-ng",
+            "NxwrJPJLzTs0k0DQ-QCo1A"
+          ],
+          "FavoriteCampusesToCollaborate": [
+            "Pop Pop Thai Street Food",
+            "TestRoom1@example.com"
+          ],
+          "ConvergeInstalledDate@odata.type": "#DateTimeOffset",
+          "ConvergeInstalledDate": "2021-09-17T22:20:02.2996922Z"
+        }
+      ],
+      "id": "abc7de27-ac7c-4dfe-9ef6-fd847c56f12a",
+      "@odata.type": "microsoft.graph.user",
+      "extensions@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('abc7de27-ac7c-4dfe-9ef6-fd847c56f12a')/extensions"
+    },
+    {
+      "businessPhones": [],
+      "displayName": "Chris Rigby",
+      "givenName": "Chris",
+      "mail": "ChrisRigby@example.com",
+      "surname": "Rigby",
+      "userPrincipalName": "ChrisRigby@example.com",
+      "extensions": [
+        {
+          "extensionName": "Com.Microsoft.Converge",
+          "id": "Com.Microsoft.Converge",
+          "@odata.type": "#microsoft.graph.openTypeExtension",
+          "PreferredBuildings": null,
+          "ZipCode": "98101",
+          "IsConvergeUser": true,
+          "MyList": null,
+          "LikedSections": null,
+          "DislikedSections": null,
+          "LastNPSDate": null
+        }
+      ],
+      "id": "ba317659-a157-4d4e-81eb-2f08d683822b",
+      "@odata.type": "microsoft.graph.user",
+      "extensions@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('ba317659-a157-4d4e-81eb-2f08d683822b')/extensions"
+    },
+    {
+      "businessPhones": [],
+      "displayName": "Oda",
+      "givenName": "Oda",
+      "mail": "Oda@example.com",
+      "surname": "",
+      "userPrincipalName": "Oda@example.com",
+      "extensions": [
+        {
+          "extensionName": "Com.Microsoft.Converge",
+          "id": "Com.Microsoft.Converge",
+          "@odata.type": "#microsoft.graph.openTypeExtension",
+          "PreferredBuildings": null,
+          "ZipCode": "98144",
+          "GeoCoordinates": {
+            "Latitude": 47.585899353027347,
+            "Longitude": -122.3016586303711
+          },
+          "IsConvergeUser": true,
+          "MyList": [
+            "admin@example.com"
+          ],
+          "LikedSections": [
+            "WorkspaceHome"
+          ],
+          "DislikedSections": [],
+          "LastNPSDate@odata.type": "#DateTimeOffset",
+          "LastNPSDate": "2021-10-22T19:18:39.102Z",
+          "FavoriteVenuesToCollaborate": [
+            "T7XmistL2pQrW3hY3oTpng",
+            "HxZlj0Jl1H0aPZGSjjLQPQ",
+            "Lw7NmZ3j-WEye97ywEmkXQ",
+            "M5gjalaqrlkVm55RHqiaaA"
+          ],
+          "FavoriteCampusesToCollaborate": [
+            "TestRoom1@example.com"
+          ],
+          "ConvergeInstalledDate@odata.type": "#DateTimeOffset",
+          "ConvergeInstalledDate": "2021-10-07T23:50:57.7173826Z"
+        }
+      ],
+      "id": "d1506219-cb02-4775-835c-42193c6d12345",
+      "@odata.type": "microsoft.graph.user",
+      "extensions@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('d1506219-cb02-4775-835c-42193c6d12345')/extensions"
+    }
+  ]
+}

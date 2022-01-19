@@ -1,0 +1,57 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.9/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.9",
+  "version": "1.0.0",
+  "id": "%APP_ID%",
+  "packageName": "com.microsoft.mwcci.converge",
+  "developer": {
+    "name": "Microsoft MWCCI",
+    "websiteUrl": "%WEBSITE%",
+    "privacyUrl": "https://%DOMAIN%%PORT%/privacy",
+    "termsOfUseUrl": "https://%DOMAIN%%PORT%/termsofuse"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Converge%NAME_SUFFIX%",
+    "full": "Go further together."
+  },
+  "description": {
+    "short": "Go further together.",
+    "full": "Go further together."
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [],
+  "composeExtensions": [],
+  "staticTabs": [
+    {
+      "entityId": "home",
+      "name": "Home",
+      "contentUrl": "https://%DOMAIN%%PORT%/tab",
+      "websiteUrl": "https://%DOMAIN%%PORT%/tab",
+      "scopes": [ "personal" ]
+    },
+    {
+      "entityId": "collaborate",
+      "name": "Collaborate",
+      "contentUrl": "https://%DOMAIN%%PORT%/collaborate",
+      "websiteUrl": "https://%DOMAIN%%PORT%/collaborate",
+      "scopes": [ "personal" ]
+    },
+    {
+      "entityId": "workspace",
+      "name": "Workspace",
+      "contentUrl": "https://%DOMAIN%%PORT%/workspace",
+      "websiteUrl": "https://%DOMAIN%%PORT%/workspace",
+      "scopes": [ "personal" ]
+    }
+  ],
+  "permissions": [ "identity" ],
+  "validDomains": [],
+  "webApplicationInfo": {
+    "id": "%APP_ID%",
+    "resource": "api://%DOMAIN%/%APP_ID%"
+  }
+}

@@ -1,0 +1,7 @@
+.donut-chart-fix {
+  pointer-events: none;
+}
+
+.donut-chart-fix > div > svg {
+  pointer-events: none !important;
+}

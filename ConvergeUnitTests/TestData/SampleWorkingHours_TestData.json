@@ -1,0 +1,138 @@
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+{
+  "workingHoursCollection": [
+    {
+      "userEmail": "admin@example.com",
+      "userWorkingHours": {
+        "daysOfWeek": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday"
+        ],
+        "endTime": "17:00:00",
+        "startTime": "08:00:00",
+        "timeZone": {
+          "name": "Pacific Standard Time",
+          "@odata.type": "microsoft.graph.timeZoneBase"
+        },
+        "@odata.type": "microsoft.graph.workingHours",
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('admin%40example.com')/mailboxSettings/workingHours",
+        "responseHeaders": {
+          "Date": [
+            "Fri, 12 Nov 2021 06:23:15 GMT"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000"
+          ],
+          "request-id": [
+            "04e455bb-f601-4d4e-a83f-2be34da86b6f"
+          ],
+          "client-request-id": [
+            "04e455bb-f601-4d4e-a83f-2be34da86b6f"
+          ],
+          "x-ms-ags-diagnostic": [
+            "{\"ServerInfo\":{\"DataCenter\":\"South Central US\",\"Slice\":\"E\",\"Ring\":\"3\",\"ScaleUnit\":\"002\",\"RoleInstance\":\"SN1PEPF0000D6BD\"}}"
+          ]
+        },
+        "statusCode": "OK"
+      }
+    },
+    {
+      "userEmail": "NAdriana@example.com",
+      "userWorkingHours": {
+        "daysOfWeek": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday"
+        ],
+        "endTime": "17:00:00",
+        "startTime": "08:00:00",
+        "timeZone": {
+          "name": "Pacific Standard Time",
+          "@odata.type": "microsoft.graph.timeZoneBase"
+        },
+        "@odata.type": "microsoft.graph.workingHours",
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('NAdriana%40example.com')/mailboxSettings/workingHours",
+        "responseHeaders": {
+          "Date": [
+            "Fri, 12 Nov 2021 06:23:15 GMT"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000"
+          ],
+          "request-id": [
+            "04e455bb-f601-4d4e-a83f-2be34da86b6f"
+          ],
+          "client-request-id": [
+            "04e455bb-f601-4d4e-a83f-2be34da86b6f"
+          ],
+          "x-ms-ags-diagnostic": [
+            "{\"ServerInfo\":{\"DataCenter\":\"South Central US\",\"Slice\":\"E\",\"Ring\":\"3\",\"ScaleUnit\":\"002\",\"RoleInstance\":\"SN1PEPF0000D6BD\"}}"
+          ]
+        },
+        "statusCode": "OK"
+      }
+    },
+    {
+      "userEmail": "ChrisRigby@example.com",
+      "userWorkingHours": {
+        "daysOfWeek": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday"
+        ],
+        "endTime": "17:00:00",
+        "startTime": "08:00:00",
+        "timeZone": {
+          "name": "Pacific Standard Time",
+          "@odata.type": "microsoft.graph.timeZoneBase"
+        },
+        "@odata.type": "microsoft.graph.workingHours",
+        "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('ChrisRigby%40example.com')/mailboxSettings/workingHours",
+        "responseHeaders": {
+          "Date": [
+            "Fri, 12 Nov 2021 06:23:15 GMT"
+          ],
+          "Cache-Control": [
+            "private"
+          ],
+          "Transfer-Encoding": [
+            "chunked"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=31536000"
+          ],
+          "request-id": [
+            "04e455bb-f601-4d4e-a83f-2be34da86b6f"
+          ],
+          "client-request-id": [
+            "04e455bb-f601-4d4e-a83f-2be34da86b6f"
+          ],
+          "x-ms-ags-diagnostic": [
+            "{\"ServerInfo\":{\"DataCenter\":\"South Central US\",\"Slice\":\"E\",\"Ring\":\"3\",\"ScaleUnit\":\"002\",\"RoleInstance\":\"SN1PEPF0000D6BD\"}}"
+          ]
+        },
+        "statusCode": "OK"
+      }
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+﻿[*.cs]
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.LayoutRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.LayoutRules.severity = none
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.OrderingRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.OrderingRules.severity = none
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.ReadabilityRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.ReadabilityRules.severity = none
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.MaintainabilityRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.MaintainabilityRules.severity = none
+
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.NamingRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.NamingRules.severity = none
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.SpacingRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.SpacingRules.severity = none
+
+# SA1600: Elements should be documented
+dotnet_diagnostic.SA1600.severity =silent
+
+# SA1614: Element parameter documentation should have text
+dotnet_diagnostic.SA1614.severity = none
+
+# SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = none
+
+# SA1611: Element parameters should be documented
+dotnet_diagnostic.SA1611.severity = none
+
+# SA1616: Element return value documentation should have text
+dotnet_diagnostic.SA1616.severity = none
+
+# SA1623: Property summary documentation should match accessors
+dotnet_diagnostic.SA1623.severity = none
+
+# SA1629: Documentation text should end with a period
+dotnet_diagnostic.SA1629.severity = none
+
+# SA1642: Constructor summary documentation should begin with standard text
+dotnet_diagnostic.SA1642.severity = none
+
+# SA1649: File name should match first type name
+dotnet_diagnostic.SA1649.severity = none
+dotnet_diagnostic.SA0001.severity=none
+dotnet_diagnostic.SA0002.severity=error
+dotnet_diagnostic.SA1633.severity=error
+dotnet_diagnostic.SA1634.severity=error
+dotnet_diagnostic.SA1635.severity=error
+dotnet_diagnostic.SA1636.severity=error
+dotnet_diagnostic.SA1641.severity=error
+dotnet_diagnostic.SA1640.severity=error

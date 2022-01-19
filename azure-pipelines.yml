@@ -1,0 +1,102 @@
+# Variables with * are required.
+# AzureAd.TenantId*: Id of Tenant that app belongs to
+# AzureAd.ClientId*: ClientId of converge azure app service
+# AzureAd.Audience*: Azure AD Audience of token being authenticated in the format api://{hostname}/{clientId} 
+# SharePointSiteId*: Graph Id of the SharePoint site
+# SharePointListId*: Name or ID of SharePoint list where Exchange Places are being stored
+# SharePointPhotoListId*: Name or ID of SharePoint list where Place photos are stored
+# AppInsightsInstrumentationKey*: Instrumentation key from azure app insights resource
+# KeyVaultName*: Name of Azure KeyVault being used
+# MaxPredictionWindow: 
+# JobSchedules.PredictorSchedule*: Crontab expression for how often to check users' calendars and predict where they will be in the in the next number of days specified by the MaxPredictionWindow
+# JobSchedules.SyncPlacesSchedule*: Crontab expression for how often to sync SharePoint with the workspace and conference room data from Exchange
+# FilterUsersByTitle: Adding this string will ensure that users with the given title are filtered out of result sets
+# AppEnvironment: Environment the app is running in
+# AppBannerMessage: Message displayed at the top of the site on all pages
+# NewPlacesAvailableByDefault: true/false field representing whether New Places are available by default
+# BuildParameters.ConnectedServiceName: Id of the service connection created with the subscription you're using in Azure.
+# BuildParameters.WebAppName: Text name of the app service being deployed to.
+# BuildConfiguration*: "release"
+# BuildPlatform*: "any cpu"
+# ASPNETCORE_ENVIRONMENT*: Production
+# WEBSITE*: The URL of the site that contains the about page for Converge for your organization
+# APP_ID*: The ClientID of the Converge Azure app service
+# DOMAIN*: The domain of the Azure app service
+variables:
+- name: BuildParameters.solution
+  value: '**\*.sln'
+trigger:
+  branches:
+    include:
+    - refs/heads/main
+name: $(date:yyyyMMdd)$(rev:.r)
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  pool:
+    vmImage: windows-2019
+  steps:
+  - checkout: self
+  - task: NuGetToolInstaller@0
+    displayName: Use NuGet 4.4.1
+    inputs:
+      versionSpec: 4.4.1
+  - task: NuGetCommand@2
+    displayName: NuGet restore
+    inputs:
+      solution: $(BuildParameters.solution)
+  - task: FileTransform@1
+    displayName: Inject variables into appsettings
+    inputs:
+      folderPath: Converge
+      fileType: json
+      targetFiles: ./appsettings.json
+  - task: VSBuild@1
+    displayName: Build solution **\*.sln
+    inputs:
+      solution: $(BuildParameters.solution)
+      msbuildArgs: /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl="$(Agent.TempDirectory)\WebAppContent\\"
+      platform: $(BuildPlatform)
+      configuration: $(BuildConfiguration)
+  - task: Npm@1
+    displayName: npm test
+    inputs:
+      command: custom
+      workingDir: Converge/ClientApp
+      verbose: false
+      customCommand: test
+  - task: ArchiveFiles@2
+    displayName: Archive Files
+    inputs:
+      rootFolderOrFile: $(Agent.TempDirectory)\WebAppContent
+      includeRootFolder: false
+  - task: VSTest@2
+    displayName: VsTest - testAssemblies
+    inputs:
+      testAssemblyVer2: >-
+        **\$(BuildConfiguration)\*test*.dll
+
+        !**\obj\**
+      platform: $(BuildPlatform)
+      configuration: $(BuildConfiguration)
+  - task: AzureWebApp@1
+    displayName: 'Azure Web App Deploy'
+    inputs:
+      azureSubscription: $(BuildParameters.ConnectedServiceName)
+      appType: webApp
+      appName: $(BuildParameters.WebAppName)
+      package: $(build.artifactstagingdirectory)/**/*.zip
+  - task: PublishSymbols@2
+    displayName: Publish symbols path
+    continueOnError: True
+    inputs:
+      SearchPattern: '**\bin\**\*.pdb'
+      PublishSymbols: false
+      SymbolServerType: TeamServices
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    condition: succeededOrFailed()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
+...
