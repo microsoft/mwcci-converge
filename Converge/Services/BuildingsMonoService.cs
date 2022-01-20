@@ -26,12 +26,13 @@ namespace Converge.Services
         public BuildingsMonoService(IConfiguration configuration,
                                     ILogger<PlacesService> placesSvcLogger,
                                     AppGraphService appGraphSvc, 
-                                    CachePlacesProviderService cacheProviderService)
+                                    CachePlacesProviderService cacheProviderService,
+                                    CacheSharePointContentService cacheSharePointContentService)
         {
             appGraphService = appGraphSvc;
 
             //Had to manually instantiate for addressing Singleton-classes-instantiation-issues during Dependency-injection.
-            placesService = new PlacesService(placesSvcLogger, configuration, appGraphService, new ScheduleService(appGraphService));
+            placesService = new PlacesService(placesSvcLogger, configuration, appGraphService, new ScheduleService(appGraphService), cacheSharePointContentService);
             buildingsService = new BuildingsService(appGraphService, cacheProviderService, placesService, null);
         }
 

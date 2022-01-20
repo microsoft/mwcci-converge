@@ -239,6 +239,7 @@ namespace Converge
             services.AddTransient<BuildingsService>();
             services.AddTransient<IHttpClientProviderService, HttpClientProviderService>();
             services.AddSingleton<CachePlacesProviderService>();
+            services.AddSingleton<CacheSharePointContentService>();
         }
 
         private void RegisterValidators(IServiceCollection services)
