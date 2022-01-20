@@ -170,13 +170,13 @@ const NewEventModal: React.FC<Props> = (props) => {
     if (data?.searchQuery) {
       setAttendeesLoading(true);
       searchUsers(data.searchQuery.toString())
-        .then((users) => {
+        .then((response) => {
           setAttendeeItems(
-            users
+            response.users
               .filter((u) => !!u.displayName)
               .map((u) => u.displayName as string),
           );
-          setFullUserData(fullUserData.concat(users));
+          setFullUserData(fullUserData.concat(response.users));
         })
         .finally(() => setAttendeesLoading(false));
     } else {

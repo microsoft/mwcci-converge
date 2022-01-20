@@ -85,15 +85,17 @@ const UserSearchDropdown:React.FC<Props> = (props) => {
     if (data?.searchQuery) {
       setLoading(true);
       searchUsers(data.searchQuery.toString())
-        .then((users) => {
-          setInputItems(users.filter((u) => !!u.displayName).map((u) => u.displayName as string));
+        .then((response) => {
+          setInputItems(response.users
+            .filter((u) => !!u.displayName)
+            .map((u) => u.displayName as string));
           setDropdownUsers(dropdownUsers.filter((u) => {
             if (u.displayName) {
               return selectedUsers.includes(u.displayName)
                 || defaultDropdownUsers?.find((ddu) => ddu.displayName === u.displayName);
             }
             return false;
-          }).concat(users.filter((u) => !!u.displayName)));
+          }).concat(response.users.filter((u) => !!u.displayName)));
         }).catch(() => setIsError(true))
         .finally(() => setLoading(false));
     } else {

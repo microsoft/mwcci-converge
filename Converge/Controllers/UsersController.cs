@@ -176,34 +176,12 @@ namespace Converge.Controllers
         /// <summary>
         /// Search Users that match the provided search string
         /// </summary>
-        /// <param name="searchString"></param>
+        /// <param name="searchString">The string to user for user search</param>
+        /// <param name="queryOptions">query options</param
         /// <returns>List of users <see cref="User"/> whose DisplayName/UserPrincipalName starts with input string></returns>
         [HttpGet]
-        [Route("search/{searchString}")]
-        public async Task<ActionResult<List<User>>> SearchUsers(string searchString)
-        {
-            try
-            {
-                var userSearchResponse = await userGraphService.SearchUsers(searchString, null, User);
-                return userSearchResponse.Users;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while searching Users for '{searchString}'.");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Search Users that match the provided search string and
-        /// filter results based on the provided query options
-        /// </summary>
-        /// <param name="searchString">search string</param>
-        /// <param name="queryOptions">query options</param>
-        /// <returns>List of users <see cref="User"/> whose DisplayName/UserPrincipalName starts with input string></returns>
-        [HttpGet]
-        [Route("searchAndPage")]
-        public async Task<ActionResult<UserSearchPaginatedResponse>> SearchUsersByPage(string searchString, string queryOptions)
+        [Route("search")]
+        public async Task<ActionResult<UserSearchPaginatedResponse>> SearchUsers(string searchString, string queryOptions)
         {
             try
             {

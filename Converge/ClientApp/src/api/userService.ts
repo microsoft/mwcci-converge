@@ -113,17 +113,6 @@ export const getMultiUserAvailabilityTimes = async (
 };
 
 export const searchUsers = async (
-  searchString?: string,
-): Promise<MicrosoftGraph.User[]> => {
-  const axios = await getAxiosClient();
-  if (!searchString) {
-    return [];
-  }
-  const request = await axios.get<AutoWrapperResponse<MicrosoftGraph.User[]>>(`/api/users/search/${searchString}`);
-  return request.data.result;
-};
-
-export const searchUsersByPage = async (
   searchQuery?: string,
   options?: QueryOption[],
 ): Promise<UserSearchPagedResponse> => {
@@ -131,7 +120,7 @@ export const searchUsersByPage = async (
   if (!searchQuery) {
     return { users: [], queryOptions: [] };
   }
-  const request = await axios.get<AutoWrapperResponse<UserSearchPagedResponse>>("/api/users/searchAndPage", {
+  const request = await axios.get<AutoWrapperResponse<UserSearchPagedResponse>>("/api/users/search", {
     params: {
       searchString: searchQuery,
       QueryOptions: JSON.stringify(options),

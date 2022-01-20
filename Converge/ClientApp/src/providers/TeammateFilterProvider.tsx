@@ -6,7 +6,7 @@ import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 import {
   getMyList, getPeople, getWorkgroup,
 } from "../api/meService";
-import { searchUsers, searchUsersByPage } from "../api/userService";
+import { searchUsers } from "../api/userService";
 import TimeLimit from "../types/TimeLimit";
 import { logEvent } from "../utilities/LogWrapper";
 import {
@@ -288,19 +288,27 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
       case TeammateList.MyOrganization:
         requestMethod = getWorkgroup;
         break;
-      case TeammateList.All:
-        requestMethod = searchUsers;
-        break;
       default:
         throw new Error("Invalid list type requested.");
     }
-    requestMethod(searchString).then(async (teammates) => {
-      const payload = await Promise.all(teammates.map(async (teammate) => ({
-        user: teammate,
-      })));
-      dispatch({ type: TEAMMATES_RESPONSE, payload });
-    })
-      .catch(() => dispatch({ type: TEAMMATES_ERROR }));
+    if (requestMethod) {
+      requestMethod().then((teammates) => {
+        const payload = teammates.map((teammate) => ({
+          user: teammate,
+        }));
+        dispatch({ type: TEAMMATES_RESPONSE, payload });
+      })
+        .catch(() => dispatch({ type: TEAMMATES_ERROR }));
+    } else {
+      searchUsers(searchString)
+        .then((response) => {
+          const payload = response.users.map((teammate) => ({
+            user: teammate,
+          }));
+          dispatch({ type: TEAMMATES_RESPONSE, payload });
+        })
+        .catch(() => dispatch({ type: TEAMMATES_ERROR }));
+    }
   };
 
   const setMoreTeammatesLoading = (buttonLoading: boolean) => {
@@ -313,15 +321,19 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
     teammatesPreset?: Teammate[],
   ) => {
     setMoreTeammatesLoading(true);
-    searchUsersByPage(searchString, qOptions).then(async (data) => {
-      const payload = await Promise.all(data.users.map(async (teammate) => ({
-        user: teammate,
-      })));
-      if (!teammatesPreset) dispatch({ type: TEAMMATES_RESPONSE, payload });
-      else dispatch({ type: TEAMMATES_RESPONSE, payload: teammatesPreset.concat(payload) });
-      dispatch({ type: UPDATE_SEARCH_QUERY_OPTIONS, payload: data.queryOptions });
-      setMoreTeammatesLoading(false);
-    })
+    searchUsers(searchString, qOptions)
+      .then((data) => {
+        const payload = data.users.map((teammate) => ({
+          user: teammate,
+        }));
+        if (!teammatesPreset) {
+          dispatch({ type: TEAMMATES_RESPONSE, payload });
+        } else {
+          dispatch({ type: TEAMMATES_RESPONSE, payload: teammatesPreset.concat(payload) });
+        }
+        dispatch({ type: UPDATE_SEARCH_QUERY_OPTIONS, payload: data.queryOptions });
+        setMoreTeammatesLoading(false);
+      })
       .catch(() => {
         dispatch({ type: TEAMMATES_ERROR });
         setMoreTeammatesLoading(false);
