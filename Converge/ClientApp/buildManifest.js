@@ -29,7 +29,7 @@ const cleanManifest = async () => {
 async function setDevEnvironment() {
   dotenv.config();
 
-  process.env.NAME_SUFFIX = process.env.NAME_SUFFIX ?? "_local";
+  process.env.NAME_SUFFIX = "_dev";
 
   if (!process.env.DOMAIN) {
     throw new Error("Missing required environment variable: DOMAIN!");
@@ -55,6 +55,8 @@ async function setProdEnvironment() {
 }
 
 async function setStagingEnvironment() {
+  process.env.NAME_SUFFIX = "_staging";
+
   if (!process.env.WEBSITE) {
     throw new Error("Missing required environment variable: WEBSITE!");
   }
@@ -67,7 +69,7 @@ async function setStagingEnvironment() {
 }
 
 async function setTestingEnvironment() {
-  process.env.NAME_SUFFIX = process.env.NAME_SUFFIX ?? "_test";
+  process.env.NAME_SUFFIX = "_test";
 
   if (!process.env.DOMAIN) {
     throw new Error("Missing required environment variable: DOMAIN!");

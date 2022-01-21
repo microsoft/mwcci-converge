@@ -304,7 +304,7 @@ namespace Converge.Services
             var installedApps = request.CurrentPage as List<UserScopeTeamsAppInstallation>;
             foreach (UserScopeTeamsAppInstallation app in installedApps)
             {
-                if (app.TeamsAppDefinition.DisplayName == ConvergeDisplayName)
+                if (app.TeamsAppDefinition.DisplayName.SameAs(ConvergeDisplayName))
                 {
                     return true;
                 }

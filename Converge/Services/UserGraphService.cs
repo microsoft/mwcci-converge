@@ -6,7 +6,6 @@ using Converge.Models;
 using Converge.Models.Enums;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
 using Newtonsoft.Json;
