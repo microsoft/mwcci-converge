@@ -24,7 +24,8 @@ export enum UISections {
   Places="Places",
   PopupMenuContent="PopupMenuContent",
   PopupMenuWrapper="PopupMenuWrapper",
-  Toast="Toast"
+  Toast="Toast",
+  ApplicationUnavailable="ApplicationUnavailable"
 }
 
 export const UI_SECTION = "UI_SECTION";

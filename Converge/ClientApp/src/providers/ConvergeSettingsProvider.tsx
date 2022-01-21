@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Loader } from "@fluentui/react-northstar";
+import {
+  Alert, Button, Flex, Loader, Text,
+} from "@fluentui/react-northstar";
 import { GeoCoordinates } from "@microsoft/microsoft-graph-types";
 import React, {
   useContext, useEffect, useReducer, useState,
@@ -15,8 +17,11 @@ import getSettings, {
 import BuildingBasicInfo from "../types/BuildingBasicInfo";
 import ConvergeSettings from "../types/ConvergeSettings";
 import UpcomingBuildingsResponse from "../types/UpcomingBuildingsResponse";
-import { useProvider as errorAlertProvider, helpers } from "./ErrorAlertProvider";
 import ExchangePlace from "../types/ExchangePlace";
+import {
+  USER_INTERACTION, UI_SECTION, UISections, DESCRIPTION,
+} from "../types/LoggerTypes";
+import { logEvent } from "../utilities/LogWrapper";
 
 type IBuildingState = {
   buildingsList: BuildingBasicInfo[];
@@ -328,8 +333,6 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     favoriteCampusesReducer, [],
   );
 
-  const { errorDispatch } = errorAlertProvider();
-
   const getConvergeSettings = (): Promise<void> => {
     convergeSettingsDispatch({ type: GET_CONVERGE_SETTINGS_REQUEST });
     return getSettings()
@@ -337,12 +340,6 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
         convergeSettingsDispatch(
           { type: GET_CONVERGE_SETTINGS_RESPONSE, convergeSettings: settings },
         );
-      })
-      .catch((error) => {
-        errorDispatch({
-          type: "SET_ERROR_ALERT",
-          payload: helpers.getDefaultToastObject(error.message, "getSettings"),
-        });
       });
   };
 
@@ -350,23 +347,11 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     .then(() => convergeSettingsDispatch({
       type: SET_CONVERGE_SETTINGS_REQUEST,
       convergeSettings: settings,
-    }))
-    .catch((error) => {
-      errorDispatch({
-        type: "SET_ERROR_ALERT",
-        payload: helpers.getDefaultToastObject(error.message, "setSettings"),
-      });
-    });
+    }));
 
   const setupNewUserWrapper = (settings: ConvergeSettings): Promise<void> => setupNewUser(settings)
     .then(() => {
       convergeSettingsDispatch({ type: SETUP_NEW_USER_RESPONSE, convergeSettings: settings });
-    })
-    .catch((error) => {
-      errorDispatch({
-        type: "SET_ERROR_ALERT",
-        payload: helpers.getDefaultToastObject(error.message, "setupNewUser"),
-      });
     });
 
   const getFavoriteCampusesWrapper = (): Promise<void> => {
@@ -474,9 +459,11 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
   }, [state.buildingsByRadiusDistance]);
 
   const [loading, setLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     getConvergeSettings()
+      .catch(() => setIsError(true))
       .finally(() => setLoading(false));
     getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
       updateRecentBuildings(basicRecentBuildings);
@@ -509,7 +496,49 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
         updateRecentBuildings,
       }}
     >
-      {loading ? <Loader /> : children}
+      {loading && <Loader />}
+      {!loading && isError && (
+        <Alert
+          danger
+          styles={{ margin: "36px" }}
+          content={(
+            <Flex hAlign="center">
+              <Text
+                content="The application was unable to load."
+                styles={{
+                  minWidth: "0px !important",
+                  paddingTop: "0.4rem",
+                }}
+              />
+              <Button
+                content={(
+                  <Text
+                    content="Try again"
+                    styles={{
+                      minWidth: "0px !important",
+                      paddingTop: "0.4rem",
+                      textAlign: "center",
+                    }}
+                  />
+                  )}
+                text
+                onClick={() => {
+                  logEvent(USER_INTERACTION, [
+                    { name: UI_SECTION, value: UISections.ApplicationUnavailable },
+                    { name: DESCRIPTION, value: "refreshHomePage" },
+                  ]);
+                  window.location.reload();
+                }}
+                color="red"
+                styles={{
+                  minWidth: "0px !important", paddingTop: "0.2rem", textDecoration: "UnderLine", color: "rgb(196, 49, 75)",
+                }}
+              />
+            </Flex>
+          )}
+        />
+      )}
+      {!loading && !isError && children}
     </ConvergeSettingsContext.Provider>
   );
 };

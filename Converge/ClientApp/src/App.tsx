@@ -14,8 +14,6 @@ import TeamsThemeProvider from "./providers/TeamsThemeProvider";
 import Home from "./tabs/home";
 import Collaborate from "./tabs/collaborate";
 import Workspace from "./tabs/workspace";
-import { ErrorAlertProvider } from "./providers/ErrorAlertProvider";
-import ErrorAlert from "./utilities/ErrorAlert";
 import ConvergeSettingsProvider from "./providers/ConvergeSettingsProvider";
 import "./app.css";
 import { SearchContextProvider } from "./providers/SearchProvider";
@@ -38,31 +36,28 @@ const App: React.FC = () => (
       <TeamsContextProvider>
         <TeamsThemeProvider>
           <ContextLoader>
-            <ErrorAlertProvider>
-              <ConvergeSettingsProvider>
-                <PlacePhotosProvider>
-                  <ErrorAlert />
-                  <AppBanner />
-                  <Router>
-                    <Route
-                      exact
-                      path="/tab"
-                      component={Home}
-                    />
-                    <Route
-                      exact
-                      path="/collaborate"
-                      render={() => (
-                        <SearchContextProvider>
-                          <Collaborate />
-                        </SearchContextProvider>
-                      )}
-                    />
-                    <Route exact path="/workspace" component={Workspace} />
-                  </Router>
-                </PlacePhotosProvider>
-              </ConvergeSettingsProvider>
-            </ErrorAlertProvider>
+            <ConvergeSettingsProvider>
+              <PlacePhotosProvider>
+                <AppBanner />
+                <Router>
+                  <Route
+                    exact
+                    path="/tab"
+                    component={Home}
+                  />
+                  <Route
+                    exact
+                    path="/collaborate"
+                    render={() => (
+                      <SearchContextProvider>
+                        <Collaborate />
+                      </SearchContextProvider>
+                    )}
+                  />
+                  <Route exact path="/workspace" component={Workspace} />
+                </Router>
+              </PlacePhotosProvider>
+            </ConvergeSettingsProvider>
           </ContextLoader>
         </TeamsThemeProvider>
       </TeamsContextProvider>

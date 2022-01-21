@@ -55,12 +55,13 @@ const EnterZipcode: React.FC<Props> = (props) => {
       ...convergeSettings,
       zipCode: newZipCode,
     };
-
     setConvergeSettings(newSettings).then(() => {
       setLoading(false);
       setOpen(false);
-    });
-    if (updateWidgetActions) updateWidgetActions(newZipCode);
+    }).catch(() => setErr(true));
+    if (updateWidgetActions) {
+      updateWidgetActions(newZipCode);
+    }
   };
 
   return (
