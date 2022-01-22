@@ -16,20 +16,22 @@ import { logEvent } from "./LogWrapper";
 
 interface Props {
   headerTitle: string,
-  locationBuildingName:string | undefined,
-  buildingList:ShorthandCollection<DropdownItemProps, Record<string, unknown>>,
-  handleDropdownChange:(bldg:string | undefined)=>void;
-  marginContent:string,
-  width:string,
-  value:string|undefined,
-  placeholderTitle:string,
-  buttonTitle:string,
+  locationBuildingName: string | undefined,
+  otherOptionsList: string[];
+  buildingList: ShorthandCollection<DropdownItemProps, Record<string, unknown>>,
+  handleDropdownChange: (bldg: string | undefined) => void;
+  marginContent: string,
+  width: string,
+  value: string | undefined,
+  placeholderTitle: string,
+  buttonTitle: string,
+  maxHeight: string,
 }
 
 const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
   const {
     headerTitle, buildingList, locationBuildingName, width,
-    marginContent, value, placeholderTitle, buttonTitle,
+    marginContent, value, placeholderTitle, buttonTitle, otherOptionsList, maxHeight,
   } = props;
 
   const { updateLocation } = PlaceProvider();
@@ -41,9 +43,9 @@ const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
 
   const [popup, setPopup] = React.useState(false);
   const [selectedBuildingName, setSelectedBuildingName] = React.useState<
-  string|undefined>(value);
+    string | undefined>(value);
 
-  const handleDropdownChange = (bldg:string | undefined) => {
+  const handleDropdownChange = (bldg: string | undefined) => {
     setPopup(false);
     setSelectedBuildingName(bldg);
     const selectedBuilding = state.buildingsList.find((b) => b.displayName === bldg);
@@ -60,7 +62,7 @@ const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
     else setPopup(true);
     setSelectedBuildingName("");
   };
-  const handleTextboxChange = (searchText:string | undefined) => {
+  const handleTextboxChange = (searchText: string | undefined) => {
     setPopup(true);
     setSelectedBuildingName(searchText || "");
     updateLocation(undefined);
@@ -93,13 +95,13 @@ const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
               ]);
             }}
             />
-)}
+          )}
           value={selectedBuildingName}
           clearable
           onChange={((event, data) => handleTextboxChange(data?.value))}
           placeholder={placeholderTitle}
         />
-)}
+      )}
       content={{
         styles: {
           width,
@@ -118,6 +120,8 @@ const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
             handleDropdownChange={handleDropdownChange}
             locationBuildingName={locationBuildingName}
             buttonTitle={buttonTitle}
+            otherOptionsList={otherOptionsList}
+            maxHeight={maxHeight}
           />
         ),
       }}

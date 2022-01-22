@@ -2,19 +2,19 @@
 // Licensed under the MIT License.
 
 import {
-  Dialog, Flex, Provider, Box, Text, Button, DropdownProps,
+  Dialog, Flex, Provider, Box, Text, Button,
 } from "@fluentui/react-northstar";
 import { CloseIcon } from "@fluentui/react-icons-northstar";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { makeStyles } from "@fluentui/react-theme-provider";
-import PrimaryDropdown from "./PrimaryDropdown";
 import BuildingBasicInfo from "../types/BuildingBasicInfo";
 import { logEvent } from "../utilities/LogWrapper";
 import {
   UI_SECTION, UISections, USER_INTERACTION, DESCRIPTION, IMPORTANT_ACTION, ImportantActions,
 } from "../types/LoggerTypes";
 import { updateMyPredictedLocation } from "../api/meService";
+import PopupMenuWrapper from "./popupMenuWrapper";
 
 const ChangeLocationModalStyles = makeStyles(() => ({
   triggerBtn: {
@@ -60,15 +60,51 @@ const ChangeLocationModal: React.FC<Props> = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const classes = ChangeLocationModalStyles();
 
-  const handleLocationChange = (
-    event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
-    data: DropdownProps,
-  ) => {
+  const handleLocationChange = (bldg: string | undefined) => {
     logEvent(USER_INTERACTION, [
       { name: UI_SECTION, value: UISections.LocationChangeModalHome },
       { name: DESCRIPTION, value: "change_converge_prediction" },
     ]);
-    setLocation(data?.value?.toString() || "");
+    setLocation(bldg || "");
+  };
+
+  const onConfirmbutton = () => {
+    setLoading(true);
+    logEvent(USER_INTERACTION, [
+      { name: UI_SECTION, value: UISections.LocationChangeModalHome },
+      { name: DESCRIPTION, value: "confirm_converge_prediction" },
+    ]);
+    const day = dayjs.utc(date);
+    let campusUpn;
+    let otherLocationOption: "Remote" | "Out of Office" | undefined;
+    if (location === "Remote") {
+      otherLocationOption = "Remote";
+    } else if (location === "Out of Office") {
+      otherLocationOption = "Out of Office";
+    } else {
+      const building = buildings.find((b) => b.displayName === location);
+      if (building) {
+        campusUpn = building.identity;
+      }
+    }
+    updateMyPredictedLocation({
+      year: day.year(),
+      month: day.month() + 1,
+      day: day.date(),
+      userPredictedLocation: {
+        campusUpn,
+        otherLocationOption,
+      },
+    }).then(() => {
+      logEvent(USER_INTERACTION, [
+        { name: IMPORTANT_ACTION, value: ImportantActions.ChangeConvergePrediction },
+      ]);
+      refreshRecommendation();
+    })
+      .then(() => {
+        setOpen(false);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -98,44 +134,7 @@ const ChangeLocationModal: React.FC<Props> = (props) => {
           ]);
           setOpen(false);
         }}
-        onConfirm={() => {
-          setLoading(true);
-          logEvent(USER_INTERACTION, [
-            { name: UI_SECTION, value: UISections.LocationChangeModalHome },
-            { name: DESCRIPTION, value: "confirm_converge_prediction" },
-          ]);
-          const day = dayjs.utc(date);
-          let campusUpn;
-          let otherLocationOption: "Remote" | "Out of Office" | undefined;
-          if (location === "Remote") {
-            otherLocationOption = "Remote";
-          } else if (location === "Out of Office") {
-            otherLocationOption = "Out of Office";
-          } else {
-            const building = buildings.find((b) => b.displayName === location);
-            if (building) {
-              campusUpn = building.identity;
-            }
-          }
-          updateMyPredictedLocation({
-            year: day.year(),
-            month: day.month() + 1,
-            day: day.date(),
-            userPredictedLocation: {
-              campusUpn,
-              otherLocationOption,
-            },
-          }).then(() => {
-            logEvent(USER_INTERACTION, [
-              { name: IMPORTANT_ACTION, value: ImportantActions.ChangeConvergePrediction },
-            ]);
-            refreshRecommendation();
-          })
-            .then(() => {
-              setOpen(false);
-            })
-            .finally(() => setLoading(false));
-        }}
+        onConfirm={() => { onConfirmbutton(); }}
         confirmButton={{
           content: "Confirm",
           loading,
@@ -177,16 +176,11 @@ const ChangeLocationModal: React.FC<Props> = (props) => {
               ?
             </Box>
             <Text content="Location" className={classes.locationText} />
-            <PrimaryDropdown
-              placeholder="Select one"
-              items={buildings.map((b) => b.displayName).concat(["Remote", "Out of Office"])}
-              value={location}
-              handleDropdownChange={handleLocationChange}
-              clearable
-              width="212px"
-            />
+            <Box>
+              <PopupMenuWrapper headerTitle="Other Options" handleDropdownChange={handleLocationChange} buildingList={buildings.map((b) => b.displayName)} locationBuildingName="" otherOptionsList={["Remote", "Out Of Office"]} width="320px" marginContent="3.8rem" value={location} placeholderTitle="Select One" buttonTitle="See more" maxHeight="90px" />
+            </Box>
           </Flex>
-      )}
+        )}
       />
     </Provider>
   );

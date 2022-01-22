@@ -15,15 +15,17 @@ import {
 
 interface Props {
   headerTitle: string,
-  locationBuildingName:string | undefined;
-  buildingList:ShorthandCollection<DropdownItemProps, Record<string, unknown>>;
-  handleDropdownChange:(bldg:string| undefined)=>void;
-  buttonTitle:string;
+  locationBuildingName: string | undefined;
+  otherOptionsList: string[];
+  buildingList: ShorthandCollection<DropdownItemProps, Record<string, unknown>>;
+  handleDropdownChange: (bldg: string | undefined) => void;
+  buttonTitle: string;
+  maxHeight: string;
 }
 
 const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
   const {
-    headerTitle, buildingList, locationBuildingName, buttonTitle,
+    headerTitle, buildingList, locationBuildingName, buttonTitle, otherOptionsList, maxHeight,
   } = props;
   const {
     state, setBuildingsByDistanceRadius,
@@ -48,7 +50,7 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
         </Flex>
       </Box>
       {location.pathname !== "/workspace" && locationBuildingName !== ""
-          && (
+        && (
           <Box>
             <>
               <Button
@@ -79,88 +81,125 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
               </Button>
             </>
           </Box>
-          )}
+        )}
       {location.pathname === "/workspace" && state.recentBuildings.length > 0
-      && (
-      <Box>
-        {state.recentBuildings.map((item) => (
-          <>
-            <Flex>
-              <Button
-                text
-                styles={{ minWidth: "0rem !important", maxWidth: "230px !important" }}
-                onClick={() => {
-                  props.handleDropdownChange(item?.displayName);
-                  logEvent(USER_INTERACTION, [
-                    {
-                      name: UI_SECTION,
-                      value: UISections.PopupMenuContent,
-                    },
-                    {
-                      name: DESCRIPTION,
-                      value: "handleDropdownChange",
-                    },
-                  ]);
-                }}
-              >
-                <Text
-                  content={item.displayName}
-                  title={item?.displayName}
-                  weight="semilight"
-                  styles={{
-                    whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", marginLeft: "0.6rem", marginTop: "1rem",
-                  }}
-                />
-              </Button>
-            </Flex>
-          </>
-        ))}
-      </Box>
-      )}
+        && (
+          <Box>
+            {state.recentBuildings.map((item) => (
+              <>
+                <Flex>
+                  <Button
+                    text
+                    styles={{ minWidth: "0rem !important", maxWidth: "230px !important" }}
+                    onClick={() => {
+                      props.handleDropdownChange(item?.displayName);
+                      logEvent(USER_INTERACTION, [
+                        {
+                          name: UI_SECTION,
+                          value: UISections.PopupMenuContent,
+                        },
+                        {
+                          name: DESCRIPTION,
+                          value: "handleDropdownChange",
+                        },
+                      ]);
+                    }}
+                  >
+                    <Text
+                      content={item.displayName}
+                      title={item?.displayName}
+                      weight="semilight"
+                      styles={{
+                        whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", marginLeft: "0.6rem", marginTop: "1rem",
+                      }}
+                    />
+                  </Button>
+                </Flex>
+              </>
+            ))}
+          </Box>
+        )}
+      {location.pathname !== "/workspace" && otherOptionsList.length > 0
+        && (
+          <Box>
+            {otherOptionsList.map((item) => (
+              <>
+                <Flex>
+                  <Button
+                    text
+                    styles={{ minWidth: "0rem !important", maxWidth: "230px !important" }}
+                    onClick={() => {
+                      props.handleDropdownChange(item);
+                      logEvent(USER_INTERACTION, [
+                        {
+                          name: UI_SECTION,
+                          value: UISections.PopupMenuContent,
+                        },
+                        {
+                          name: DESCRIPTION,
+                          value: "handleDropdownChange",
+                        },
+                      ]);
+                    }}
+                  >
+                    <Text
+                      content={item}
+                      title={item}
+                      weight="semilight"
+                      styles={{
+                        whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", marginLeft: "0.6rem", marginTop: "1rem",
+                      }}
+                    />
+                  </Button>
+                </Flex>
+              </>
+            ))}
+          </Box>
+        )}
       <Divider className="filter-popup-menu-divider" styles={{ marginTop: "0.4rem" }} />
-      <Box className={location.pathname === "/workspace" ? classes.WorkSpacebuildingContent : classes.buildingContent}>
+      <Box className={classes.WorkSpacebuildingContent} styles={{ maxHeight }}>
         <Box>
           <Flex gap="gap.small" vAlign="center">
             <Text content="Buildings near you" weight="semibold" styles={{ marginLeft: "1rem", marginTop: "0.6rem" }} />
           </Flex>
         </Box>
         {buildingList.length > 0
-      && (
-      <Box>
-        {buildingList.map((item) => (
-          <>
-            <Flex>
-              <Button
-                text
-                styles={{ minWidth: "0rem !important", maxWidth: "230px !important" }}
-                onClick={() => {
-                  props.handleDropdownChange(item?.toString());
-                  logEvent(USER_INTERACTION, [
-                    {
-                      name: UI_SECTION,
-                      value: UISections.PopupMenuContent,
-                    },
-                    {
-                      name: DESCRIPTION,
-                      value: "handleDropdownChange",
-                    },
-                  ]);
-                }}
-              >
-                <Text
-                  content={item}
-                  title={item?.toString()}
-                  weight="semilight"
-                  styles={{
-                    whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", marginLeft: "0.6rem", marginTop: "1rem",
-                  }}
-                />
-              </Button>
-            </Flex>
-          </>
-        ))}
-      </Box>
-      )}
+          && (
+            <Box>
+              {buildingList.map((item) => (
+                <>
+                  <Flex>
+                    <Button
+                      text
+                      styles={{ minWidth: "0rem !important", maxWidth: "230px !important" }}
+                      onClick={() => {
+                        props.handleDropdownChange(item?.toString());
+                        logEvent(USER_INTERACTION, [
+                          {
+                            name: UI_SECTION,
+                            value: UISections.PopupMenuContent,
+                          },
+                          {
+                            name: DESCRIPTION,
+                            value: "handleDropdownChange",
+                          },
+                        ]);
+                      }}
+                    >
+                      <Text
+                        content={item}
+                        title={item?.toString()}
+                        weight="semilight"
+                        styles={{
+                          whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", marginLeft: "0.6rem", marginTop: "1rem",
+                        }}
+                      />
+                    </Button>
+                  </Flex>
+                </>
+              ))}
+            </Box>
+          )}
       </Box>
       {state.buildingListLoading && <Loader label={state.buildingsLoadingMessage} />}
       <Divider className="filter-popup-menu-divider" styles={{ marginTop: "0.4rem" }} />
