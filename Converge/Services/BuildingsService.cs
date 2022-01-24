@@ -263,6 +263,10 @@ namespace Converge.Services
             double reserved = 0;
             foreach (ExchangePlace workspace in exchangePlacesResponse.ExchangePlacesList)
             {
+                if (workspace.Capacity == 0)
+                {
+                    continue;
+                }
                 double workspaceReserved = await placesService.GetReserved(workspace, nonNullStartString, nonNullEndString);
                 reserved += workspaceReserved * ((double) workspace.Capacity / (double) buildingCapacity);
             }
