@@ -43,7 +43,7 @@ const NewConfRoomEvent:React.FC<Props> = (props) => {
     clearPlaceCard,
     getAvailability,
   } = props;
-  const { createReservation } = PlaceFilterProvider();
+  const { createReservation, loadUpcomingReservations } = PlaceFilterProvider();
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
   const [subject, setSubject] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -143,6 +143,7 @@ const NewConfRoomEvent:React.FC<Props> = (props) => {
             };
             setConvergeSettings(newSettings);
             createReservation(calendarEvent);
+            loadUpcomingReservations(start, end);
             getAvailability();
             Notifications.show({
               duration: 5000,
