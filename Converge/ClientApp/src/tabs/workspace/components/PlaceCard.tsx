@@ -45,7 +45,7 @@ const PlaceCard: React.FC<Props> = (props) => {
   const [bookable, setBookable] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [err, setErr] = useState<string | undefined>(undefined);
-  const { state } = PlaceProvider();
+  const { state, loadUpcomingReservations } = PlaceProvider();
   const [start, setStart] = useState<Dayjs>(state.startDate);
   const [end, setEnd] = useState<Dayjs>(state.endDate);
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
@@ -257,6 +257,10 @@ const PlaceCard: React.FC<Props> = (props) => {
                         clearPlaceCard();
                         setOpen(false);
                         getAvailability();
+                        loadUpcomingReservations(
+                          state.upcomingReservationsStartDate,
+                          state.upcomingReservationsEndDate,
+                        );
                         Notifications.show({
                           duration: 5000,
                           title: "You reserved a workspace.",
