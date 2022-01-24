@@ -255,6 +255,10 @@ namespace Converge.Services
                 return new ConvergeSchedule();
             }
             var buildingCapacity = exchangePlacesResponse.ExchangePlacesList.Sum(ws => ws.Capacity);
+            if (buildingCapacity == 0)
+            {
+                return new ConvergeSchedule();
+            }
 
             double reserved = 0;
             foreach (ExchangePlace workspace in exchangePlacesResponse.ExchangePlacesList)

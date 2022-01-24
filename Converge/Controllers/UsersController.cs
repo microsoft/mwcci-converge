@@ -177,7 +177,7 @@ namespace Converge.Controllers
         /// Search Users that match the provided search string
         /// </summary>
         /// <param name="searchString">The string to user for user search</param>
-        /// <param name="queryOptions">query options</param
+        /// <param name="queryOptions">query options</param>
         /// <returns>List of users <see cref="User"/> whose DisplayName/UserPrincipalName starts with input string></returns>
         [HttpGet]
         [Route("search")]
