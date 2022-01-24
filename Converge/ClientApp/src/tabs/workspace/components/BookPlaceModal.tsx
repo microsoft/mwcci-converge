@@ -166,8 +166,8 @@ const BookPlaceModal: React.FC<Props> = (props) => {
     } else if (start.utc().toISOString() <= end.utc().toISOString()) {
       getRoomAvailability(
         place.identity,
-        dayjs(startDay).utc().toISOString(),
-        dayjs(endDay).utc().toISOString(),
+        dayjs(start).utc().toISOString(),
+        dayjs(end).utc().toISOString(),
       ).then(setIsAvailable);
     }
   }, [isAllDay, start, end]);
