@@ -9,7 +9,7 @@ import VenuesToCollaborateResponse from "../types/VenuesToCollaborateResponse";
 import VenueReviewsResponse from "../types/VenueReviewsResponse";
 import VenueDetails from "../types/VenueDetails";
 import getAxiosClient from "./AuthenticationService";
-import createCachedQuery, { CachedQuery } from "../utilities/CachedQuery";
+import Constants from "../utilities/Constants";
 
 export const searchCampusesToCollaborate = async (
   campusesToCollaborateRequest: CampusesToCollaborateRequest,
@@ -34,27 +34,13 @@ export const getVenueDetails = async (
   venueId: string,
 ): Promise<VenueDetails> => {
   const axios = await getAxiosClient();
-  const request = await axios.get<AutoWrapperResponse<VenueDetails>>(`/api/search/venues/${venueId}/details`);
+  const request = await axios.get<AutoWrapperResponse<VenueDetails>>(`/api/search/venues/${venueId}/details`, {
+    cache: {
+      maxAge: Constants.TWO_HOURS_IN_MILLISECONDS,
+    },
+  });
   return request.data.result;
 };
-
-const generateVenueDetailsStoreKey = (
-  venue: VenueDetails,
-) => venue.venueId;
-
-const generateVenueDetailsRetrievalKey = (search: string) => search;
-
-type CachedVenueDetailsQuery = CachedQuery<VenueDetails, void>;
-
-// Function that returns a cached getUserCoordinates function.
-export function createCachedVenueDetailsQuery(): CachedVenueDetailsQuery {
-  return createCachedQuery<VenueDetails>(
-    generateVenueDetailsStoreKey,
-    generateVenueDetailsRetrievalKey,
-    (entities: string[]) => getVenueDetails(entities[0])
-      .then((item) => [item]),
-  );
-}
 
 export const getReviews = async (
   venueId: string,

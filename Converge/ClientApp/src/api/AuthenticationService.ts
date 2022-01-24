@@ -2,7 +2,8 @@
 // Licensed under the MIT License.
 
 import * as microsoftTeams from "@microsoft/teams-js";
-import axios, { AxiosStatic } from "axios";
+import { AxiosInstance } from "axios";
+import { setup } from "axios-cache-adapter";
 
 async function getSSOToken(): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -13,13 +14,22 @@ async function getSSOToken(): Promise<string> {
   });
 }
 
-const getAxiosClient = async (): Promise<AxiosStatic> => {
+let api: AxiosInstance;
+
+const getAxiosClient = async (): Promise<AxiosInstance> => {
   const accessToken = await getSSOToken();
+  if (!api) {
+    // Allow callers to configure caching on a per-endpoint basis
+    api = setup({
+      cache: {
+        maxAge: 0,
+      },
+    });
+    api.defaults.headers.common["Content-Type"] = "application/json";
+  }
+  api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-  axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-  axios.defaults.headers.common["Content-Type"] = "application/json";
-
-  return axios;
+  return api;
 };
 
 export default getAxiosClient;

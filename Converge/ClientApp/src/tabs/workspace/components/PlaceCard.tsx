@@ -22,10 +22,10 @@ import Notifications from "../../../utilities/ToastManager";
 import ImagePlaceholder from "../../../utilities/ImagePlaceholder";
 import PlaceCardStyles from "../styles/PlaceCardStyles";
 import { updateMyPredictedLocation } from "../../../api/meService";
-import { usePlacePhotos } from "../../../providers/PlacePhotosProvider";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import { AddRecentBuildings } from "../../../utilities/RecentBuildingsManager";
 import getPlaceMaxReserved, { getRoomAvailability } from "../../../api/placeService";
+import { getPlacePhotos, PlacePhotosResult } from "../../../api/buildingService";
 
 type Props = {
   place: ExchangePlace,
@@ -53,15 +53,12 @@ const PlaceCard: React.FC<Props> = (props) => {
   const [availability, setAvailability] = useState(0);
   const [isAvailable, setIsAvailable] = useState(false);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [placePhotos, setPlacePhotos] = useState<PlacePhotosResult | undefined>(undefined);
 
-  const [,
-    placePhotos,,
-    getPlacePhotos,
-  ] = usePlacePhotos();
-  const photoUrl = placePhotos?.[0].coverPhoto?.url;
+  const photoUrl = placePhotos?.coverPhoto?.url;
   useEffect(() => {
     if (place.sharePointID) {
-      getPlacePhotos([place.sharePointID]);
+      getPlacePhotos(place.sharePointID).then(setPlacePhotos);
     }
   }, [place.sharePointID]);
 

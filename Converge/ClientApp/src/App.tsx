@@ -19,7 +19,6 @@ import "./app.css";
 import { SearchContextProvider } from "./providers/SearchProvider";
 import { AppSettingProvider } from "./providers/AppSettingsProvider";
 import { TeamsContextProvider } from "./providers/TeamsContextProvider";
-import { PlacePhotosProvider } from "./providers/PlacePhotosProvider";
 import ContextLoader from "./ContextLoader";
 import AppBanner from "./utilities/AppBanner";
 
@@ -37,26 +36,24 @@ const App: React.FC = () => (
         <TeamsThemeProvider>
           <ContextLoader>
             <ConvergeSettingsProvider>
-              <PlacePhotosProvider>
-                <AppBanner />
-                <Router>
-                  <Route
-                    exact
-                    path="/tab"
-                    component={Home}
-                  />
-                  <Route
-                    exact
-                    path="/collaborate"
-                    render={() => (
-                      <SearchContextProvider>
-                        <Collaborate />
-                      </SearchContextProvider>
-                    )}
-                  />
-                  <Route exact path="/workspace" component={Workspace} />
-                </Router>
-              </PlacePhotosProvider>
+              <AppBanner />
+              <Router>
+                <Route
+                  exact
+                  path="/tab"
+                  component={Home}
+                />
+                <Route
+                  exact
+                  path="/collaborate"
+                  render={() => (
+                    <SearchContextProvider>
+                      <Collaborate />
+                    </SearchContextProvider>
+                  )}
+                />
+                <Route exact path="/workspace" component={Workspace} />
+              </Router>
             </ConvergeSettingsProvider>
           </ContextLoader>
         </TeamsThemeProvider>

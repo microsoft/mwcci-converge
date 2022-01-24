@@ -8,8 +8,8 @@ import ExchangePlace, { PhotoType, PlaceType } from "../types/ExchangePlace";
 import ExchangePlacePhoto from "../types/ExchangePlacePhoto";
 import Schedule from "../types/Schedule";
 import UpcomingBuildingsResponse from "../types/UpcomingBuildingsResponse";
-import createCachedQuery, { CachedQuery } from "../utilities/CachedQuery";
 import getAxiosClient from "./AuthenticationService";
+import Constants from "../utilities/Constants";
 
 interface IGetBuildingPlacesRequestParams {
   topCount?: number;
@@ -95,7 +95,7 @@ interface PlaceDetailsQueryParams {
   start: Date,
   end: Date,
 }
-const getPlaceDetails = async (
+export const getPlaceDetails = async (
   id: string,
   {
     start,
@@ -108,60 +108,20 @@ const getPlaceDetails = async (
       start,
       end,
     },
+    cache: {
+      maxAge: Constants.TWO_HOURS_IN_MILLISECONDS,
+    },
   });
   return request.data.result;
 };
 
-const createCacheTimestamp = (date: Date): string => `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}T${date.getHours()}`;
-
-export const generatePlaceDetailsStoreKey = (
-  campus: CampusToCollaborate,
-  {
-    start,
-    end,
-  }: PlaceDetailsQueryParams,
-): string => `${campus.identity}-${createCacheTimestamp(start)}/${createCacheTimestamp(end)}`;
-
-export const generatePlaceDetailsRetrievalKey = (search: string, {
-  start,
-  end,
-}: PlaceDetailsQueryParams): string => `${search}-${createCacheTimestamp(start)}/${createCacheTimestamp(end)}`;
-
-type CachedPlaceDetailsQuery = CachedQuery<CampusToCollaborate, PlaceDetailsQueryParams>;
-
-interface PlacePhotosResult {
+export interface PlacePhotosResult {
   sharePointId: string;
   photos: ExchangePlacePhoto[];
   coverPhoto?: ExchangePlacePhoto;
   floorPlan?: ExchangePlacePhoto;
   allOtherPhotos: ExchangePlacePhoto[];
 }
-
-// Function that returns a cached getUserCoordinates function.
-export function createCachedPlaceDetailsQuery(): CachedPlaceDetailsQuery {
-  return createCachedQuery<CampusToCollaborate, PlaceDetailsQueryParams>(
-    generatePlaceDetailsStoreKey,
-    generatePlaceDetailsRetrievalKey,
-    (entities: string[], params: PlaceDetailsQueryParams) => getPlaceDetails(entities[0], params)
-      .then((item) => [item]),
-  );
-}
-
-const getPlacePhotos = async (
-  sharePointId: string,
-): Promise<ExchangePlacePhoto[]> => {
-  const axios = await getAxiosClient();
-  const request = await axios.get<AutoWrapperResponse<ExchangePlacePhoto[]>>(`/api/places/${sharePointId}/photos`);
-  return request.data.result;
-};
-
-const generatePlacePhotosStoreKey = (
-  photos: PlacePhotosResult,
-): string => photos.sharePointId;
-
-const generatePlacePhotosRetrievalKey = (search: string): string => search;
-
-type CachedPlacePhotosQuery = CachedQuery<PlacePhotosResult>;
 
 function generateResultObject(
   sharePointId: string, photos:
@@ -182,14 +142,14 @@ function generateResultObject(
   };
 }
 
-// Function that returns a cached getUserCoordinates function.
-export function createCachedPlacePhotosQuery(): CachedPlacePhotosQuery {
-  return createCachedQuery<PlacePhotosResult>(
-    generatePlacePhotosStoreKey,
-    generatePlacePhotosRetrievalKey,
-    (entities: string[]) => getPlacePhotos(entities[0])
-      // Add sharepointid to results for caching purposes.
-      .then((photos) => generateResultObject(entities[0], photos))
-      .then((item) => [item]),
-  );
-}
+export const getPlacePhotos = async (
+  sharePointId: string,
+): Promise<PlacePhotosResult> => {
+  const axios = await getAxiosClient();
+  const request = await axios.get<AutoWrapperResponse<ExchangePlacePhoto[]>>(`/api/places/${sharePointId}/photos`, {
+    cache: {
+      maxAge: Constants.TWO_HOURS_IN_MILLISECONDS,
+    },
+  });
+  return generateResultObject(sharePointId, request.data.result);
+};

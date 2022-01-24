@@ -11,11 +11,11 @@ import { useBoolean } from "@fluentui/react-hooks";
 import dayjs from "dayjs";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import VenueToCollaborate from "../../../types/VenueToCollaborate";
-import { createCachedVenueDetailsQuery } from "../../../api/searchService";
+import { getVenueDetails } from "../../../api/searchService";
 import VenueDetails from "../../../types/VenueDetails";
 import CollaborationPlaceResults from "./CollaborationPlaceResults";
 import CollaborationPlaceDetails from "./CollaborationPlaceDetails";
-import { createCachedPlaceDetailsQuery } from "../../../api/buildingService";
+import { getPlaceDetails } from "../../../api/buildingService";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import FavoritesToCollaborateStyles from "../styles/FavoritesToCollaborateStyles";
 import {
@@ -50,8 +50,6 @@ function createVenueToCollaborate(v: VenueDetails): VenueToCollaborate {
     transactions: v.transactions,
   };
 }
-const { getItems: getPlaceDetails } = createCachedPlaceDetailsQuery();
-const { getItems: getVenueDetails } = createCachedVenueDetailsQuery();
 
 const FavoritesToCollaborate: React.FC<Props> = (props) => {
   const classes = FavoritesToCollaborateStyles();
@@ -78,8 +76,7 @@ const FavoritesToCollaborate: React.FC<Props> = (props) => {
     if (convergeSettings?.favoriteCampusesToCollaborate) {
       const placeDetails = await Promise.all(
         convergeSettings.favoriteCampusesToCollaborate
-          .map((v) => getPlaceDetails([v], { start: new Date(), end: dayjs().utc().add(30, "minute").toDate() })
-            .then((results) => results[0])
+          .map((v) => getPlaceDetails(v, { start: new Date(), end: dayjs().utc().add(30, "minute").toDate() })
             .catch(() => {
               setIsError(true);
               const isErrorPlace = 0 as unknown as CampusToCollaborate;
@@ -90,8 +87,7 @@ const FavoritesToCollaborate: React.FC<Props> = (props) => {
     }
     if (convergeSettings?.favoriteVenuesToCollaborate) {
       const venueDetails = await Promise.all(
-        convergeSettings.favoriteVenuesToCollaborate.map((v) => getVenueDetails([v])
-          .then((results) => results[0])
+        convergeSettings.favoriteVenuesToCollaborate.map((v) => getVenueDetails(v)
           .catch(() => {
             setIsError(true);
             const isErrorVenue = 0 as unknown as VenueToCollaborate;
