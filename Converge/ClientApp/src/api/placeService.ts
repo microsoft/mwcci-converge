@@ -2,32 +2,38 @@
 // Licensed under the MIT License.
 
 import AutoWrapperResponse from "../types/AutoWrapperResponse";
-import getAxiosClient from "./AuthenticationService";
+import AuthenticationService from "./AuthenticationService";
 
-const getPlaceMaxReserved = async (
-  id: string, start: string, end: string,
-): Promise<number> => {
-  const axios = await getAxiosClient();
-  const request = await axios.get<AutoWrapperResponse<number>>(`/api/places/${id}/maxReserved`, {
-    params: {
-      start,
-      end,
-    },
-  });
-  return request.data.result;
-};
+export default class PlaceService {
+  private authenticationService: AuthenticationService;
 
-export const getRoomAvailability = async (
-  id: string, start: string, end: string,
-): Promise<boolean> => {
-  const axios = await getAxiosClient();
-  const request = await axios.get<AutoWrapperResponse<boolean>>(`/api/places/${id}/availability`, {
-    params: {
-      start,
-      end,
-    },
-  });
-  return request.data.result;
-};
+  constructor(authenticationService: AuthenticationService) {
+    this.authenticationService = authenticationService;
+  }
 
-export default getPlaceMaxReserved;
+  getPlaceMaxReserved = async (
+    id: string, start: string, end: string,
+  ): Promise<number> => {
+    const axios = await this.authenticationService.getAxiosClient();
+    const request = await axios.get<AutoWrapperResponse<number>>(`/api/places/${id}/maxReserved`, {
+      params: {
+        start,
+        end,
+      },
+    });
+    return request.data.result;
+  };
+
+  getRoomAvailability = async (
+    id: string, start: string, end: string,
+  ): Promise<boolean> => {
+    const axios = await this.authenticationService.getAxiosClient();
+    const request = await axios.get<AutoWrapperResponse<boolean>>(`/api/places/${id}/availability`, {
+      params: {
+        start,
+        end,
+      },
+    });
+    return request.data.result;
+  };
+}

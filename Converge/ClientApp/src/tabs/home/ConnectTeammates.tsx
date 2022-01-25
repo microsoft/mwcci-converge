@@ -27,10 +27,10 @@ import IsThisHelpful from "../../utilities/IsThisHelpful";
 import PrimaryDropdown from "../../utilities/PrimaryDropdown";
 import DatePickerPrimary from "../../utilities/datePickerPrimary";
 import EnterZipcode from "../../utilities/EnterZipCodeDialog";
-import { getConvergeCalendar, setupNewUser } from "../../api/meService";
 import ConvergeSettings from "../../types/ConvergeSettings";
 import { useConvergeSettingsContextProvider } from "../../providers/ConvergeSettingsProvider";
 import ConnectTeammatesStyles from "./styles/ConnectTeammatesStyles";
+import { useApiProvider } from "../../providers/ApiProvider";
 
 type IWidget = {
   id: string;
@@ -38,6 +38,7 @@ type IWidget = {
 }
 
 const ConnectTeammates: React.FC = () => {
+  const { meService } = useApiProvider();
   const { convergeSettings } = useConvergeSettingsContextProvider();
   const classes = ConnectTeammatesStyles();
   const [isError, setIsError] = React.useState(false);
@@ -99,7 +100,7 @@ const ConnectTeammates: React.FC = () => {
   };
 
   const getMyConvergeCalendar = async () => {
-    getConvergeCalendar()
+    meService.getConvergeCalendar()
       .then((ConvergeCalendar) => {
         if (ConvergeCalendar === null || ConvergeCalendar === undefined) {
           setConvergeCalendar(true);
@@ -113,7 +114,8 @@ const ConnectTeammates: React.FC = () => {
     getMyConvergeCalendar();
   }, []);
 
-  const setupNewUserWrapper = (settings: ConvergeSettings): Promise<void> => setupNewUser(settings)
+  const setupNewUserWrapper = (settings: ConvergeSettings):
+  Promise<void> => meService.setupNewUser(settings)
     .then(() => {
       setConvergeCalendar(false);
     })

@@ -24,6 +24,7 @@ import BuildingPlacesStyles from "../styles/BuildingPlacesStyles";
 import PlaceCard from "./PlaceCard";
 import RepeatingBox from "./RepeatingBox";
 import { useProvider as PlaceFilterProvider } from "../../../providers/PlaceFilterProvider";
+import { useApiProvider } from "../../../providers/ApiProvider";
 import IsThisHelpful from "../../../utilities/IsThisHelpful";
 
 interface IPlaceResultSetProps {
@@ -35,13 +36,14 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({ buildingUpn, placeType
   const { theme } = useFluentContext();
   const { state } = PlaceFilterProvider();
   const classes = BuildingPlacesStyles();
+  const { buildingService } = useApiProvider();
   const {
     placesLoading,
     places,
     placesError,
     requestBuildingPlaces,
     hasMore,
-  } = useBuildingPlaces(buildingUpn);
+  } = useBuildingPlaces(buildingService, buildingUpn);
 
   const pageSizeOptions = [
     10, 15, 25, 50,

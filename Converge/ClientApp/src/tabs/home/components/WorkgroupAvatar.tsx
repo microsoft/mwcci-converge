@@ -7,10 +7,10 @@ import {
   Avatar, AcceptIcon, WindowMinimizeIcon, CloseIcon,
   CircleIcon, ShiftActivityIcon, ArrowLeftIcon, Flex,
 } from "@fluentui/react-northstar";
-import { getUserProfile } from "../../../api/userService";
 import PresenceAvailability from "../../../types/PresenceAvailability";
 import WorkgroupAvatarStyles from "../styles/WorkgroupAvatarStyles";
 import ApiPresence from "../../../types/ApiPresence";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   user: MicrosoftGraph.User
@@ -92,6 +92,7 @@ const getAvailabilityBorderColor = (
 };
 
 const WorkgroupAvatar: React.FC<Props> = (props) => {
+  const { userService } = useApiProvider();
   const {
     user,
   } = props;
@@ -102,7 +103,7 @@ const WorkgroupAvatar: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (user.userPrincipalName) {
-      const response = getUserProfile(user.userPrincipalName);
+      const response = userService.getUserProfile(user.userPrincipalName);
       response.then((photo) => {
         const blob = new Blob(photo.userPhoto);
         if (blob.size !== 0) {

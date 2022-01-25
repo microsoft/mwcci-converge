@@ -17,15 +17,12 @@ import AvailabilityChart from "./components/AvailabilityChart";
 import BuildingCapacity from "./components/BuildingCapacity";
 import Schedule from "../../types/Schedule";
 import ExchangePlace, { PlaceType } from "../../types/ExchangePlace";
-import { getBuildingSchedule, getBuildingPlaces, getBuildingByDisplayName } from "../../api/buildingService";
-import { getWorkingHours, createEvent } from "../../api/calendarService";
 import {
   DESCRIPTION,
   UISections, UI_SECTION, USER_INTERACTION,
 } from "../../types/LoggerTypes";
 import { logEvent } from "../../utilities/LogWrapper";
 import createDeepLink from "../../utilities/deepLink";
-import { getMyRecommendation, updateMyPredictedLocation } from "../../api/meService";
 import TravelTimes from "./components/TravelTimes";
 import WorkingStartEnd from "../../types/WorkingStartEnd";
 import IsThisHelpful from "../../utilities/IsThisHelpful";
@@ -41,11 +38,17 @@ import { useAppSettingsProvider } from "../../providers/AppSettingsProvider";
 import AddRecentBuildings from "../../utilities/RecentBuildingsManager";
 import PopupMenuWrapper from "../../utilities/popupMenuWrapper";
 import BuildingBasicInfo from "../../types/BuildingBasicInfo";
+import { useApiProvider } from "../../providers/ApiProvider";
 
 const RECOMMENDED = "My Location";
 
 const BookWorkspace: React.FC = () => {
   const classes = BookWorkspaceStyles();
+  const {
+    calendarService,
+    meService,
+    buildingService,
+  } = useApiProvider();
   const {
     state,
     convergeSettings,
@@ -118,7 +121,7 @@ const BookWorkspace: React.FC = () => {
     setIsError(false);
     let hours = workingHours;
     if (!hours) {
-      hours = await getWorkingHours();
+      hours = await calendarService.getWorkingHours();
       setWorkingHours(hours);
     }
     const startHours = dayjs(hours.start);
@@ -128,7 +131,7 @@ const BookWorkspace: React.FC = () => {
     if (endBuilding.isBefore(startBuilding)) {
       endBuilding = endBuilding.add(1, "day");
     }
-    return getBuildingSchedule(
+    return buildingService.getBuildingSchedule(
       building.identity,
       startBuilding.toISOString(),
       endBuilding.toISOString(),
@@ -137,15 +140,15 @@ const BookWorkspace: React.FC = () => {
       .finally(() => setLoading(false));
   };
 
-  const refreshRecommendation = async () => {
+  const refreshRecommendation = () => {
     setIsError(false);
     const day = dayjs.utc(start);
     setSelectedBuilding(undefined);
-    await getMyRecommendation(day.year(), day.month() + 1, day.date())
-      .then(async (recommendation) => {
+    meService.getMyRecommendation(day.year(), day.month() + 1, day.date())
+      .then((recommendation) => {
         setMyRecommendation(recommendation);
         if (recommendation !== "Remote" && recommendation !== "Out of Office") {
-          await getBuildingByDisplayName(recommendation).then((building) => {
+          buildingService.getBuildingByDisplayName(recommendation).then((building) => {
             if (building) {
               getSchedule(building);
               setSelectedBuilding(building);
@@ -170,7 +173,7 @@ const BookWorkspace: React.FC = () => {
 
   useEffect(() => {
     if (selectedBuilding) {
-      getBuildingPlaces(
+      buildingService.getBuildingPlaces(
         selectedBuilding.identity,
         PlaceType.Space,
         {
@@ -232,7 +235,7 @@ const BookWorkspace: React.FC = () => {
   const refreshRecommended = async () => {
     setLoading(true);
     const day = dayjs.utc(start);
-    getMyRecommendation(day.year(), day.month() + 1, day.date())
+    meService.getMyRecommendation(day.year(), day.month() + 1, day.date())
       .then((recommendation) => {
         setMyRecommendation(recommendation);
         if (recommendation !== "Remote" && recommendation !== "Out of Office") {
@@ -248,7 +251,7 @@ const BookWorkspace: React.FC = () => {
 
   useEffect(() => {
     if (selectedBuilding?.identity) {
-      getBuildingPlaces(selectedBuilding?.identity, PlaceType.Room)
+      buildingService.getBuildingPlaces(selectedBuilding?.identity, PlaceType.Room)
         .then((response) => {
           const place = response.exchangePlacesList.find((ep) => (
             ep.street || ep.city || ep.postalCode || ep.countryOrRegion
@@ -399,7 +402,7 @@ const BookWorkspace: React.FC = () => {
                       startDate = dayjs(start.format("YYYY-MM-DD")).toDate();
                       endDate = dayjs(end.add(1, "day").format("YYYY-MM-DD")).toDate();
                     }
-                    createEvent({
+                    calendarService.createEvent({
                       isAllDay,
                       start: startDate,
                       end: endDate,
@@ -416,7 +419,7 @@ const BookWorkspace: React.FC = () => {
                       showAs: "free" as MicrosoftGraph.FreeBusyStatus,
                     })
                       .then(() => {
-                        updateMyPredictedLocation({
+                        meService.updateMyPredictedLocation({
                           year: dayjs.utc(startDate).year(),
                           month: dayjs.utc(startDate).month() + 1,
                           day: dayjs.utc(startDate).date(),

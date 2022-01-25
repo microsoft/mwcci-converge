@@ -21,6 +21,7 @@ import { AppSettingProvider } from "./providers/AppSettingsProvider";
 import { TeamsContextProvider } from "./providers/TeamsContextProvider";
 import ContextLoader from "./ContextLoader";
 import AppBanner from "./utilities/AppBanner";
+import { ApiProvider } from "./providers/ApiProvider";
 
 initializeIcons();
 dayjs.extend(duration);
@@ -31,34 +32,36 @@ dayjs.extend(timezone);
 
 const App: React.FC = () => (
   <div style={{ background: "#f5f5f5" }}>
-    <AppSettingProvider>
-      <TeamsContextProvider>
-        <TeamsThemeProvider>
-          <ContextLoader>
-            <ConvergeSettingsProvider>
-              <AppBanner />
-              <Router>
-                <Route
-                  exact
-                  path="/tab"
-                  component={Home}
-                />
-                <Route
-                  exact
-                  path="/collaborate"
-                  render={() => (
-                    <SearchContextProvider>
-                      <Collaborate />
-                    </SearchContextProvider>
-                  )}
-                />
-                <Route exact path="/workspace" component={Workspace} />
-              </Router>
-            </ConvergeSettingsProvider>
-          </ContextLoader>
-        </TeamsThemeProvider>
-      </TeamsContextProvider>
-    </AppSettingProvider>
+    <ApiProvider>
+      <AppSettingProvider>
+        <TeamsContextProvider>
+          <TeamsThemeProvider>
+            <ContextLoader>
+              <ConvergeSettingsProvider>
+                <AppBanner />
+                <Router>
+                  <Route
+                    exact
+                    path="/tab"
+                    component={Home}
+                  />
+                  <Route
+                    exact
+                    path="/collaborate"
+                    render={() => (
+                      <SearchContextProvider>
+                        <Collaborate />
+                      </SearchContextProvider>
+                    )}
+                  />
+                  <Route exact path="/workspace" component={Workspace} />
+                </Router>
+              </ConvergeSettingsProvider>
+            </ContextLoader>
+          </TeamsThemeProvider>
+        </TeamsContextProvider>
+      </AppSettingProvider>
+    </ApiProvider>
   </div>
 );
 

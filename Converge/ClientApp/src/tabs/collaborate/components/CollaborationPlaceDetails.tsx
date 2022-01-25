@@ -14,7 +14,6 @@ import VenueToCollaborate from "../../../types/VenueToCollaborate";
 import CampusPlacePanel from "./CampusPlacePanel";
 import NewEventModal from "./NewEventModal";
 import Notifications from "../../../utilities/ToastManager";
-import { createEvent } from "../../../api/calendarService";
 import CalendarEventRequest from "../../../types/CalendarEventRequest";
 import CampusPlaceEventTitle from "../../workspace/components/CampusPlaceEventTitle";
 import VenueEventTitle from "./VenueEventTitle";
@@ -24,9 +23,9 @@ import {
 } from "../../../types/LoggerTypes";
 import CollaborationPlaceDetailsStyles from "../styles/CollaborationPlaceDetailsStyles";
 import { PlaceType } from "../../../types/ExchangePlace";
-import { updateMyPredictedLocation } from "../../../api/meService";
 import { AddRecentBuildings } from "../../../utilities/RecentBuildingsManager";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   isOpen: boolean;
@@ -37,6 +36,7 @@ interface Props {
 }
 
 const CollaborationPlaceDetails: React.FC<Props> = (props) => {
+  const { calendarService, meService } = useApiProvider();
   const classes = CollaborationPlaceDetailsStyles();
   const {
     isOpen,
@@ -199,7 +199,7 @@ const CollaborationPlaceDetails: React.FC<Props> = (props) => {
               { name: VIRALITY_MEASURE, value: ViralityMeasures.CollaboratorCount },
               { name: COLLABORATE_COUNT, value: attendees.length.toString() },
             ]);
-            createEvent(newEvent)
+            calendarService.createEvent(newEvent)
               .then(() => {
                 const newSettings = {
                   ...convergeSettings,
@@ -210,7 +210,7 @@ const CollaborationPlaceDetails: React.FC<Props> = (props) => {
                 };
                 setConvergeSettings(newSettings);
                 if ((place as CampusToCollaborate).type === PlaceType.Space) {
-                  return updateMyPredictedLocation({
+                  return meService.updateMyPredictedLocation({
                     year: dayjs.utc(startDate).year(),
                     month: dayjs.utc(startDate).month() + 1,
                     day: dayjs.utc(startDate).date(),

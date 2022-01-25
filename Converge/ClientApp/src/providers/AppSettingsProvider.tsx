@@ -3,8 +3,8 @@
 
 import React, { createContext, useContext, useEffect } from "react";
 import Settings from "../types/Settings";
-import getAppSettings from "../api/settingsService";
 import usePromise from "../hooks/usePromise";
+import { useApiProvider } from "./ApiProvider";
 
 interface SettingModel {
   appSettingsLoading: boolean;
@@ -15,6 +15,7 @@ interface SettingModel {
 const Context = createContext({} as SettingModel);
 
 const AppSettingProvider: React.FC = ({ children }) => {
+  const { settingsService } = useApiProvider();
   const [
     appSettingsLoading,
     appSettings,
@@ -22,7 +23,7 @@ const AppSettingProvider: React.FC = ({ children }) => {
     waitFor,
   ] = usePromise<Settings>(undefined, true);
 
-  const getSettings = () => waitFor(getAppSettings());
+  const getSettings = () => waitFor(settingsService.getAppSettings());
 
   useEffect(() => {
     getSettings();

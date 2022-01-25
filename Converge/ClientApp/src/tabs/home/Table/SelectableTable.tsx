@@ -39,10 +39,10 @@ import { Teammate, TeammateList, useTeammateProvider } from "../../../providers/
 import WorkgroupAvatar from "../components/WorkgroupAvatar";
 import AvailableTimesCell from "./AvailableTimesCell";
 import UserLocationCell from "./UserLocationCell";
-import { getMultiUserAvailabilityTimes } from "../../../api/userService";
 import TimeLimit from "../../../types/TimeLimit";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import SelectableTableStyles from "../styles/SelectableTableStyles";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 const USER_AVAILABILITY_REQUEST = "USER_AVAILABILITY_REQUEST";
 const USER_AVAILABILITY_RESPONSE = "USER_AVAILABILITY_RESPONSE";
@@ -163,6 +163,7 @@ interface Props {
 }
 
 const SelectableTable: React.FC<Props> = (props) => {
+  const { userService } = useApiProvider();
   const { teammates } = props;
   const {
     convergeSettings,
@@ -275,7 +276,7 @@ const SelectableTable: React.FC<Props> = (props) => {
       .second(0);
     const scheduleStart = scheduleDate.toDate();
     const scheduleEnd = dayjs(scheduleStart).add(1, "day").toDate();
-    getMultiUserAvailabilityTimes(
+    userService.getMultiUserAvailabilityTimes(
       users.map((teammate) => teammate.user.userPrincipalName as string),
       day.year(),
       day.month() + 1,

@@ -10,7 +10,6 @@ import { logEvent } from "../../../utilities/LogWrapper";
 import NewEventModal from "../../collaborate/components/NewEventModal";
 import ExchangePlace from "../../../types/ExchangePlace";
 import { useProvider as PlaceFilterProvider } from "../../../providers/PlaceFilterProvider";
-import { createEvent } from "../../../api/calendarService";
 import Notifications from "../../../utilities/ToastManager";
 import CampusPlaceEventTitle from "./CampusPlaceEventTitle";
 import {
@@ -18,6 +17,7 @@ import {
 } from "../../../types/LoggerTypes";
 import AddRecentBuildings from "../../../utilities/RecentBuildingsManager";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   open: boolean;
@@ -43,6 +43,7 @@ const NewConfRoomEvent:React.FC<Props> = (props) => {
     clearPlaceCard,
     getAvailability,
   } = props;
+  const { calendarService } = useApiProvider();
   const { createReservation, loadUpcomingReservations } = PlaceFilterProvider();
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
   const [subject, setSubject] = useState<string>("");
@@ -103,7 +104,7 @@ const NewConfRoomEvent:React.FC<Props> = (props) => {
           endDate = dayjs(end.add(1, "day").format("YYYY-MM-DD")).toDate();
         }
 
-        createEvent({
+        calendarService.createEvent({
           isAllDay,
           start: startDate,
           end: endDate,

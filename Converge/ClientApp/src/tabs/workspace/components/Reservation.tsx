@@ -12,13 +12,13 @@ import CalendarEvent from "../../../types/CalendarEvent";
 import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
-import { deleteEvent } from "../../../api/calendarService";
 import Notifications from "../../../utilities/ToastManager";
 import ReservationStyles from "../styles/ReservationStyles";
 import {
   useProvider as PlaceFilterProvider,
 } from "../../../providers/PlaceFilterProvider";
 import { logEvent } from "../../../utilities/LogWrapper";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   reservation: CalendarEvent,
@@ -26,6 +26,7 @@ interface Props {
 
 const Reservation: React.FC<Props> = (props) => {
   const { reservation } = props;
+  const { calendarService } = useApiProvider();
   const { cancelReservation } = PlaceFilterProvider();
   const [openCancelDialog, setOpenCancelDialog] = React.useState<boolean>(false);
   const [canceling, setCanceling] = React.useState<boolean>(false);
@@ -54,7 +55,7 @@ const Reservation: React.FC<Props> = (props) => {
         value: "cancel_reservation",
       },
     ]);
-    deleteEvent(reservation.id, message).then(() => {
+    calendarService.deleteEvent(reservation.id, message).then(() => {
       Notifications.show({
         duration: 5000,
         title: "You cancelled a reservation.",

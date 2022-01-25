@@ -12,7 +12,6 @@ import { useBoolean } from "@fluentui/react-hooks";
 import { User } from "@microsoft/microsoft-graph-types";
 import BingMaps from "../../../utilities/BingMaps";
 import { loadBingApi, Microsoft } from "../../../utilities/BingMapLoader";
-import { createUserCoordinateService } from "../../../api/userService";
 import { useSearchContextProvider } from "../../../providers/SearchProvider";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import VenueToCollaborate from "../../../types/VenueToCollaborate";
@@ -27,6 +26,7 @@ import useAsyncRecord from "../../../hooks/useAsyncRecord";
 import { ItemRecord } from "../../../hooks/useRecord";
 import ErrorBoundary from "../../../utilities/ErrorBoundary";
 import { createUserPushpin } from "../../../utilities/Pushpins";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   userRecord: ItemRecord<User>,
@@ -40,10 +40,13 @@ const Map: React.FC<Props> = ({
   setUsersMissingCoordinates,
 }) => {
   const {
+    userService,
+  } = useApiProvider();
+  const {
     convergeSettings,
   } = useConvergeSettingsContextProvider();
   const { teamsContext } = useTeamsContext();
-  const userCoordinateService = useMemo(createUserCoordinateService, []);
+  const userCoordinateService = useMemo(userService.createUserCoordinateService, []);
   const {
     state,
   } = useSearchContextProvider();

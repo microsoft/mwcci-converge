@@ -15,7 +15,8 @@ import {
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import CollaborationCampusPlaceCardStyles from "../styles/CollaborationCampusPlaceCardStyles";
 import { logEvent } from "../../../utilities/LogWrapper";
-import { getPlacePhotos, PlacePhotosResult } from "../../../api/buildingService";
+import { PlacePhotosResult } from "../../../api/buildingService";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 type Props = {
   placeToCollaborate: CampusToCollaborate,
@@ -24,6 +25,7 @@ type Props = {
 
 const CollaborationCampusPlaceCard:React.FC<Props> = (props) => {
   const { placeToCollaborate, onPlaceClick } = props;
+  const { buildingService } = useApiProvider();
   const { convergeSettings } = useConvergeSettingsContextProvider();
   const classes = CollaborationCampusPlaceCardStyles();
   const ammenities = getAmmenities(placeToCollaborate);
@@ -36,7 +38,7 @@ const CollaborationCampusPlaceCard:React.FC<Props> = (props) => {
   useEffect(() => {
     if (placeToCollaborate.sharePointID) {
       setPlacePhotosLoading(true);
-      getPlacePhotos(placeToCollaborate.sharePointID)
+      buildingService.getPlacePhotos(placeToCollaborate.sharePointID)
         .then(setPlacePhotos)
         .catch(() => setPlacePhotosError(true))
         .finally(() => setPlacePhotosLoading(false));

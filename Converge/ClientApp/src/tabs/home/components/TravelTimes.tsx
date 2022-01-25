@@ -5,7 +5,7 @@ import { Flex } from "@fluentui/react-northstar";
 import dayjs from "dayjs";
 import { Icon } from "office-ui-fabric-react";
 import React, { useEffect, useState } from "react";
-import getRoute from "../../../api/routeService";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   start: string,
@@ -14,11 +14,12 @@ interface Props {
 
 const TravelTimes:React.FC<Props> = (props) => {
   const { start, end } = props;
+  const { routeService } = useApiProvider();
   const [driveTime, setDriveTime] = useState("");
   const [transitTime, setTransitTime] = useState("");
   const [isError, setIsError] = useState<boolean>(false);
   useEffect(() => {
-    getRoute(start, end)
+    routeService.getRoute(start, end)
       .then((routeResponse) => {
         setDriveTime(dayjs.duration(routeResponse.driveTravelTimeInSeconds, "seconds").humanize());
         setTransitTime(dayjs.duration(routeResponse.transitTravelTimeInSeconds, "seconds").humanize());

@@ -8,12 +8,6 @@ import { GeoCoordinates } from "@microsoft/microsoft-graph-types";
 import React, {
   useContext, useEffect, useReducer, useState,
 } from "react";
-import {
-  getBuildingsByDistance, getSearchForBuildings, getBuildingsByName,
-} from "../api/buildingService";
-import getSettings, {
-  getFavoritePlaces, getRecentBuildingsBasicDetails, setSettings, setupNewUser,
-} from "../api/meService";
 import BuildingBasicInfo from "../types/BuildingBasicInfo";
 import ConvergeSettings from "../types/ConvergeSettings";
 import UpcomingBuildingsResponse from "../types/UpcomingBuildingsResponse";
@@ -22,6 +16,7 @@ import {
   USER_INTERACTION, UI_SECTION, UISections, DESCRIPTION,
 } from "../types/LoggerTypes";
 import { logEvent } from "../utilities/LogWrapper";
+import { useApiProvider } from "./ApiProvider";
 
 type IBuildingState = {
   buildingsList: BuildingBasicInfo[];
@@ -318,6 +313,10 @@ function favoriteCampusesReducer(state: ExchangePlace[], action: IPlaceAction): 
 }
 
 const ConvergeSettingsProvider: React.FC = ({ children }) => {
+  const {
+    buildingService,
+    meService,
+  } = useApiProvider();
   const [convergeSettings, convergeSettingsDispatch] = useReducer<
     ConvergeSettings | null, ConvergeSettingsAction>(
       convergeSettingsReducer,
@@ -335,7 +334,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
 
   const getConvergeSettings = (): Promise<void> => {
     convergeSettingsDispatch({ type: GET_CONVERGE_SETTINGS_REQUEST });
-    return getSettings()
+    return meService.getSettings()
       .then((settings) => {
         convergeSettingsDispatch(
           { type: GET_CONVERGE_SETTINGS_RESPONSE, convergeSettings: settings },
@@ -343,20 +342,22 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
       });
   };
 
-  const setConvergeSettings = (settings: ConvergeSettings): Promise<void> => setSettings(settings)
+  const setConvergeSettings = (settings: ConvergeSettings): Promise<void> => meService
+    .setSettings(settings)
     .then(() => convergeSettingsDispatch({
       type: SET_CONVERGE_SETTINGS_REQUEST,
       convergeSettings: settings,
     }));
 
-  const setupNewUserWrapper = (settings: ConvergeSettings): Promise<void> => setupNewUser(settings)
+  const setupNewUserWrapper = (settings: ConvergeSettings): Promise<void> => meService
+    .setupNewUser(settings)
     .then(() => {
       convergeSettingsDispatch({ type: SETUP_NEW_USER_RESPONSE, convergeSettings: settings });
     });
 
   const getFavoriteCampusesWrapper = (): Promise<void> => {
     favoriteCampusesDispatch({ type: GET_FAVORITE_CAMPUSES_REQUEST });
-    return getFavoritePlaces()
+    return meService.getFavoritePlaces()
       .then((favs) => {
         favoriteCampusesDispatch({ type: GET_FAVORITE_CAMPUSES_RESPONSE, favoriteCampuses: favs });
       });
@@ -387,7 +388,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
   const loadBuildingsByDistance = (geoCoordinates: GeoCoordinates) => {
     setBuildingListLoading(true);
     setBuildingsLoadingMessage("No nearby results, expanding search.");
-    getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, 10)
+    buildingService.getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, 10)
       .then((response) => {
         if (response.buildingsList.length === 0 && state.buildingsByRadiusDistance < 1000) {
           setBuildingsByDistanceRadius(state.buildingsByRadiusDistance * 10);
@@ -405,7 +406,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
 
   const loadBuildingsByName = () => {
     setBuildingListLoading(true);
-    getBuildingsByName()
+    buildingService.getBuildingsByName()
       .then((response) => {
         dispatch({ type: UPDATE_BUILDINGS_LIST, payload: response });
       })
@@ -415,7 +416,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
 
   const loadMoreBuildingsByDistance = (geoCoordinates: GeoCoordinates, distance: number) => {
     setBuildingListLoading(true);
-    getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, distance)
+    buildingService.getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, distance)
       .then((response) => {
         dispatch({ type: UPDATE_BUILDINGS_LIST, payload: response });
       })
@@ -427,7 +428,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     searchString?: string,
   ) => {
     setBuildingListLoading(true);
-    getSearchForBuildings(searchString).then((data) => {
+    buildingService.getSearchForBuildings(searchString).then((data) => {
       dispatch({
         type: UPDATE_SEARCH_BUILDINGS_LIST,
         payload: data.buildingInfoList,
@@ -465,13 +466,13 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     getConvergeSettings()
       .catch(() => setIsError(true))
       .finally(() => setLoading(false));
-    getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
+    meService.getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
       updateRecentBuildings(basicRecentBuildings);
     });
   }, []);
 
   useEffect(() => {
-    getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
+    meService.getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
       updateRecentBuildings(basicRecentBuildings);
     });
   }, [convergeSettings?.recentBuildingUpns]);

@@ -16,6 +16,7 @@ import {
 import ExchangePlace, { PlaceType } from "../../../types/ExchangePlace";
 import useBuildingPlaces from "../../../hooks/useBuildingPlaces";
 import BuildingBasicInfo from "../../../types/BuildingBasicInfo";
+import { useApiProvider } from "../../../providers/ApiProvider";
 import IsThisHelpful from "../../../utilities/IsThisHelpful";
 
 interface Props {
@@ -26,13 +27,14 @@ interface Props {
 const CustomizedPlaceCollectionAccordian: React.FC<Props> = (props) => {
   const { closestBuilding, favoriteCampuses } = props;
   const { state, updateLocation } = PlaceFilterProvider();
+  const { buildingService } = useApiProvider();
   const {
     placesLoading,
     places,
     placesError,
     requestBuildingPlaces,
     hasMore,
-  } = useBuildingPlaces(closestBuilding.identity);
+  } = useBuildingPlaces(buildingService, closestBuilding.identity);
 
   useEffect(() => {
     requestBuildingPlaces(

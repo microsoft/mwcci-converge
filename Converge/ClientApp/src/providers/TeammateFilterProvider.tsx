@@ -3,16 +3,13 @@
 
 import React, { createContext, useContext, useReducer } from "react";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
-import {
-  getMyList, getPeople, getWorkgroup,
-} from "../api/meService";
-import { searchUsers } from "../api/userService";
 import TimeLimit from "../types/TimeLimit";
 import { logEvent } from "../utilities/LogWrapper";
 import {
   DESCRIPTION, OVERLAP_PERCENTAGE, USER_INTERACTION, ViralityMeasures, VIRALITY_MEASURE,
 } from "../types/LoggerTypes";
 import QueryOption from "../types/QueryOption";
+import { useApiProvider } from "./ApiProvider";
 import { useConvergeSettingsContextProvider } from "./ConvergeSettingsProvider";
 
 export enum TeammateList {
@@ -296,6 +293,7 @@ const reducer = (state: ITeammateState, action: ITeammateAction): ITeammateState
 };
 
 const TeammateFilterProvider: React.FC = ({ children }) => {
+  const { meService, userService } = useApiProvider();
   const { convergeSettings } = useConvergeSettingsContextProvider();
 
   const getInitialTeammatesListSettings = (): TeammateListSettings => {
@@ -343,13 +341,13 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
     let requestMethod;
     switch (list) {
       case TeammateList.Suggested:
-        requestMethod = getPeople;
+        requestMethod = meService.getPeople;
         break;
       case TeammateList.MyList:
-        requestMethod = getMyList;
+        requestMethod = meService.getMyList;
         break;
       case TeammateList.MyOrganization:
-        requestMethod = getWorkgroup;
+        requestMethod = meService.getWorkgroup;
         break;
       default:
         throw new Error("Invalid list type requested.");
@@ -363,7 +361,7 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
       })
         .catch(() => dispatch({ type: TEAMMATES_ERROR }));
     } else {
-      searchUsers(searchString)
+      userService.searchUsers(searchString)
         .then((response) => {
           const payload = response.users.map((teammate) => ({
             user: teammate,
@@ -384,7 +382,7 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
     teammatesPreset?: Teammate[],
   ) => {
     setMoreTeammatesLoading(true);
-    searchUsers(searchString, qOptions)
+    userService.searchUsers(searchString, qOptions)
       .then((data) => {
         const payload = data.users.map((teammate) => ({
           user: teammate,

@@ -13,7 +13,7 @@ import { logEvent } from "../utilities/LogWrapper";
 import {
   UI_SECTION, UISections, USER_INTERACTION, DESCRIPTION, IMPORTANT_ACTION, ImportantActions,
 } from "../types/LoggerTypes";
-import { updateMyPredictedLocation } from "../api/meService";
+import { useApiProvider } from "../providers/ApiProvider";
 import PopupMenuWrapper from "./popupMenuWrapper";
 
 const ChangeLocationModalStyles = makeStyles(() => ({
@@ -55,6 +55,9 @@ const ChangeLocationModal: React.FC<Props> = (props) => {
     date,
     refreshRecommendation,
   } = props;
+  const {
+    meService,
+  } = useApiProvider();
   const [open, setOpen] = useState<boolean>(false);
   const [location, setLocation] = useState<string>(recommendation || "");
   const [loading, setLoading] = useState<boolean>(false);
@@ -87,7 +90,7 @@ const ChangeLocationModal: React.FC<Props> = (props) => {
         campusUpn = building.identity;
       }
     }
-    updateMyPredictedLocation({
+    meService.updateMyPredictedLocation({
       year: day.year(),
       month: day.month() + 1,
       day: day.date(),
@@ -134,7 +137,7 @@ const ChangeLocationModal: React.FC<Props> = (props) => {
           ]);
           setOpen(false);
         }}
-        onConfirm={() => { onConfirmbutton(); }}
+        onConfirm={onConfirmbutton}
         confirmButton={{
           content: "Confirm",
           loading,

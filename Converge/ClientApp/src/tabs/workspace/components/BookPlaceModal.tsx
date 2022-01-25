@@ -14,7 +14,6 @@ import { IComboBox, IComboBoxOption } from "@fluentui/react";
 import TimePicker from "./TimePicker";
 import PlaceCarousel from "./PlaceCarousel";
 import ExchangePlace, { PlaceType } from "../../../types/ExchangePlace";
-import getPlaceMaxReserved, { getRoomAvailability } from "../../../api/placeService";
 import { logEvent } from "../../../utilities/LogWrapper";
 import {
   USER_INTERACTION, UISections, UI_SECTION, DESCRIPTION, IMPORTANT_ACTION, ImportantActions,
@@ -24,8 +23,8 @@ import DatePickerPrimary from "../../../utilities/datePickerPrimary";
 import PlaceAmmenities from "./PlaceAmmenities";
 import BookPlaceModalStyles from "../styles/BookPlaceModalStyles";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
-import { setSettings } from "../../../api/meService";
-import { getPlacePhotos, PlacePhotosResult } from "../../../api/buildingService";
+import { useApiProvider } from "../../../providers/ApiProvider";
+import { PlacePhotosResult } from "../../../api/buildingService";
 
 type Props = {
   place: ExchangePlace,
@@ -57,6 +56,11 @@ const BookPlaceModal: React.FC<Props> = (props) => {
     setIsAllDay,
     isFlexible,
   } = props;
+  const {
+    meService,
+    placeService,
+    buildingService,
+  } = useApiProvider();
   const [maxReserved, setMaxReserved] = useState<number>(0);
   const [isAvailable, setIsAvailable] = useState<boolean>(true);
   const [placePhotos, setPlacePhotos] = useState<PlacePhotosResult | undefined>(undefined);
@@ -154,14 +158,14 @@ const BookPlaceModal: React.FC<Props> = (props) => {
     }
     if (place.type === PlaceType.Space) {
       if (start.utc().toISOString() <= end.utc().toISOString()) {
-        getPlaceMaxReserved(
+        placeService.getPlaceMaxReserved(
           place.identity,
           dayjs(startDay).utc().toISOString(),
           dayjs(endDay).utc().toISOString(),
         ).then(setMaxReserved);
       }
     } else if (start.utc().toISOString() <= end.utc().toISOString()) {
-      getRoomAvailability(
+      placeService.getRoomAvailability(
         place.identity,
         dayjs(start).utc().toISOString(),
         dayjs(end).utc().toISOString(),
@@ -185,7 +189,7 @@ const BookPlaceModal: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (place.sharePointID) {
-      getPlacePhotos(place.sharePointID).then(setPlacePhotos);
+      buildingService.getPlacePhotos(place.sharePointID).then(setPlacePhotos);
     }
   }, [place.sharePointID]);
 
@@ -388,7 +392,7 @@ const BookPlaceModal: React.FC<Props> = (props) => {
                   favoriteCampusesToCollaborate,
                 };
                 setConvergeSettings(newSettings);
-                setSettings(newSettings)
+                meService.setSettings(newSettings)
                   .then(() => {
                     if (!isFavorite) {
                       logEvent(USER_INTERACTION, [

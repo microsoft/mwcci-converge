@@ -9,7 +9,6 @@ import {
   Button,
   ErrorIcon, Loader, Text,
 } from "@fluentui/react-northstar";
-import { searchCampusesToCollaborate } from "../../../api/searchService";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import CollaborationPlaceDetails from "./CollaborationPlaceDetails";
 import CollaborationPlaceResults from "./CollaborationPlaceResults";
@@ -20,6 +19,7 @@ import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import { logEvent } from "../../../utilities/LogWrapper";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   setMapPlaces: (places: (CampusToCollaborate | VenueToCollaborate)[]) => void;
@@ -33,6 +33,7 @@ const RecommendedToCollaborate: React.FC<Props> = (props) => {
     placesLoading,
     setPlacesLoading,
   } = props;
+  const { searchService } = useApiProvider();
   const { teamsContext } = useTeamsContext();
   const classes = RecommendedToCollaborateStyles();
   const [open, setOpen] = useState<boolean>(false);
@@ -47,7 +48,7 @@ const RecommendedToCollaborate: React.FC<Props> = (props) => {
     if (teamsContext?.userPrincipalName) {
       setUserPrincipalName(teamsContext.userPrincipalName);
       setPlacesLoading(true);
-      searchCampusesToCollaborate({
+      searchService.searchCampusesToCollaborate({
         teamMembers: [teamsContext.userPrincipalName],
         startTime: dayjs().utc().add(5, "minutes").toDate(),
         endTime: dayjs().utc().add(35, "minutes").toDate(),
@@ -65,7 +66,7 @@ const RecommendedToCollaborate: React.FC<Props> = (props) => {
   const getRecommendations = () => {
     setIsError(false);
     setPlacesLoading(true);
-    searchCampusesToCollaborate({
+    searchService.searchCampusesToCollaborate({
       teamMembers: [upn],
       startTime: dayjs().utc().add(5, "minutes").toDate(),
       endTime: dayjs().utc().add(35, "minutes").toDate(),

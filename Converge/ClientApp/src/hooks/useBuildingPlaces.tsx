@@ -2,8 +2,9 @@
 // Licensed under the MIT License.
 
 import { useEffect, useState } from "react";
-import { getBuildingPlaces, IExchangePlacesResponse } from "../api/buildingService";
+import BuildingService from "../api/buildingService";
 import ExchangePlace, { PlaceType } from "../types/ExchangePlace";
+import { IExchangePlacesResponse } from "../types/IExchangePlacesResponse";
 import usePromise, { ILoadingState, IPromiseError } from "./usePromise";
 
 interface BuildingPlacesFilterOptions {
@@ -28,6 +29,7 @@ interface IUseBuildingWorkspacesHookReturnType {
 }
 
 function useBuildingPlaces(
+  buildingService: BuildingService,
   buildingUpn?: string,
 ): IUseBuildingWorkspacesHookReturnType {
   const [
@@ -49,7 +51,7 @@ function useBuildingPlaces(
       setPlaces([]);
     }
     if (buildingUpn && placeType !== undefined) {
-      const result = getBuildingPlaces(
+      const result = buildingService.getBuildingPlaces(
         buildingUpn,
         placeType,
         {

@@ -12,14 +12,14 @@ import { Icon } from "office-ui-fabric-react";
 import { logEvent } from "../../../utilities/LogWrapper";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import PlaceAmmenities from "../../workspace/components/PlaceAmmenities";
-import { setSettings } from "../../../api/meService";
 import {
   ImportantActions, IMPORTANT_ACTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import ImagePlaceholder from "../../../utilities/ImagePlaceholder";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import CampusPlacePanelStyles from "../styles/CampusPlacePanelStyles";
-import { getPlacePhotos, PlacePhotosResult } from "../../../api/buildingService";
+import { useApiProvider } from "../../../providers/ApiProvider";
+import { PlacePhotosResult } from "../../../api/buildingService";
 
 interface Props {
   setOpen: (open: boolean) => void;
@@ -28,6 +28,7 @@ interface Props {
 }
 
 const CampusPlacePanel: React.FC<Props> = (props) => {
+  const { meService, buildingService } = useApiProvider();
   const {
     convergeSettings,
     setConvergeSettings,
@@ -56,7 +57,7 @@ const CampusPlacePanel: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (place.sharePointID) {
-      getPlacePhotos(place.sharePointID)
+      buildingService.getPlacePhotos(place.sharePointID)
         .then(setPlacePhotos);
     }
   }, [place.sharePointID]);
@@ -124,7 +125,7 @@ const CampusPlacePanel: React.FC<Props> = (props) => {
                 favoriteCampusesToCollaborate,
               };
               setConvergeSettings(newSettings);
-              setSettings(newSettings)
+              meService.setSettings(newSettings)
                 .then(() => {
                   if (!isFavorite) {
                     logEvent(USER_INTERACTION, [

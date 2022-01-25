@@ -4,7 +4,6 @@
 import { User } from "@microsoft/microsoft-graph-types";
 import { Dayjs } from "dayjs";
 import React, { createContext, useContext, useEffect } from "react";
-import { searchCampusesToCollaborate, searchVenuesToCollaborate } from "../api/searchService";
 import CampusesToCollaborateRequest from "../types/CampusesToCollaborateRequest";
 import CampusesToCollaborateResponse from "../types/CampusesToCollaborateResponse";
 import CampusToCollaborate from "../types/CampusToCollaborate";
@@ -12,6 +11,7 @@ import { CollaborationVenueType, getCollaborationVenueTypeString } from "../type
 import VenuesToCollaborateResponse from "../types/VenuesToCollaborateResponse";
 import VenueToCollaborate from "../types/VenueToCollaborate";
 import useEnhancedReducer from "../utilities/enhancedReducer";
+import { useApiProvider } from "./ApiProvider";
 import { getDefaultTime } from "./PlaceFilterProvider";
 
 const SET_START_TIME = "SET_START_TIME";
@@ -302,6 +302,7 @@ const reducer = (state: ISearchState, action: ISearchAction): ISearchState => {
 };
 
 const SearchContextProvider: React.FC = ({ children }) => {
+  const { searchService } = useApiProvider();
   const [state, dispatch, getState] = useEnhancedReducer(
     reducer,
     { ...iState },
@@ -331,9 +332,9 @@ const SearchContextProvider: React.FC = ({ children }) => {
         closeToUser: searchState.meetUsers.length > 1 ? "" : searchState.meetUsers[0],
         distanceFromSource: searchState.campusSearchRangeInMiles,
       };
-      return searchCampusesToCollaborate(request);
+      return searchService.searchCampusesToCollaborate(request);
     }
-    return searchVenuesToCollaborate({
+    return searchService.searchVenuesToCollaborate({
       teamMembers: userList,
       venueType: getCollaborationVenueTypeString(searchState.venueType as CollaborationVenueType),
       endTime: searchState.endTime.utc().toDate(),
