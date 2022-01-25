@@ -74,12 +74,8 @@ namespace Converge.Services
             {
                 ExchangePlace place = DeserializeHelper.DeserializeExchangePlace(gli.ListItem.Fields.AdditionalData, logger);
                 place.SharePointID = gli.ListItem.Fields.Id;
-
-                if (string.IsNullOrWhiteSpace(place.Building))
-                {
-                    Place targetRoom = appGraphService.GetRoomListById(place.Locality).Result;
-                    place.Building = targetRoom?.DisplayName;
-                }
+                Place targetRoom = appGraphService.GetRoomListById(place.Locality).Result;
+                place.Building = targetRoom?.DisplayName;
 
                 lock (p)
                 {

@@ -94,52 +94,47 @@ namespace Converge.Services
             return sourceGpsCoords;
         }
 
-        private async Task<BasicBuildingsResponse> GetBuildingsBySortRequest(CampusSortRequest buildingSortRequest)
+        private async Task<BasicBuildingsResponse> GetBuildingsByDistance(CampusSortRequest campusSortRequest)
         {
             List<Building> buildingsList = new List<Building>();
 
-            GraphRoomsListResponse roomsListResponse = await appGraphService.GetRoomListsConstrained(buildingSortRequest);
+            GraphExchangePlacesResponse exchangePlacesResponse = await placesService.GetPlacesBySortRequest(campusSortRequest);
+            List<string> buildingUpnList = exchangePlacesResponse.ExchangePlacesList.Select(ep => ep.Locality).Distinct().ToList();
+
+
+            foreach (string buildingUpn in buildingUpnList)
+            {
+                ExchangePlace exchangePlaceModel = exchangePlacesResponse.ExchangePlacesList.FirstOrDefault(ep => ep.Locality == buildingUpn);
+                buildingsList.Add(Building.Instantiate(exchangePlaceModel));
+            }
+
+            //Employed Haversine formula.
+            buildingsList = campusSortRequest.SortBuildingsByDistance(buildingsList);
+
+            return new BasicBuildingsResponse(buildingsList.Select(b => new BuildingBasicInfo(b.Identity, b.DisplayName)).ToList(), null);
+        }
+
+        private async Task<BasicBuildingsResponse> GetBuildingsByName(CampusSortRequest campusSortRequest)
+        {
+            List<Building> buildingsList = new List<Building>();
+
+            GraphRoomsListResponse roomsListResponse = await appGraphService.GetRoomListsConstrained(campusSortRequest);
             var roomsList = roomsListResponse.RoomsList.Where(r => r.AdditionalData != null && r.AdditionalData["emailAddress"] != null).ToList();
             if (roomsList.Count == 0)
             {
                 return new BasicBuildingsResponse(new List<BuildingBasicInfo>());
             }
 
-            GraphExchangePlacesResponse exchangePlacesResponse = await placesService.GetPlacesBySortRequest(buildingSortRequest);
+            return new BasicBuildingsResponse(roomsList.Select(r => new BuildingBasicInfo(r.AdditionalData["emailAddress"].ToString(), r.DisplayName)).ToList(), roomsListResponse.SkipToken);
+        }
 
-            foreach (Place room in roomsList)
+        private async Task<BasicBuildingsResponse> GetBuildingsBySortRequest(CampusSortRequest campusSortRequest)
+        {
+            if (campusSortRequest.SortByType == CampusSortByType.Distance)
             {
-                room.AdditionalData.TryGetValue("emailAddress", out object buildingObject);
-                string buildingEmailAddress = Convert.ToString(buildingObject);
-                if (string.IsNullOrWhiteSpace(buildingEmailAddress))
-                {
-                    continue;
-                }
-                buildingEmailAddress = buildingEmailAddress.Trim();
-
-                //We need the Places list.
-                var exchangePlacesList = exchangePlacesResponse.ExchangePlacesList
-                                            .Where(p => p.Locality.SameAs(buildingEmailAddress)).ToList();
-                //We just need one of the records to consume & set Building info.
-                var exchangePlaceModel = exchangePlacesList.FirstOrDefault();
-                if (exchangePlaceModel != null)
-                {
-                    buildingsList.Add(Building.Instantiate(exchangePlaceModel));
-                }
+                return await GetBuildingsByDistance(campusSortRequest);
             }
-
-            //Now get the buildings sorted by the distance, when requested.
-            if (buildingSortRequest.SortByType == CampusSortByType.Distance)
-            {
-                //Employed Haversine formula.
-                buildingsList = buildingSortRequest.SortBuildingsByDistance(buildingsList);
-            }
-            else
-            {
-                buildingsList = buildingSortRequest.SortByName(buildingsList);
-            }
-
-            return new BasicBuildingsResponse(buildingsList.Select(b => new BuildingBasicInfo(b.Identity, b.DisplayName)).ToList(), roomsListResponse.SkipToken);
+            return await GetBuildingsByName(campusSortRequest);
         }
 
         public async Task<BuildingBasicInfo> GetBuildingByDisplayName(string buildingDisplayName)
