@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Flex, Divider, Text, DropdownItemProps, ShorthandCollection, Provider, Button, Loader, Box,
 } from "@fluentui/react-northstar";
@@ -28,11 +28,15 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
     headerTitle, buildingList, locationBuildingName, buttonTitle, otherOptionsList, maxHeight,
   } = props;
   const {
-    state, setBuildingsByDistanceRadius,
+    state,
+    setBuildingsByDistanceRadius,
+    getRecentBuildings,
+    convergeSettings,
   } = useConvergeSettingsContextProvider();
 
   const classes = BookWorkspaceStyles();
   const location = useLocation();
+  const [recentBuildingsLoading, setRecentBuildingsLoading] = useState(false);
 
   const onClickSeeMore = () => {
     if (state.buildingsByRadiusDistance < 1000) {
@@ -41,6 +45,14 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
       setBuildingsByDistanceRadius(state.buildingsByRadiusDistance + 1000);
     }
   };
+
+  useEffect(() => {
+    if (!state.recentBuildings.length) {
+      setRecentBuildingsLoading(true);
+    }
+    getRecentBuildings()
+      .finally(() => setRecentBuildingsLoading(false));
+  }, [convergeSettings?.recentBuildingUpns]);
 
   return (
     <Provider>
@@ -82,6 +94,7 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
             </>
           </Box>
         )}
+      {location.pathname === "/workspace" && recentBuildingsLoading && <Loader />}
       {location.pathname === "/workspace" && state.recentBuildings.length > 0
         && (
           <Box>

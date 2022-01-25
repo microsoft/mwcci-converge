@@ -48,7 +48,7 @@ interface IConvergeContext {
     searchString?: string,
     presetBuildings?: string[],
     ) => void;
-  updateRecentBuildings: (recentBuildings: BuildingBasicInfo[]) => void;
+  getRecentBuildings: () => Promise<void>;
 }
 
 const ConvergeSettingsContext = React.createContext<IConvergeContext>(
@@ -453,6 +453,10 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     dispatch({ type: UPDATE_RECENT_BUILDINGS, payload: recentBuildings });
   };
 
+  const getRecentBuildings = () => meService
+    .getRecentBuildingsBasicDetails()
+    .then(updateRecentBuildings);
+
   useEffect(() => {
     if (state.buildingsByRadiusDistance !== 10 && convergeSettings?.geoCoordinates) {
       loadMoreBuildingsByDistance(convergeSettings.geoCoordinates, state.buildingsByRadiusDistance);
@@ -466,16 +470,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     getConvergeSettings()
       .catch(() => setIsError(true))
       .finally(() => setLoading(false));
-    meService.getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
-      updateRecentBuildings(basicRecentBuildings);
-    });
   }, []);
-
-  useEffect(() => {
-    meService.getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
-      updateRecentBuildings(basicRecentBuildings);
-    });
-  }, [convergeSettings?.recentBuildingUpns]);
 
   return (
     <ConvergeSettingsContext.Provider
@@ -494,7 +489,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
         setBuildingsListError,
         searchMoreBuildings,
         updateSearchString,
-        updateRecentBuildings,
+        getRecentBuildings,
       }}
     >
       {loading && <Loader />}

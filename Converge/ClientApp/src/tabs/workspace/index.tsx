@@ -16,15 +16,12 @@ const Workspace: React.FC = () => {
   } = useConvergeSettingsContextProvider();
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     getFavoriteCampuses()
       .catch(() => setIsError(true))
       .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    getFavoriteCampuses();
   }, [convergeSettings?.favoriteCampusesToCollaborate]);
 
   if (loading) {
