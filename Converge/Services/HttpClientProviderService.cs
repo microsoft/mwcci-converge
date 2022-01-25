@@ -11,7 +11,6 @@ namespace Converge.Services
 {
     public interface IHttpClientProviderService
     {
-        public HttpClient Set(ITokenAcquisition tokenAcquisition, TimeSpan? timeSpan = null, string mediaType = null);
         HttpClient Set(string authnToken, TimeSpan? timeSpan = null, string mediaType = null);
         HttpClient GetObject();
     }
@@ -60,29 +59,6 @@ namespace Converge.Services
             isAllSet = true;
 
             return httpClient;
-        }
-
-        /// <summary>
-        /// This method will set HttpClient object's properties
-        /// </summary>
-        /// <param name="tokenAcquisition"></param>
-        /// <param name="timeSpan"></param>
-        /// <param name="mediaType"></param>
-        /// <returns></returns>
-        public HttpClient Set(ITokenAcquisition tokenAcquisition, TimeSpan? timeSpan = null, string mediaType = null)
-        {
-            string authnToken;
-
-            try
-            {
-                authnToken = tokenAcquisition.GetAccessTokenForUserAsync(Constant.ScopesToAccessGraphApi).GetAwaiter().GetResult();
-            }
-            catch
-            {
-                throw;
-            }
-
-            return Set(authnToken, timeSpan, mediaType);
         }
 
         /// <summary>

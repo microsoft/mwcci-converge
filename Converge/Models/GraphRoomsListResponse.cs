@@ -10,12 +10,9 @@ namespace Converge.Models
     {
         public List<Place> RoomsList { get; set; }
 
-        public QueryOption SkipToken { get; set; }
-
-        public GraphRoomsListResponse(List<Place> roomsList, QueryOption skipToken)
+        public GraphRoomsListResponse(List<Place> roomsList)
         {
             RoomsList = roomsList;
-            SkipToken = skipToken;
         }
     }
 }

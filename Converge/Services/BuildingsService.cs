@@ -37,25 +37,30 @@ namespace Converge.Services
             principalUserIdentity = userIdentity;
         }
 
-        public async Task<BasicBuildingsResponse> GetBuildings(int? topCount = null, string skipTokenString = null)
+        public async Task<BasicBuildingsResponse> GetBuildingsByName(int? topCount = 10, int? skip = 0)
         {
-            topCount ??= 100;
-
-            BasicBuildingsResponse buildingsResponse = cachePlacesProviderService.GetBuildings(topCount, skipTokenString);
+            BasicBuildingsResponse buildingsResponse = cachePlacesProviderService.GetBuildings(topCount, skip);
             if (buildingsResponse == null)
             {
-                CampusSortRequest buildingSortRequest = new CampusSortRequest(CampusSortByType.DisplayName, topCount.Value, skipTokenString);
+                List<Building> buildingsList = new List<Building>();
 
-                buildingsResponse = await GetBuildingsBySortRequest(buildingSortRequest);
+                GraphRoomsListResponse roomsListResponse = await userGraphService.GetRoomListsByName(topCount, skip);
+                var roomsList = roomsListResponse.RoomsList.Where(r => r.AdditionalData != null && r.AdditionalData["emailAddress"] != null).ToList();
+                if (roomsList.Count == 0)
+                {
+                    buildingsResponse = new BasicBuildingsResponse(new List<BuildingBasicInfo>());
+                }
+
+                buildingsResponse =  new BasicBuildingsResponse(roomsList.Select(r => new BuildingBasicInfo(r.AdditionalData["emailAddress"].ToString(), r.DisplayName)).ToList());
 
                 //Add to Cache.
-                cachePlacesProviderService.AddBuildings(buildingsResponse, topCount, skipTokenString);
+                cachePlacesProviderService.AddBuildings(buildingsResponse, topCount, skip);
             }
 
             return buildingsResponse;
         }
         
-        public async Task<BasicBuildingsResponse> GetBuildings(string sourceGeoCoordinates, double? distanceFromSource)
+        public async Task<BasicBuildingsResponse> GetBuildingsByDistance(string sourceGeoCoordinates, double? distanceFromSource)
         {
             GPSCoordinates sourceGpsCoords = await DetermineSourceGpsCoordinates(sourceGeoCoordinates);
             if (sourceGpsCoords == null)
@@ -67,7 +72,7 @@ namespace Converge.Services
                                                                                 sourceGpsCoords,
                                                                                 distanceFromSource);
 
-            return await GetBuildingsBySortRequest(buildingSortRequest);
+            return await GetBuildingsByDistance(buildingSortRequest);
         }
 
         private async Task<GPSCoordinates> DetermineSourceGpsCoordinates(string sourceGeoCoordinates)
@@ -112,29 +117,6 @@ namespace Converge.Services
             buildingsList = campusSortRequest.SortBuildingsByDistance(buildingsList);
 
             return new BasicBuildingsResponse(buildingsList.Select(b => new BuildingBasicInfo(b.Identity, b.DisplayName)).ToList(), null);
-        }
-
-        private async Task<BasicBuildingsResponse> GetBuildingsByName(CampusSortRequest campusSortRequest)
-        {
-            List<Building> buildingsList = new List<Building>();
-
-            GraphRoomsListResponse roomsListResponse = await appGraphService.GetRoomListsConstrained(campusSortRequest);
-            var roomsList = roomsListResponse.RoomsList.Where(r => r.AdditionalData != null && r.AdditionalData["emailAddress"] != null).ToList();
-            if (roomsList.Count == 0)
-            {
-                return new BasicBuildingsResponse(new List<BuildingBasicInfo>());
-            }
-
-            return new BasicBuildingsResponse(roomsList.Select(r => new BuildingBasicInfo(r.AdditionalData["emailAddress"].ToString(), r.DisplayName)).ToList(), roomsListResponse.SkipToken);
-        }
-
-        private async Task<BasicBuildingsResponse> GetBuildingsBySortRequest(CampusSortRequest campusSortRequest)
-        {
-            if (campusSortRequest.SortByType == CampusSortByType.Distance)
-            {
-                return await GetBuildingsByDistance(campusSortRequest);
-            }
-            return await GetBuildingsByName(campusSortRequest);
         }
 
         public async Task<BuildingBasicInfo> GetBuildingByDisplayName(string buildingDisplayName)
@@ -296,17 +278,16 @@ namespace Converge.Services
             };
         }
 
-        public async Task<BuildingSearchInfo> SearchForBuildings(string searchString, int? topCount = null, string skipTokenString = null)
+        public async Task<BuildingSearchInfo> SearchForBuildings(string searchString, int? topCount = 10, int? skip = 0)
         {
             List<BuildingBasicInfo> buildingsBasicInfoList = new List<BuildingBasicInfo>();
             
             if (string.IsNullOrWhiteSpace(searchString))
             {
-                return new BuildingSearchInfo(buildingsBasicInfoList, null);
+                return new BuildingSearchInfo(buildingsBasicInfoList);
             }
 
-            var skipToken = DeserializeHelper.QueryOption(skipTokenString);
-            GraphRoomsListResponse roomListsResponse = await appGraphService.SearchRoomLists(searchString, topCount, skipToken);
+            GraphRoomsListResponse roomListsResponse = await userGraphService.SearchRoomLists(searchString, topCount, skip);
             foreach (Place room in roomListsResponse.RoomsList)
             {
                 room.AdditionalData.TryGetValue("emailAddress", out object buildingObject);
@@ -320,7 +301,7 @@ namespace Converge.Services
                 buildingsBasicInfoList.Add(buildingBasicInfo);
             }
 
-            return new BuildingSearchInfo(buildingsBasicInfoList, roomListsResponse.SkipToken);
+            return new BuildingSearchInfo(buildingsBasicInfoList);
         }
     }
 }

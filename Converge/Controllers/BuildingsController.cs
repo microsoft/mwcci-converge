@@ -35,16 +35,16 @@ namespace Converge.Controllers
         /// defaulted to first 100 buildings if there is no value on how many records to skip.
         /// </summary>
         /// <param name="topCount">Number of records after the skipCount used to skip the number of records.</param>
-        /// <param name="skipTokenString">Skip-token option as string to get next set of records.</param>
+        /// <param name="skip">The number of records to skip.</param>
         /// <returns>BuildingsResponse: Containing the list of Buildings records and the count of those.</returns>
         [HttpGet]
         [Route("sortByName")]
-        public async Task<ActionResult<BasicBuildingsResponse>> GetBuildings(int? topCount = null, string skipTokenString = null)
+        public async Task<ActionResult<BasicBuildingsResponse>> GetBuildingsByName(int? topCount = 10, int? skip = 0)
         {
             try
             {
                 buildingsService.SetPrincipalUserIdentity(User.Identity);
-                var result = await buildingsService.GetBuildings(topCount, skipTokenString);
+                var result = await buildingsService.GetBuildingsByName(topCount, skip);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -63,12 +63,12 @@ namespace Converge.Controllers
         /// <returns>BuildingsResponse: Containing the list of Buildings records and the count of those.</returns>
         [HttpGet]
         [Route("sortByDistance")]
-        public async Task<ActionResult<BasicBuildingsResponse>> GetBuildings(string sourceGeoCoordinates, double? distanceFromSource)
+        public async Task<ActionResult<BasicBuildingsResponse>> GetBuildingsByDistance(string sourceGeoCoordinates, double? distanceFromSource)
         {
             try
             {
                 buildingsService.SetPrincipalUserIdentity(User.Identity);
-                var result = await buildingsService.GetBuildings(sourceGeoCoordinates, distanceFromSource);
+                var result = await buildingsService.GetBuildingsByDistance(sourceGeoCoordinates, distanceFromSource);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -254,11 +254,11 @@ namespace Converge.Controllers
 
         [HttpGet]
         [Route("searchForBuildings/{searchString}")]
-        public async Task<ActionResult<BuildingSearchInfo>> SearchForBuildings(string searchString, int? topCount = null, string skipToken = null)
+        public async Task<ActionResult<BuildingSearchInfo>> SearchForBuildings(string searchString, int? topCount = 10, int? skip = 0)
         {
             try
             {
-                return await buildingsService.SearchForBuildings(searchString, topCount, skipToken);
+                return await buildingsService.SearchForBuildings(searchString, topCount, skip);
             }
             catch (Exception ex)
             {

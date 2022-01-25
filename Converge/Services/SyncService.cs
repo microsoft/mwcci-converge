@@ -15,7 +15,10 @@ namespace Converge.Services
         private readonly TelemetryService telemetryService;
         private readonly AppGraphService appGraphService;
         private readonly SearchBingMapsService searchBingMapsService;
-        public SyncService(TelemetryService telemetryService, AppGraphService appGraphService, SearchBingMapsService searchBingMapsSvc)
+        public SyncService(
+            TelemetryService telemetryService, 
+            AppGraphService appGraphService, 
+            SearchBingMapsService searchBingMapsSvc)
         {
             this.telemetryService = telemetryService;
             this.appGraphService = appGraphService;
@@ -30,7 +33,7 @@ namespace Converge.Services
         {
             try
             {
-                List<Place> roomLists = await appGraphService.GetRoomLists();
+                List<Place> roomLists = await appGraphService.GetAllRoomLists();
                 List<GraphPlace> allGraphPlaces = new List<GraphPlace>();
                 foreach (Place roomList in roomLists)
                 {

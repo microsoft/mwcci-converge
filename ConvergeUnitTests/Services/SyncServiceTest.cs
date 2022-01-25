@@ -23,7 +23,7 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            appGraphService.Setup(x => x.GetRoomLists()).Returns(() => Task.FromResult(new List<Place>()));
+            appGraphService.Setup(x => x.GetAllRoomLists()).Returns(() => Task.FromResult(new List<Place>()));
             SyncService syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
 
             // Act
@@ -40,7 +40,7 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            appGraphService.Setup(x => x.GetRoomLists()).Returns(() => Task.FromResult(new List<Place>
+            appGraphService.Setup(x => x.GetAllRoomLists()).Returns(() => Task.FromResult(new List<Place>
                 {
                     It.IsAny<Place>()
                 }));
@@ -68,7 +68,7 @@ namespace ConvergeUnitTests.Services
             Place room1 = JsonConvert.DeserializeObject<Place>($"{{ \"emailAddress\": \"{testRoomListEmail1}\" }}");
             Place room2 = JsonConvert.DeserializeObject<Place>($"{{ \"emailAddress\": \"{testRoomListEmail2}\" }}");
 
-            appGraphService.Setup(x => x.GetRoomLists()).Returns(() => Task.FromResult(new List<Place>
+            appGraphService.Setup(x => x.GetAllRoomLists()).Returns(() => Task.FromResult(new List<Place>
                 {
                     room1,
                     room2

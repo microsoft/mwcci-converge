@@ -82,6 +82,67 @@ namespace Converge.Services
                 .GetAsync();
         }
 
+        public async Task<GraphRoomsListResponse> GetRoomListsByName(int? top = 10, int? skip = 0)
+        {
+            var placesUrl = graphServiceClient.Places.AppendSegmentToRequestUrl($"microsoft.graph.roomList");
+            var placesCollPage = await new GraphServicePlacesCollectionRequestBuilder(placesUrl, graphServiceClient)
+                .Request()
+                .OrderBy("displayName")
+                .Header("ConsistencyLevel", "Eventual")
+                .Top(top ?? 10)
+                .Skip(skip ?? 0)
+                .GetAsync();
+
+            List<Place> placeList = placesCollPage.CurrentPage as List<Place>;
+
+            return new GraphRoomsListResponse(placeList);
+        }
+
+        public async Task<GraphRoomsListResponse> SearchRoomLists(string searchString, int? topCount = 10, int? skip = 0)
+        {
+            var placesUrl = graphServiceClient.Places.AppendSegmentToRequestUrl("microsoft.graph.roomList");
+
+            //Extending on the search by transforming the search-string to all-lower-case, ALL-UPPER-CASE and also to Proper/Pascal-case.
+            //Eg. "San FRANcisco" transformed to "san francisco", "SAN FRANCISCO" and "San Francisco", besides search for the actual string.
+            string allLowerCase = searchString.ToLower();
+            string allUpperCase = searchString.ToUpper();
+            string properCase = searchString;
+            string[] multiWords = searchString.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var word in multiWords)
+            {
+                var pascalCase = new StringBuilder(word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower());
+                properCase = properCase.Replace(word, pascalCase.ToString(), StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            //Search for actual-string, all-lower-case, ALL-UPPER-CASE and Proper/Pascal-case.
+            StringBuilder predicateBuilder = new StringBuilder($"emailAddress ne ''");
+            predicateBuilder.Append($" and (");
+            predicateBuilder.Append($"contains(displayName, '{searchString}')");
+            predicateBuilder.Append($" or contains(displayName, '{properCase}')");
+            predicateBuilder.Append($" or contains(displayName, '{allLowerCase}')");
+            predicateBuilder.Append($" or contains(displayName, '{allUpperCase}')");
+            predicateBuilder.Append($" or contains(address/city, '{searchString}')");
+            predicateBuilder.Append($" or contains(address/city, '{properCase}')");
+            predicateBuilder.Append($" or contains(address/city, '{allLowerCase}')");
+            predicateBuilder.Append($" or contains(address/city, '{allUpperCase}')");
+            predicateBuilder.Append($")");
+
+
+            //Now lets build the request.
+            var placesCollRequestBuilder = new GraphServicePlacesCollectionRequestBuilder(placesUrl, graphServiceClient);
+            var placesCollPage = await placesCollRequestBuilder.Request().Header("ConsistencyLevel", "Eventual")
+                                                    .Filter(predicateBuilder.ToString())
+                                                    .OrderBy("displayName")
+                                                    .Top(topCount.Value)
+                                                    .Skip(skip.Value)
+                                                    .GetAsync();
+
+            List<Place> placeList = placesCollPage.CurrentPage as List<Place>;
+            placeList = placeList.Where(r => r.AdditionalData != null && r.AdditionalData["emailAddress"] != null).ToList();
+
+            return new GraphRoomsListResponse(placeList);
+        }
+
         public async Task<WorkingHours> GetMyWorkingHours()
         {
             string mailboxSettingsUrl = graphServiceClient.Me.AppendSegmentToRequestUrl("mailboxSettings/workingHours");
