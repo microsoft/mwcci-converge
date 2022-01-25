@@ -162,7 +162,6 @@ const ConnectTeammates: React.FC = () => {
         headerContent="Connect with teammates"
         descriptionContent="Improve team collaboration by spending time with people in your network"
         gridArea="ConnectTeammates"
-        height="95vh"
         showCallOut
         widgetActions={widget}
         handleCalloutItemClick={openEnterZipCodeDialog}

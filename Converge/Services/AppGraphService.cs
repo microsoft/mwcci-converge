@@ -478,6 +478,29 @@ namespace Converge.Services
             return new GraphRoomsListResponse(placeList, skipToken);
         }
 
+        public async Task<List<Place>> GetRoomListsByDisplayName(List<string> roomListsDisplayNames)
+        {
+            StringBuilder predicateBuilder = new StringBuilder();
+            for (int index = 0; index < roomListsDisplayNames.Count; ++index)
+            {
+                predicateBuilder.Append($"displayName eq '{roomListsDisplayNames[index]}'");
+                if (index + 1 < roomListsDisplayNames.Count)
+                {
+                    predicateBuilder.Append(" or ");
+                }
+            }
+
+            var placesUrl = appGraphServiceClient.Places.AppendSegmentToRequestUrl("microsoft.graph.roomList");
+            var placesCollPage = await new GraphServicePlacesCollectionRequestBuilder(placesUrl, appGraphServiceClient)
+                                                                        .Request()
+                                                                        .Filter(predicateBuilder.ToString())
+                                                                        .OrderBy("displayName")
+                                                                        .GetAsync();
+
+            List<Place> placesList = placesCollPage.CurrentPage as List<Place>;
+            return placesList;
+        }
+
         public async Task<Place> GetRoomListById(string roomListIdentity)
         {
             List<Place> places = await GetRoomListsCollectionByIds(new List<string> { roomListIdentity });

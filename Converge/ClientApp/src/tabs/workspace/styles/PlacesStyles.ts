@@ -12,6 +12,12 @@ const PlacesStyles = makeStyles(() => ({
   isThisHelpful: {
     margin: "2.5em 0 0",
   },
+  placeCardBox: {
+    height: "49vh",
+    overflowX: "auto",
+  },
+  cardBox: {
+  },
 }));
 
 export default PlacesStyles;

@@ -16,6 +16,7 @@ import {
 import ExchangePlace, { PlaceType } from "../../../types/ExchangePlace";
 import useBuildingPlaces from "../../../hooks/useBuildingPlaces";
 import BuildingBasicInfo from "../../../types/BuildingBasicInfo";
+import IsThisHelpful from "../../../utilities/IsThisHelpful";
 
 interface Props {
   closestBuilding: BuildingBasicInfo;
@@ -214,6 +215,9 @@ const CustomizedPlaceCollectionAccordian: React.FC<Props> = (props) => {
         defaultActiveIndex={newCustomizedPanels.map((p, i) => i)}
         onActiveIndexChange={handleCustomizedAccordionChange}
       />
+      <Box>
+        <IsThisHelpful logId="3938cd30" sectionName={UISections.PlaceResults} />
+      </Box>
     </Box>
   );
 };

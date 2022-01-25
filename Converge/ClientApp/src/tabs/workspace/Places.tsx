@@ -14,7 +14,6 @@ import PlaceTypeFilter from "./components/PlaceTypeFilter";
 import FeatureFilter from "./components/FeatureFilter";
 import { useProvider as PlaceProvider } from "../../providers/PlaceFilterProvider";
 import { deserializeSubEntityId } from "../../utilities/deepLink";
-import IsThisHelpful from "../../utilities/IsThisHelpful";
 import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../types/LoggerTypes";
@@ -193,9 +192,6 @@ const Places: React.FC<Props> = (props) => {
       )}
       {convergeState.buildingListLoading && <Loader />}
 
-      <Box className={classes.isThisHelpful}>
-        <IsThisHelpful logId="3938cd30" sectionName={UISections.PlaceResults} />
-      </Box>
     </DisplayBox>
   );
 };

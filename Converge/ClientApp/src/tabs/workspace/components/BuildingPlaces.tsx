@@ -24,6 +24,7 @@ import BuildingPlacesStyles from "../styles/BuildingPlacesStyles";
 import PlaceCard from "./PlaceCard";
 import RepeatingBox from "./RepeatingBox";
 import { useProvider as PlaceFilterProvider } from "../../../providers/PlaceFilterProvider";
+import IsThisHelpful from "../../../utilities/IsThisHelpful";
 
 interface IPlaceResultSetProps {
   buildingUpn: string;
@@ -70,9 +71,6 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({ buildingUpn, placeType
   return (
     <Flex
       column
-      styles={{
-        height: "240px",
-      }}
     >
       <Flex space="between">
         <Flex>
@@ -162,6 +160,9 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({ buildingUpn, placeType
           )}
         </Flex>
       </Await>
+      <Box className={classes.isThisHelpful}>
+        <IsThisHelpful logId="3938cd30" sectionName={UISections.PlaceResults} />
+      </Box>
     </Flex>
   );
 };

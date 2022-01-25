@@ -16,6 +16,9 @@ const BuildingPlacesStyles = makeStyles(() => ({
       overflowX: "hidden",
     },
   },
+  isThisHelpful: {
+    marginBottom: "2rem",
+  },
 }));
 
 export default BuildingPlacesStyles;

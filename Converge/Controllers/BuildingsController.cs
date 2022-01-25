@@ -79,6 +79,27 @@ namespace Converge.Controllers
         }
 
         /// <summary>
+        /// Get Building details by given display-name of Building.
+        /// </summary>
+        /// <param name="buildingDisplayName">Building-name</param>
+        /// <returns>Building and its details</returns>
+        [HttpGet]
+        [Route("buildingByName/{buildingDisplayName}")]
+        public async Task<ActionResult<BuildingBasicInfo>> GetBuildingByDisplayName(string buildingDisplayName)
+        {
+            try
+            {
+                var result = await buildingsService.GetBuildingByDisplayName(buildingDisplayName);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error occurred while getting the Building details for display-name: {buildingDisplayName}.");
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Returns all the Conference-rooms belonging to the Building referenced using its UPN, supporting Pagination, 
         /// defaulted to first 100 Conference rooms if there is no value on how many records to skip.
         /// </summary>

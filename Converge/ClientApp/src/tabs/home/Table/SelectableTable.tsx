@@ -344,7 +344,7 @@ const SelectableTable: React.FC<Props> = (props) => {
         }}
       >
         <ResponsiveTableContainer columns={responsiveColumnsConfig}>
-          <Table aria-label="Selectable table" accessibility={gridNestedBehavior}>
+          <Table aria-label="Selectable table" accessibility={gridNestedBehavior} className={classes.tableheight}>
             <Table.Row
               header
               accessibility={gridRowBehavior}

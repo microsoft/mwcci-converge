@@ -142,6 +142,29 @@ namespace Converge.Services
             return new BasicBuildingsResponse(buildingsList.Select(b => new BuildingBasicInfo(b.Identity, b.DisplayName)).ToList(), roomsListResponse.SkipToken);
         }
 
+        public async Task<BuildingBasicInfo> GetBuildingByDisplayName(string buildingDisplayName)
+        {
+            BuildingBasicInfo buildingBasicInfo = null;
+
+            var buildingsDisplayNamesList = new List<string>() { buildingDisplayName };
+            List<Place> roomsList = await appGraphService.GetRoomListsByDisplayName(buildingsDisplayNamesList);
+            if (roomsList == null || roomsList.Count != 1)
+            {
+                return buildingBasicInfo;
+            }
+
+            roomsList[0].AdditionalData.TryGetValue("emailAddress", out object buildingObject);
+            string buildingEmailAddress = Convert.ToString(buildingObject);
+            if (string.IsNullOrWhiteSpace(buildingEmailAddress))
+            {
+                return buildingBasicInfo;
+            }
+            buildingEmailAddress = buildingEmailAddress.Trim();
+
+
+            return new BuildingBasicInfo(buildingEmailAddress, buildingDisplayName); ;
+        }
+
         public async Task<List<BuildingBasicInfo>> GetBuildingsBasicInfo(List<string> buildingsUpnList)
         {
             List<BuildingBasicInfo> buildingsBasicInfoList = new List<BuildingBasicInfo>();

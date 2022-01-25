@@ -26,6 +26,7 @@ interface Props {
   placeholderTitle: string,
   buttonTitle: string,
   maxHeight: string,
+  clearTextBox?: (isValid:boolean) => void;
 }
 
 const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
@@ -51,6 +52,7 @@ const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
     const selectedBuilding = state.buildingsList.find((b) => b.displayName === bldg);
     updateLocation(selectedBuilding?.identity);
     props.handleDropdownChange(bldg);
+    props.clearTextBox?.(false);
   };
 
   useEffect(() => {
@@ -67,6 +69,7 @@ const PopupMenuWrapper: React.FunctionComponent<Props> = (props) => {
     setSelectedBuildingName(searchText || "");
     updateLocation(undefined);
     updateSearchString(searchText);
+    props.clearTextBox?.(true);
   };
 
   return (

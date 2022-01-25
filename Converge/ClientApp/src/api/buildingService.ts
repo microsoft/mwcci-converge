@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import AutoWrapperResponse from "../types/AutoWrapperResponse";
+import BuildingBasicInfo from "../types/BuildingBasicInfo";
 import BuildingSearchInfo from "../types/BuildingSearchInfo";
 import CampusToCollaborate from "../types/CampusToCollaborate";
 import ExchangePlace, { PhotoType, PlaceType } from "../types/ExchangePlace";
@@ -36,6 +37,17 @@ export const getBuildingPlaces = async (
   const request = await axios.get<AutoWrapperResponse<IExchangePlacesResponse>>(
     `/api/buildings/${buildingUpn}/${type}s`, {
       params,
+    },
+  );
+  return request.data.result;
+};
+
+export const getBuildingByDisplayName = async (
+  buildingDisplayName?:string,
+): Promise<BuildingBasicInfo> => {
+  const axios = await getAxiosClient();
+  const request = await axios.get<AutoWrapperResponse<BuildingBasicInfo>>(
+    `/api/buildings/buildingByName/${buildingDisplayName}`, {
     },
   );
   return request.data.result;

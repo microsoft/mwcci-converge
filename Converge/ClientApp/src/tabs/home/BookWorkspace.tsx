@@ -17,7 +17,7 @@ import AvailabilityChart from "./components/AvailabilityChart";
 import BuildingCapacity from "./components/BuildingCapacity";
 import Schedule from "../../types/Schedule";
 import ExchangePlace, { PlaceType } from "../../types/ExchangePlace";
-import { getBuildingSchedule, getBuildingPlaces } from "../../api/buildingService";
+import { getBuildingSchedule, getBuildingPlaces, getBuildingByDisplayName } from "../../api/buildingService";
 import { getWorkingHours, createEvent } from "../../api/calendarService";
 import {
   DESCRIPTION,
@@ -142,14 +142,15 @@ const BookWorkspace: React.FC = () => {
     const day = dayjs.utc(start);
     setSelectedBuilding(undefined);
     await getMyRecommendation(day.year(), day.month() + 1, day.date())
-      .then((recommendation) => {
+      .then(async (recommendation) => {
         setMyRecommendation(recommendation);
         if (recommendation !== "Remote" && recommendation !== "Out of Office") {
-          const building = buildingsList.find((b) => b.displayName === recommendation);
-          if (building) {
-            getSchedule(building);
-            setSelectedBuilding(building);
-          }
+          await getBuildingByDisplayName(recommendation).then((building) => {
+            if (building) {
+              getSchedule(building);
+              setSelectedBuilding(building);
+            }
+          }).catch(() => setIsError(true));
         }
       }).catch(() => setIsError(true));
   };
@@ -217,6 +218,16 @@ const BookWorkspace: React.FC = () => {
     }
     setLoading(false);
   };
+  const onClearTextBox = async (isValid:boolean) => {
+    if (isValid === true) {
+      setMyRecommendation(myRecommendation);
+      const building = buildingsList.find((b) => b.displayName === myRecommendation);
+      if (building) {
+        getSchedule(building);
+        setSelectedBuilding(building);
+      }
+    }
+  };
 
   const refreshRecommended = async () => {
     setLoading(true);
@@ -259,7 +270,7 @@ const BookWorkspace: React.FC = () => {
       <Box className={classes.root}>
         <Flex gap="gap.small" wrap className={classes.actions}>
           <Box className={classes.halfWidthDropDown}>
-            <PopupMenuWrapper headerTitle={RECOMMENDED} handleDropdownChange={handleDropdownChange} buildingList={buildingsList.map((x) => x.displayName)} locationBuildingName={myRecommendation} width="320px" marginContent="5.1rem" value={selectedBuildingName === RECOMMENDED ? "" : selectedBuildingName} placeholderTitle={RECOMMENDED} buttonTitle="See more" otherOptionsList={[]} maxHeight="320px" />
+            <PopupMenuWrapper headerTitle={RECOMMENDED} handleDropdownChange={handleDropdownChange} buildingList={buildingsList.map((x) => x.displayName)} locationBuildingName={myRecommendation} width="320px" marginContent="5.1rem" value={selectedBuildingName === RECOMMENDED ? "" : selectedBuildingName} placeholderTitle={RECOMMENDED} buttonTitle="See more" otherOptionsList={[]} maxHeight="320px" clearTextBox={onClearTextBox} />
           </Box>
           <Box className={classes.datePickerStyles}>
             <DatePickerPrimary
