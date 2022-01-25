@@ -276,11 +276,7 @@ const ConnectTeammates: React.FC = () => {
               className={classes.header}
             >
               <PrimaryDropdown
-                items={[
-                  TeammateList.Suggested,
-                  TeammateList.MyOrganization,
-                  TeammateList.MyList,
-                  TeammateList.All]}
+                items={state.teammatesDropdown}
                 handleDropdownChange={handleDropdownChange}
                 value={state.list}
                 width="168px"
