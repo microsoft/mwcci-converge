@@ -15,7 +15,7 @@
     "outline": "outline.png"
   },
   "name": {
-    "short": "Converge%NAME_SUFFIX%",
+    "short": "Converge%AppEnvironment%",
     "full": "Go further together."
   },
   "description": {

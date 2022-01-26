@@ -59,9 +59,7 @@
   },
   "scripts": {
     "start": "set HTTPS=true&&node ./buildManifest.js --environment dev&&npx office-addin-dev-certs install&&react-scripts start",
-    "build": "node ./buildManifest.js --environment prod && react-scripts build",
-    "build-stage": "node ./buildManifest.js --environment stage && react-scripts build",
-    "build-test": "node ./buildManifest.js --environment test && react-scripts build",
+    "build": "node ./buildManifest.js && react-scripts build",
     "test": "set CI=true && react-scripts test",
     "eject": "react-scripts eject"
   },

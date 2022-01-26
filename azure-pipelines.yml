@@ -2,6 +2,7 @@
 # AzureAd.TenantId*: Id of Tenant that app belongs to
 # AzureAd.ClientId*: ClientId of converge azure app service
 # AzureAd.Audience*: Azure AD Audience of token being authenticated in the format api://{hostname}/{clientId} 
+# AzureAd.Instance*: Use https://login.microsoftonline.com/
 # SharePointSiteId*: Graph Id of the SharePoint site
 # SharePointListId*: Name or ID of SharePoint list where Exchange Places are being stored
 # SharePointPhotoListId*: Name or ID of SharePoint list where Place photos are stored
@@ -11,7 +12,7 @@
 # JobSchedules.PredictorSchedule*: Crontab expression for how often to check users' calendars and predict where they will be in the in the next number of days specified by the MaxPredictionWindow
 # JobSchedules.SyncPlacesSchedule*: Crontab expression for how often to sync SharePoint with the workspace and conference room data from Exchange
 # FilterUsersByTitle: Adding this string will ensure that users with the given title are filtered out of result sets
-# AppEnvironment: Environment the app is running in
+# AppEnvironment: Environment the app is running in - this is a required setting for all builds other than the production instance.
 # AppBannerMessage: Message displayed at the top of the site on all pages
 # NewPlacesAvailableByDefault: true/false field representing whether New Places are available by default
 # BuildParameters.ConnectedServiceName: Id of the service connection created with the subscription you're using in Azure.
