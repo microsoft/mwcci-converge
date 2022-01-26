@@ -68,11 +68,25 @@ namespace Converge.Services
                 return new BasicBuildingsResponse(new List<BuildingBasicInfo>());
             }
 
-            CampusSortRequest buildingSortRequest = new CampusSortRequest(CampusSortByType.Distance,
+            CampusSortRequest campusSortRequest = new CampusSortRequest(CampusSortByType.Distance,
                                                                                 sourceGpsCoords,
                                                                                 distanceFromSource);
 
-            return await GetBuildingsByDistance(buildingSortRequest);
+            List<Building> buildingsList = new List<Building>();
+
+            GraphExchangePlacesResponse exchangePlacesResponse = await placesService.GetPlacesBySortRequest(campusSortRequest);
+            List<string> buildingUpnList = exchangePlacesResponse.ExchangePlacesList.Select(ep => ep.Locality).Distinct().ToList();
+
+            foreach (string buildingUpn in buildingUpnList)
+            {
+                ExchangePlace exchangePlaceModel = exchangePlacesResponse.ExchangePlacesList.FirstOrDefault(ep => ep.Locality == buildingUpn);
+                buildingsList.Add(Building.Instantiate(exchangePlaceModel));
+            }
+
+            //Employed Haversine formula.
+            buildingsList = campusSortRequest.SortBuildingsByDistance(buildingsList);
+
+            return new BasicBuildingsResponse(buildingsList.Select(b => new BuildingBasicInfo(b.Identity, b.DisplayName)).ToList());
         }
 
         private async Task<GPSCoordinates> DetermineSourceGpsCoordinates(string sourceGeoCoordinates)
@@ -97,26 +111,6 @@ namespace Converge.Services
             }
 
             return sourceGpsCoords;
-        }
-
-        private async Task<BasicBuildingsResponse> GetBuildingsByDistance(CampusSortRequest campusSortRequest)
-        {
-            List<Building> buildingsList = new List<Building>();
-
-            GraphExchangePlacesResponse exchangePlacesResponse = await placesService.GetPlacesBySortRequest(campusSortRequest);
-            List<string> buildingUpnList = exchangePlacesResponse.ExchangePlacesList.Select(ep => ep.Locality).Distinct().ToList();
-
-
-            foreach (string buildingUpn in buildingUpnList)
-            {
-                ExchangePlace exchangePlaceModel = exchangePlacesResponse.ExchangePlacesList.FirstOrDefault(ep => ep.Locality == buildingUpn);
-                buildingsList.Add(Building.Instantiate(exchangePlaceModel));
-            }
-
-            //Employed Haversine formula.
-            buildingsList = campusSortRequest.SortBuildingsByDistance(buildingsList);
-
-            return new BasicBuildingsResponse(buildingsList.Select(b => new BuildingBasicInfo(b.Identity, b.DisplayName)).ToList(), null);
         }
 
         public async Task<BuildingBasicInfo> GetBuildingByDisplayName(string buildingDisplayName)

@@ -27,6 +27,11 @@ namespace Converge.Services
         private const string keyPlacesUpnInfo = "PlacesUpnInfo";
         private const string keySkipTokens = "SkipTokens";
 
+        /// <summary>
+        /// Left empty for testing purposes.
+        /// </summary>
+        public CachePlacesProviderService() { }
+
         public CachePlacesProviderService(IConfiguration paramConfiguration,
                                             ILogger<CachePlacesProviderService> paramLogger,
                                             IMemoryCache paramBuildingsPlacesCache)
@@ -51,7 +56,7 @@ namespace Converge.Services
             }
         }
 
-        private bool CacheConfigEnabled => bool.Parse(configuration["CachingEnabled:BuildingsService"] ?? "false");
+        private bool CacheConfigEnabled => configuration != null ? bool.Parse(configuration["CachingEnabled:BuildingsService"] ?? "false") : false;
 
         private void AddBuildingUpnInfoToCache(List<BuildingBasicInfo> buildingsList, string cacheKey)
         {
@@ -181,6 +186,17 @@ namespace Converge.Services
             }
         }
 
+        public BuildingBasicInfo GetBuildingFromCache(string buildingUpn)
+        {
+            buildingsPlacesCache.TryGetValue(keyBuildings, out List<BuildingBasicInfo> cachedBuildingsList);
+            var building = cachedBuildingsList.FirstOrDefault(b => b.Identity.Equals(buildingUpn));
+            if (building == null)
+            {
+                return null;
+            }
+            return new BuildingBasicInfo(building.Identity, building.DisplayName);
+        }
+
         public void AddBuildings(BasicBuildingsResponse buildingsResponse, int? topCount = null, int? skip = null)
         {
             if (!CacheConfigEnabled)
@@ -202,9 +218,6 @@ namespace Converge.Services
                 buildingsPlacesCache.Set(keyBuildings, buildingsList, memoryCacheEntryOptions);
                 //Add Buildings-Places-Upn-list from the Cache
                 AddBuildingUpnInfoToCache(buildingsList, cacheKey);
-
-                //Add Skip-token to the Cache.
-                AddSkipTokenToCache(skip.ToString(), cacheKey);
             }
             catch (Exception ex)
             {

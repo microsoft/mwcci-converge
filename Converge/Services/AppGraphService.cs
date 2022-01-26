@@ -516,7 +516,7 @@ namespace Converge.Services
             return (places == null || places.Count == 0) ? null : places.CurrentPage as List<Place>;
         }
 
-        public async Task<GraphListItemsResponse> GetListItemsBySortRequest(CampusSortRequest buildingSortRequest, PlaceType? placeType)
+        public async Task<GraphListItemsResponse> GetListItemsByGPSRange(GPSCoordinates[] gpsCoordinatesRange, PlaceType? placeType)
         {
             string siteId = configuration["SharePointSiteId"];
             string listId = configuration["SharePointListId"];
@@ -525,13 +525,6 @@ namespace Converge.Services
             {
                 this.logger.LogError($"Places list is empty for SharePoint-Site-id and SharePoint-List-id.");
                 return null;
-            }
-
-            GPSCoordinates[] gpsCoordinatesRange = null;
-            if (buildingSortRequest.SortByType == CampusSortByType.Distance 
-                && buildingSortRequest.DistanceFromSource > 0.0 && buildingSortRequest.SourceGpsCoordinates != null)
-            {
-                gpsCoordinatesRange = buildingSortRequest.GetCoordinatesRange();
             }
 
             StringBuilder predicateBuilder = new StringBuilder($"(fields/EmailAddress ne '')");
@@ -548,11 +541,7 @@ namespace Converge.Services
                 predicateBuilder.Append($" and fields/Latitude le {gpsCoordinatesRange[1].Latitude} and fields/Longitude le {gpsCoordinatesRange[1].Longitude})");
             }
 
-            IListItemsCollectionRequest listItemsCollRequest = BuildListItemsCollectionRequest(siteId, placesList.Id, predicateBuilder.ToString(), skipToken: buildingSortRequest.SkipToken);
-            if (buildingSortRequest.SortByType == CampusSortByType.DisplayName)
-            {
-                listItemsCollRequest = listItemsCollRequest.OrderBy("fields/Locality");
-            }
+            IListItemsCollectionRequest listItemsCollRequest = BuildListItemsCollectionRequest(siteId, placesList.Id, predicateBuilder.ToString());
 
             try
             {
