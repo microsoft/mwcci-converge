@@ -164,14 +164,14 @@ interface ISearchProviderModel {
   setVenueType: (venueType: CollaborationVenueType) => void;
   setSelectedUsers: (users: User[]) => void;
   setMeetUsers: (meetUsers: string[]) => void;
-  searchPlacesToCollaborate: (force?: boolean) => void;
+  searchPlacesToCollaborate: (force?: boolean, specificRange?: number) => void;
   setLoginUser:(loginUser:string) => void;
   setMapPlaces: (mapPlaces: (CampusToCollaborate|VenueToCollaborate)[]) => void;
   setPlacesLoading: (placesLoading: boolean) => void;
   clearPlaceSearch: () => void;
   setStartAndEndTime: (startTime: Dayjs, endTime: Dayjs) => void;
   setVenueSkip: (skip: number) => void;
-  setCampusSearchNextRange: (reset?: boolean) => boolean;
+  setCampusSearchRange: (range: number) => void;
   setCampusSearchWaiting: (waitState: boolean) => void;
 }
 
@@ -268,6 +268,7 @@ const reducer = (state: ISearchState, action: ISearchAction): ISearchState => {
         placesToCollaborate: [],
         venueType: CollaborationVenueType.Workspace,
         placesLoading: false,
+        campusSearchRangeInMiles: 10,
       };
     case SET_VENUE_SKIP:
       return {
@@ -301,6 +302,24 @@ const reducer = (state: ISearchState, action: ISearchAction): ISearchState => {
   }
 };
 
+export const getCampusSearchNextRange = (currentRange: number, reset?: boolean) : number => {
+  let newRange = 0;
+  if (reset) {
+    newRange = 10;
+  }
+  if (currentRange <= 4000) {
+    if (currentRange < 1000) {
+      newRange = currentRange * 10;
+    } else {
+      newRange = currentRange + 1000;
+    }
+  }
+  if (newRange !== 0) {
+    return newRange;
+  }
+  return currentRange;
+};
+
 const SearchContextProvider: React.FC = ({ children }) => {
   const { searchService } = useApiProvider();
   const [state, dispatch, getState] = useEnhancedReducer(
@@ -310,6 +329,7 @@ const SearchContextProvider: React.FC = ({ children }) => {
 
   const searchPlaces = (
     searchState: ISearchState,
+    specificRange?: number,
   ): Promise<CampusesToCollaborateResponse | VenuesToCollaborateResponse> => {
     const userList: string[] = [];
     userList.push(searchState.loginUser);
@@ -330,7 +350,7 @@ const SearchContextProvider: React.FC = ({ children }) => {
         placeType: searchState.venueType === CollaborationVenueType.Workspace ? "space" : "room",
         // If multiple meetUsers, it will use location in between.
         closeToUser: searchState.meetUsers.length > 1 ? "" : searchState.meetUsers[0],
-        distanceFromSource: searchState.campusSearchRangeInMiles,
+        distanceFromSource: specificRange ?? searchState.campusSearchRangeInMiles,
       };
       return searchService.searchCampusesToCollaborate(request);
     }
@@ -353,46 +373,30 @@ const SearchContextProvider: React.FC = ({ children }) => {
     });
   };
 
-  const setCampusSearchNextRange = (reset?: boolean) : boolean => {
-    if (reset) {
-      dispatch({
-        type: SET_CAMPUS_SEARCH_RANGE,
-        payload: 10,
-      });
-      return true;
-    }
-    if (state.campusSearchRangeInMiles <= 4000) {
-      if (state.campusSearchRangeInMiles < 1000) {
-        dispatch({
-          type: SET_CAMPUS_SEARCH_RANGE,
-          payload: state.campusSearchRangeInMiles * 10,
-        });
-      } else {
-        dispatch({
-          type: SET_CAMPUS_SEARCH_RANGE,
-          payload: state.campusSearchRangeInMiles + 1000,
-        });
-      }
-      return true;
-    }
-    return false;
+  const setCampusSearchRange = (range: number) => {
+    dispatch({
+      type: SET_CAMPUS_SEARCH_RANGE,
+      payload: range,
+    });
   };
 
-  const searchPlacesToCollaborate = (force?: boolean) => {
+  const searchPlacesToCollaborate = (force?: boolean, specificRange?: number) => {
     const newState = getState();
 
     const shouldSearch = !(newState.venueType === undefined) || force;
 
     if (shouldSearch) {
       dispatch({ type: SEARCH_PLACES_REQUEST });
-      searchPlaces(newState)
+      searchPlaces(newState, specificRange)
         .then((response) => {
           if (
             (response as CampusesToCollaborateResponse).campusesToCollaborateList !== undefined
             && (response as CampusesToCollaborateResponse).campusesToCollaborateList.length === 0
           ) {
-            if (setCampusSearchNextRange()) {
-              searchPlacesToCollaborate();
+            if (state.campusSearchRangeInMiles < 4000) {
+              const nextRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
+              setCampusSearchRange(nextRange);
+              searchPlacesToCollaborate(true, nextRange);
             } else {
               const payload = (response as CampusesToCollaborateResponse).campusesToCollaborateList
                 || (response as VenuesToCollaborateResponse).venuesToCollaborateList;
@@ -500,7 +504,7 @@ const SearchContextProvider: React.FC = ({ children }) => {
         clearPlaceSearch,
         setStartAndEndTime,
         setVenueSkip,
-        setCampusSearchNextRange,
+        setCampusSearchRange,
         setCampusSearchWaiting,
       }}
     >

@@ -15,7 +15,7 @@ import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import CollaborationPlaceResultsPagedStyles from "../styles/CollaborationPlaceResultsPagedStyles";
-import { useSearchContextProvider } from "../../../providers/SearchProvider";
+import { useSearchContextProvider, getCampusSearchNextRange } from "../../../providers/SearchProvider";
 import { CollaborationVenueType } from "../../../types/ExchangePlace";
 
 interface Props {
@@ -32,7 +32,7 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
   const {
     state,
     setVenueSkip,
-    setCampusSearchNextRange,
+    setCampusSearchRange,
     setCampusSearchWaiting,
     searchPlacesToCollaborate,
   } = useSearchContextProvider();
@@ -43,8 +43,9 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
 
   const loadFartherPlaces = () => {
     setCampusSearchWaiting(true);
-    setCampusSearchNextRange();
-    searchPlacesToCollaborate();
+    const increasedSearchRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
+    setCampusSearchRange(increasedSearchRange);
+    searchPlacesToCollaborate(true, increasedSearchRange);
   };
 
   return (

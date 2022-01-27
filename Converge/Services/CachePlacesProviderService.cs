@@ -188,7 +188,10 @@ namespace Converge.Services
 
         public BuildingBasicInfo GetBuildingFromCache(string buildingUpn)
         {
-            buildingsPlacesCache.TryGetValue(keyBuildings, out List<BuildingBasicInfo> cachedBuildingsList);
+            if (!buildingsPlacesCache.TryGetValue(keyBuildings, out List<BuildingBasicInfo> cachedBuildingsList))
+            {
+                return null;
+            }
             var building = cachedBuildingsList.FirstOrDefault(b => b.Identity.Equals(buildingUpn));
             if (building == null)
             {
