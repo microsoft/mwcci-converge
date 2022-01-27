@@ -46,15 +46,16 @@ namespace Converge.Helpers
                 foreach (TimeFrame timeFrame in timeFrames)
                 {
                     if (
-                        DateTime.Parse(e.Start.DateTime) < timeFrame.End &&
+                        (DateTime.Parse(e.Start.DateTime) < timeFrame.End &&
                         DateTime.Parse(e.End.DateTime) > timeFrame.Start &&
                         e.Attendees != null &&
-                        e.Attendees.Count() > 0
+                        e.Attendees.Count() > 0) || e.IsAllDay == true
                     )
                     {
+                        // Always include one for the organizer
                         timeFrame.Reserved += e.Attendees
-                            .Where(a => a.Status?.Response == ResponseType.Accepted && a.Type != AttendeeType.Resource)
-                            .Count();
+                            .Where(a => a.Status?.Response == ResponseType.Accepted && a.Type != AttendeeType.Resource && a.EmailAddress.Address != e.Organizer.EmailAddress.Address)
+                            .Count() + 1;
                     }
                 }
             }

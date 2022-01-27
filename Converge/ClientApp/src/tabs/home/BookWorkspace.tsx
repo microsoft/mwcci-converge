@@ -126,11 +126,8 @@ const BookWorkspace: React.FC = () => {
     }
     const startHours = dayjs(hours.start);
     const endHours = dayjs(hours.end);
-    const startBuilding = dayjs.utc(start).set("hour", startHours.hour()).set("minute", startHours.minute());
-    let endBuilding = dayjs.utc(start).set("hour", endHours.hour()).set("minute", endHours.minute());
-    if (endBuilding.isBefore(startBuilding)) {
-      endBuilding = endBuilding.add(1, "day");
-    }
+    const startBuilding = dayjs(start).set("hour", startHours.hour()).set("minute", startHours.minute()).utc();
+    const endBuilding = dayjs(start).set("hour", endHours.hour()).set("minute", endHours.minute()).utc();
     return buildingService.getBuildingSchedule(
       building.identity,
       startBuilding.toISOString(),
