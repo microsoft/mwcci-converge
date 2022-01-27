@@ -22,10 +22,11 @@ import IsThisHelpful from "../../../utilities/IsThisHelpful";
 interface Props {
   closestBuilding: BuildingBasicInfo;
   favoriteCampuses: ExchangePlace[];
+  getSkipToken:(skipToken:string)=>void;
 }
 
 const CustomizedPlaceCollectionAccordian: React.FC<Props> = (props) => {
-  const { closestBuilding, favoriteCampuses } = props;
+  const { closestBuilding, favoriteCampuses, getSkipToken } = props;
   const { state, updateLocation } = PlaceFilterProvider();
   const { buildingService } = useApiProvider();
   const {
@@ -46,8 +47,11 @@ const CustomizedPlaceCollectionAccordian: React.FC<Props> = (props) => {
         hasDisplay: state.attributeFilter.indexOf("displayDeviceName") > -1,
         hasVideo: state.attributeFilter.indexOf("videoDeviceName") > -1,
       },
+      null,
       true,
-    );
+    ).then((s) => {
+      getSkipToken(s.skipToken);
+    });
   }, [
     closestBuilding.identity,
     state.place,
@@ -61,12 +65,12 @@ const CustomizedPlaceCollectionAccordian: React.FC<Props> = (props) => {
     ]);
   };
 
-  const onLoadPlacesAgain = () => {
+  const onLoadPlacesAgain = async () => {
     logEvent(USER_INTERACTION, [
       { name: UI_SECTION, value: UISections.PlaceResults },
       { name: DESCRIPTION, value: "load_places_again" },
     ]);
-    requestBuildingPlaces(
+    await requestBuildingPlaces(
       state.place,
       4,
       {
@@ -75,8 +79,11 @@ const CustomizedPlaceCollectionAccordian: React.FC<Props> = (props) => {
         hasDisplay: state.attributeFilter.indexOf("displayDeviceName") > -1,
         hasVideo: state.attributeFilter.indexOf("videoDeviceName") > -1,
       },
+      null,
       true,
-    );
+    ).then((s) => {
+      getSkipToken(s.skipToken);
+    });
   };
 
   const determineFavoritePanel = () => {

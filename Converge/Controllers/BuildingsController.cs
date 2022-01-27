@@ -160,7 +160,7 @@ namespace Converge.Controllers
         public async Task<ActionResult<GraphExchangePlacesResponse>> GetBuildingWorkspaces(
             string buildingUpn,
             int? topCount = null,
-            string skipTokenString = null,
+            string skipToken = null,
             bool hasVideo = false,
             bool hasAudio = false,
             bool hasDisplay = false,
@@ -178,7 +178,7 @@ namespace Converge.Controllers
                     IsWheelChairAccessible = isWheelchairAccessible,
                     DisplayNameSearchString = displayNameSearchString,
                 };
-                var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Space, topCount, skipTokenString, listItemFilterOptions);
+                var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Space, topCount, skipToken, listItemFilterOptions);
                 return Ok(result);
             }
             catch (Exception ex)

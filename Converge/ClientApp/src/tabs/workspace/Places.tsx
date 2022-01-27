@@ -48,6 +48,7 @@ const Places: React.FC<Props> = (props) => {
   const [err, setErr] = useState<boolean>(isError);
   const classes = PlacesStyles();
   const { teamsContext } = useTeamsContext();
+  const [skipTokenString, setSkipTokenString] = useState<string>("");
   const convertDateToTimeRange = (inputDate: Date) => ({
     start: dayjs(`${dayjs(inputDate).format("MM-DD-YYYY")} ${state.startDate?.format("h:mm A")}`, "MM-DD-YYYY h:mm A"),
     end: dayjs(`${dayjs(inputDate).format("MM-DD-YYYY")} ${state.endDate?.format("h:mm A")}`, "MM-DD-YYYY h:mm A"),
@@ -83,6 +84,10 @@ const Places: React.FC<Props> = (props) => {
   };
   const refreshPlace = () => {
     window.location.reload();
+  };
+
+  const onSkipToken = (skipToken:string) => {
+    setSkipTokenString(skipToken);
   };
 
   return (
@@ -167,6 +172,7 @@ const Places: React.FC<Props> = (props) => {
             buildingUpn={state.location}
             placeType={placeType}
             key={state.location + placeType}
+            skipToken={skipTokenString}
           />
         )}
       {!!state.location && state.location === "Favorites"
@@ -188,6 +194,7 @@ const Places: React.FC<Props> = (props) => {
         <CustomizedPlaceCollectionAccordian
           closestBuilding={buildingsList[0]}
           favoriteCampuses={favoriteCampuses}
+          getSkipToken={onSkipToken}
         />
       )}
       {convergeState.buildingListLoading && <Loader />}

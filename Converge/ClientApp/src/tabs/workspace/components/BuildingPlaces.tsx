@@ -29,10 +29,14 @@ import IsThisHelpful from "../../../utilities/IsThisHelpful";
 
 interface IPlaceResultSetProps {
   buildingUpn: string;
+  skipToken:string;
   placeType?: PlaceType
 }
 
-const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({ buildingUpn, placeType }) => {
+const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({
+  buildingUpn, placeType,
+  skipToken,
+}) => {
   const { theme } = useFluentContext();
   const { state } = PlaceFilterProvider();
   const classes = BuildingPlacesStyles();
@@ -49,6 +53,7 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({ buildingUpn, placeType
     10, 15, 25, 50,
   ];
   const [itemsPerPage, setItemsPerPage] = useState<number>(pageSizeOptions[0]);
+  const [skipTokenString, setSkipTokenString] = useState<string>(skipToken);
   const handleItemCountChange = (
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
     data: DropdownProps,
@@ -66,8 +71,11 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({ buildingUpn, placeType
         hasDisplay: state.attributeFilter.indexOf("displayDeviceName") > -1,
         hasVideo: state.attributeFilter.indexOf("videoDeviceName") > -1,
       },
+      skipTokenString,
       true,
-    );
+    ).then((s) => {
+      setSkipTokenString(s.skipToken);
+    });
   }, [buildingUpn, state.attributeFilter]);
 
   return (
@@ -145,7 +153,11 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({ buildingUpn, placeType
                     hasDisplay: state.attributeFilter.indexOf("displayDeviceName") > -1,
                     hasVideo: state.attributeFilter.indexOf("videoDeviceName") > -1,
                   },
-                );
+                  skipTokenString,
+                  false,
+                ).then((s) => {
+                  setSkipTokenString(s.skipToken);
+                });
                 logEvent(USER_INTERACTION, [
                   { name: UI_SECTION, value: UISections.BookPlaceModal },
                   { name: DESCRIPTION, value: "requestWorkspaces" },

@@ -5,5 +5,5 @@ import ExchangePlace from "./ExchangePlace";
 
 export interface IExchangePlacesResponse {
   exchangePlacesList: ExchangePlace[];
-  skipToken: string | null;
+  skipToken: string;
 }

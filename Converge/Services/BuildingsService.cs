@@ -171,7 +171,7 @@ namespace Converge.Services
         public async Task<GraphExchangePlacesResponse> GetPlacesOfBuilding(string buildingUpn,
                                                                             PlaceType? placeType = null,
                                                                             int? topCount = null,
-                                                                            string skipTokenString = null,
+                                                                            string skipToken = null,
                                                                             ListItemFilterOptions listItemFilterOptions = null)
         {
             if (string.IsNullOrWhiteSpace(buildingUpn))
@@ -184,19 +184,19 @@ namespace Converge.Services
             //Data when list-item-filter-options is defined, are not cached.
             if (listItemFilterOptions == null)
             {
-                exchangePlacesResponse = cachePlacesProviderService.GetPlacesOfBuilding(buildingUpn, placeType, topCount, skipTokenString);
+                exchangePlacesResponse = cachePlacesProviderService.GetPlacesOfBuilding(buildingUpn, placeType, topCount, skipToken);
             }
             if (exchangePlacesResponse == null)
             {
                 var buildingsUpnList = new List<string>() { buildingUpn };
-                exchangePlacesResponse = await placesService.GetPlacesByBuildingUpns(buildingsUpnList, placeType, topCount, skipTokenString, listItemFilterOptions);
+                exchangePlacesResponse = await placesService.GetPlacesByBuildingUpns(buildingsUpnList, placeType, topCount, skipToken, listItemFilterOptions);
                 if (exchangePlacesResponse.ExchangePlacesList == null || exchangePlacesResponse.ExchangePlacesList.Count() == 0)
                 {
                     return new GraphExchangePlacesResponse(new List<ExchangePlace>(), null);
                 }
 
                 //Add to Cache.
-                cachePlacesProviderService.AddPlacesOfBuilding(exchangePlacesResponse.ExchangePlacesList, placeType, topCount, skipTokenString);
+                cachePlacesProviderService.AddPlacesOfBuilding(exchangePlacesResponse.ExchangePlacesList, placeType, topCount, skipToken);
             }
 
             return exchangePlacesResponse;

@@ -22,7 +22,8 @@ interface IUseBuildingWorkspacesHookReturnType {
     placeType: PlaceType,
     itemsPerPage: number,
     filterOptions: BuildingPlacesFilterOptions,
-    clearList?: boolean
+    skipTokens?:string|undefined|null,
+    clearList?: boolean,
   ) => Promise<IExchangePlacesResponse>,
   clearList: () => void,
   hasMore: boolean
@@ -45,6 +46,7 @@ function useBuildingPlaces(
     placeType: PlaceType,
     itemsPerPage: number,
     filterOptions?: BuildingPlacesFilterOptions,
+    skipTokens?:string|undefined|null,
     clearList?: boolean,
   ) => {
     if (clearList) {
@@ -56,7 +58,7 @@ function useBuildingPlaces(
         placeType,
         {
           topCount: itemsPerPage,
-          skipToken: placesResult?.skipToken,
+          skipToken: skipTokens,
           ...filterOptions,
         },
       );
@@ -64,7 +66,7 @@ function useBuildingPlaces(
       return result;
     }
     setPlaces([]);
-    const result = { exchangePlacesList: [], skipToken: null };
+    const result = { exchangePlacesList: [], skipToken: "" };
     waitFor(Promise.resolve(result));
     return Promise.resolve(result);
   };
@@ -73,7 +75,7 @@ function useBuildingPlaces(
     setPlaces([]);
     waitFor(Promise.resolve({
       exchangePlacesList: [],
-      skipToken: null,
+      skipToken: "",
     }));
   };
 
