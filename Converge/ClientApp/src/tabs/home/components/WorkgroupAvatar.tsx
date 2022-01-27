@@ -96,20 +96,16 @@ const WorkgroupAvatar: React.FC<Props> = (props) => {
   const {
     user,
   } = props;
-  const [image, setImage] = useState<string | undefined>(undefined);
+  const [image, setImage] = useState<string | undefined | null>(undefined);
   const [IsDisplayName, setDisplayName] = useState<string>("");
   const classes = WorkgroupAvatarStyles();
   const [presence, setPresence] = useState<ApiPresence>({} as ApiPresence);
 
   useEffect(() => {
     if (user.userPrincipalName) {
-      const response = userService.getUserProfile(user.userPrincipalName);
+      const response = userService.getUserPhoto(user.userPrincipalName);
       response.then((photo) => {
-        const blob = new Blob(photo.userPhoto);
-        if (blob.size !== 0) {
-          setImage(URL.createObjectURL(blob));
-        }
-        setPresence(photo.presence);
+        setImage(photo.userPhoto);
       }).catch(() => {
         if (user.userPrincipalName?.split(" ")[1] !== undefined) {
           setDisplayName(`${user.userPrincipalName.split(" ")[0][0]}${user.userPrincipalName.split(" ")[1][0]}`);
@@ -117,6 +113,10 @@ const WorkgroupAvatar: React.FC<Props> = (props) => {
         if (user.userPrincipalName?.split(" ")[1] !== undefined) {
           setDisplayName(`${user.userPrincipalName.split(" ")[0]}${user.userPrincipalName.split(" ")[1]}`);
         }
+      });
+      const responsePresence = userService.getUserProfile(user.userPrincipalName);
+      responsePresence.then((userPresence) => {
+        setPresence(userPresence.presence);
       });
     }
 
