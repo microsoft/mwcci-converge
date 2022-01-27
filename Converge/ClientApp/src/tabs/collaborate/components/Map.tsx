@@ -70,6 +70,7 @@ const Map: React.FC<Props> = ({
   >(undefined);
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
   const { appSettings } = useAppSettingsProvider();
+  const [userCoordsFetchCompleted, setCoordsFetchCompleted] = useState<boolean>(false);
 
   useEffect(() => {
     if (appSettings?.bingAPIKey && appSettings?.bingAPIKey !== "") {
@@ -89,11 +90,14 @@ const Map: React.FC<Props> = ({
           day: day.date(),
         },
       );
-      setUserCoords({
-        latitude: newCoordinates.latitude,
-        longitude: newCoordinates.longitude,
-        userPrincipalName: teamsContext.userPrincipalName,
-      });
+      if (newCoordinates !== undefined) {
+        setUserCoords({
+          latitude: newCoordinates.latitude,
+          longitude: newCoordinates.longitude,
+          userPrincipalName: teamsContext.userPrincipalName,
+        });
+      }
+      setCoordsFetchCompleted(true);
     }
   };
 
@@ -212,7 +216,7 @@ const Map: React.FC<Props> = ({
 
   return (
     <Box className={classes.root}>
-      {finishedLoading ? (
+      {finishedLoading && userCoordsFetchCompleted ? (
         <ErrorBoundary errorMessage="Oops! We can't load the map right now. Please try again later.">
           <BingMaps
             coordinates={userCoords}
