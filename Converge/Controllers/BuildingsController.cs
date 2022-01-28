@@ -105,7 +105,7 @@ namespace Converge.Controllers
         /// </summary>
         /// <param name="buildingUpn">UPN of Building.</param>
         /// <param name="topCount">Number of records after the skipCount used to skip the number of records.</param>
-        /// <param name="skipTokenString">Skip-token option as string to get next set of records.</param>
+        /// <param name="skipToken">Skip-token option as string to get next set of records.</param>
         /// <param name="hasVideo">Whether to return places with a video display device.</param>
         /// <param name="hasAudio">Whether to return places with an audio device.</param>
         /// <param name="hasDisplay">Whether to return places with a display device.</param>
@@ -116,7 +116,7 @@ namespace Converge.Controllers
         public async Task<ActionResult<GraphExchangePlacesResponse>> GetBuildingConferenceRooms(
             string buildingUpn, 
             int? topCount = null, 
-            string skipTokenString = null,
+            string skipToken = null,
             bool hasVideo = false,
             bool hasAudio = false,
             bool hasDisplay = false,
@@ -132,7 +132,7 @@ namespace Converge.Controllers
                     HasDisplay = hasDisplay,
                     IsWheelChairAccessible = isWheelchairAccessible,
                 };
-                var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Room, topCount, skipTokenString, listItemFilterOptions);
+                var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Room, topCount, skipToken, listItemFilterOptions);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -148,7 +148,7 @@ namespace Converge.Controllers
         /// </summary>
         /// <param name="buildingUpn">UPN of Building.</param>
         /// <param name="topCount">Number of records after the skipCount used to skip the number of records.</param>
-        /// <param name="skipTokenString">Skip-token option as string to get next set of records.</param>
+        /// <param name="skipToken">Skip-token option as string to get next set of records.</param>
         /// <param name="hasVideo">Whether to return places with a video display device.</param>
         /// <param name="hasAudio">Whether to return places with an audio device.</param>
         /// <param name="hasDisplay">Whether to return places with a display device.</param>

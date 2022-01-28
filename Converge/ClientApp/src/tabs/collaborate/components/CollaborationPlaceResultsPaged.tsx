@@ -93,10 +93,13 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
           state.venueType === CollaborationVenueType.FoodAndDrink
           || state.venueType === CollaborationVenueType.ParksAndRecreation
         ) && (
-          <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
-            {state.loadMorePlacesLoading
-              ? (<Loader />)
-              : (
+          <>
+            <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+              {state.loadMorePlacesLoading === true
+              && (<Loader />)}
+            </Flex>
+            <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+              {state.venueSkip < 1000 && state.loadMorePlacesLoading === false ? (
                 <Button
                   content="Show more"
                   onClick={() => {
@@ -107,8 +110,16 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
                     ]);
                   }}
                 />
-              )}
-          </Flex>
+              )
+                : (
+                  <Text
+                    className={classes.textNoMore}
+                  >
+                    No more results
+                  </Text>
+                )}
+            </Flex>
+          </>
         )}
       </Box>
       <Box className={classes.loadBtnContainer}>
