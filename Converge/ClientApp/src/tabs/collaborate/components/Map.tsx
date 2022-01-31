@@ -157,7 +157,14 @@ const Map: React.FC<Props> = ({
     }
   };
 
+  const updateCurrentUserPhotoRecord = async () => {
+    if (teamsContext?.userPrincipalName && !photoRecord[teamsContext.userPrincipalName]) {
+      updatePhotoRecord(teamsContext.userPrincipalName);
+    }
+  };
+
   useEffect(() => {
+    updateCurrentUserPhotoRecord();
     updateCurrentUserRecord();
   }, [teamsContext]);
 
