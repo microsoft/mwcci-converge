@@ -140,8 +140,8 @@ type ITeammateFilterModel = {
   updateLocations: (locations: string[]) => void;
   updateList: (list: TeammateList, force?: boolean) => void;
   updateDate: (date: Date) => void;
-  getTeammates: (list: TeammateList, date: Date, searchString?: string) => void;
-  updateSearchString: (searchString?: string) => void;
+  getTeammates: (list: TeammateList, searchString?: string) => void;
+  updateSearchString: (list: TeammateList, searchString?: string) => void;
   updateSearchQueryOptions:(searchQueryOptions?: QueryOption[]) => void;
   searchMoreTeammates:(
     searchString?: string,
@@ -336,7 +336,7 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
     dispatch({ type: UPDATE_LIST, payload: TeammateList.Suggested });
   };
 
-  const getTeammates = (list: TeammateList, date: Date, searchString?: string) => {
+  const getTeammates = (list: TeammateList, searchString?: string) => {
     dispatch({ type: TEAMMATES_REQUEST });
     let requestMethod;
     switch (list) {
@@ -354,10 +354,24 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
     }
     if (requestMethod) {
       requestMethod().then((teammates) => {
-        const payload = teammates.map((teammate) => ({
-          user: teammate,
-        }));
-        dispatch({ type: TEAMMATES_RESPONSE, payload });
+        if (searchString !== undefined && searchString.length > 0) {
+          const payload = teammates.filter((x) => {
+            if (x.displayName) {
+              return x.displayName.toLowerCase().indexOf(
+                searchString.toLowerCase(),
+              ) > -1;
+            }
+            return false;
+          }).map((teammate) => ({
+            user: teammate,
+          }));
+          dispatch({ type: TEAMMATES_RESPONSE, payload });
+        } else {
+          const payload = teammates.map((teammate) => ({
+            user: teammate,
+          }));
+          dispatch({ type: TEAMMATES_RESPONSE, payload });
+        }
       })
         .catch(() => dispatch({ type: TEAMMATES_ERROR }));
     } else {
@@ -381,47 +395,48 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
     qOptions?: QueryOption[],
     teammatesPreset?: Teammate[],
   ) => {
-    setMoreTeammatesLoading(true);
-    userService.searchUsers(searchString, qOptions)
-      .then((data) => {
-        const payload = data.users.map((teammate) => ({
-          user: teammate,
-        }));
-        if (!teammatesPreset) {
-          dispatch({ type: TEAMMATES_RESPONSE, payload });
-        } else {
-          dispatch({ type: TEAMMATES_RESPONSE, payload: teammatesPreset.concat(payload) });
-        }
-        dispatch({ type: UPDATE_SEARCH_QUERY_OPTIONS, payload: data.queryOptions });
-        setMoreTeammatesLoading(false);
-      })
-      .catch(() => {
-        dispatch({ type: TEAMMATES_ERROR });
-        setMoreTeammatesLoading(false);
-      });
+    if (searchString?.length) {
+      setMoreTeammatesLoading(true);
+      userService.searchUsers(searchString, qOptions)
+        .then((data) => {
+          const payload = data.users.map((teammate) => ({
+            user: teammate,
+          }));
+          if (!teammatesPreset) {
+            dispatch({ type: TEAMMATES_RESPONSE, payload });
+          } else {
+            dispatch({ type: TEAMMATES_RESPONSE, payload: teammatesPreset.concat(payload) });
+          }
+          dispatch({ type: UPDATE_SEARCH_QUERY_OPTIONS, payload: data.queryOptions });
+          setMoreTeammatesLoading(false);
+        })
+        .catch(() => {
+          dispatch({ type: TEAMMATES_ERROR });
+          setMoreTeammatesLoading(false);
+        });
+    } else {
+      dispatch({ type: TEAMMATES_RESPONSE, payload: [] });
+    }
   };
 
-  const updateSearchString = (searchString?: string) => {
+  const updateSearchString = (list: TeammateList, searchString?: string) => {
     dispatch({ type: UPDATE_SEARCH_STRING, payload: searchString });
-    if (state.list === TeammateList.All) {
+    if (list === TeammateList.All) {
       const qOptions: QueryOption[] | undefined = undefined;
       const resetTeam: Teammate[] | undefined = undefined;
       searchMoreTeammates(searchString, qOptions, resetTeam);
+    } else {
+      getTeammates(list, searchString);
     }
   };
 
   const updateList = (list: TeammateList) => {
     dispatch({ type: UPDATE_LIST, payload: list });
-    if (list !== TeammateList.All) {
-      getTeammates(list, state.date, state.searchString);
-    } else {
-      updateSearchString(state.searchString);
-    }
+    updateSearchString(list, state.searchString);
   };
 
   const updateDate = (date: Date) => {
     dispatch({ type: UPDATE_DATE, payload: date });
-    getTeammates(state.list, date, state.searchString);
   };
 
   const updateSearchQueryOptions = (queryOptions?: QueryOption[]) => {

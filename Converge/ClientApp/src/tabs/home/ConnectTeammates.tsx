@@ -56,7 +56,7 @@ const ConnectTeammates: React.FC = () => {
   const [widget, setWidget] = React.useState<IWidget[]>([]);
 
   useEffect(() => {
-    if (state.list !== TeammateList.All) getTeammates(state.list, state.date);
+    if (state.list !== TeammateList.All) getTeammates(state.list);
     else searchMoreTeammates(state.searchString);
   }, []);
 
@@ -76,9 +76,6 @@ const ConnectTeammates: React.FC = () => {
   ) => {
     const eventData = data?.value?.toString() as TeammateList;
     updateList(eventData);
-    if (eventData === TeammateList.All && state.searchString && state.searchString.length > 0) {
-      searchMoreTeammates(state.searchString);
-    }
     logEvent(USER_INTERACTION, [
       { name: UI_SECTION, value: UISections.ConnectWithTeammates },
       { name: DESCRIPTION, value: `dropdown_change_${data?.value}` },
@@ -88,7 +85,7 @@ const ConnectTeammates: React.FC = () => {
   const handleInputChange: ComponentEventHandler<InputProps & {
     value: string;
   }> = (event, data) => {
-    updateSearchString(data?.value);
+    updateSearchString(state.list, data?.value);
     logEvent(USER_INTERACTION, [
       { name: UI_SECTION, value: UISections.ConnectWithTeammates },
       { name: DESCRIPTION, value: "input_change_search_users" },
@@ -96,7 +93,7 @@ const ConnectTeammates: React.FC = () => {
   };
   const refreshPageTeammates = async () => {
     setIsError(false);
-    getTeammates(state.list, state.date);
+    getTeammates(state.list);
   };
 
   const getMyConvergeCalendar = async () => {

@@ -18,6 +18,7 @@ const UserLocationCell: React.FC<Props> = (props) => {
   const { state, setTeammateLocation } = useTeammateProvider();
   const [isError, setIsError] = React.useState(false);
   useEffect(() => {
+    setLoading(true);
     if (teammate.user.id) {
       const day = dayjs.utc(state.date);
       userService.getLocation(teammate.user.id, day.year(), day.month() + 1, day.date())
@@ -31,11 +32,8 @@ const UserLocationCell: React.FC<Props> = (props) => {
       setLoading(false);
     }
   }, [teammate.user.id, state.date]);
-  if (loading) {
-    return <Loader />;
-  }
-  return (
-    <span>{isError ? "Unknown" : teammate.location}</span>
+  return (loading ? (<Loader />)
+    : (<span>{isError ? "Unknown" : teammate.location}</span>)
   );
 };
 

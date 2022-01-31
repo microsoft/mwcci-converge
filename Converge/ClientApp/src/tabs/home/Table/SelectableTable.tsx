@@ -213,7 +213,7 @@ const SelectableTable: React.FC<Props> = (props) => {
       setConvergeSettings(newSettings).then(() => {
         if (state.list === TeammateList.MyList) {
           setLoading(false);
-          getTeammates(state.list, state.date, state.searchString);
+          getTeammates(state.list, state.searchString);
         }
       }).catch(() => {
         if (state.list === TeammateList.MyList) {
@@ -333,7 +333,7 @@ const SelectableTable: React.FC<Props> = (props) => {
       dispatch({ type: RELOAD_ROWS, payload: teammates });
       getAvailability(teammates);
     }
-  }, [teammates.length]);
+  }, [teammates.length, state.date]);
 
   const refreshPageTeammates = async () => {
     getAvailability(teammates);
