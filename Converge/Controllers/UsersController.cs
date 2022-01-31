@@ -6,10 +6,7 @@ using Converge.Models;
 using Converge.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,13 +17,11 @@ namespace Converge.Controllers
     [ApiController]
     public class UsersController : Controller
     {
-        private readonly ILogger<UsersController> logger;
         private readonly AppGraphService appGraphService;
         private readonly UserGraphService userGraphService;
 
-        public UsersController(ILogger<UsersController> logger, AppGraphService appGraphService, UserGraphService userGraphService)
+        public UsersController(AppGraphService appGraphService, UserGraphService userGraphService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.appGraphService = appGraphService;
             this.userGraphService = userGraphService;
         }
@@ -40,20 +35,12 @@ namespace Converge.Controllers
         [Route("{upn}")]
         public async Task<ActionResult<SerializedUser>> GetUser(string upn)
         {
-            try
+            var user = await userGraphService.GetUserByUpn(upn);
+            if (user == null)
             {
-                var user = await userGraphService.GetUserByUpn(upn);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                return new SerializedUser(user);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting the user for upn: {upn}.");
-                throw;
-            }
+            return new SerializedUser(user);
         }
 
         /// <summary>
@@ -65,15 +52,7 @@ namespace Converge.Controllers
         [Route("{id}/presence")]
         public async Task<ActionResult<ApiPresence>> GetUserPresence(string id)
         {
-            try
-            {
-                return await userGraphService.GetPresence(id);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting User-presence for id: {id}.");
-                throw;
-            }
+            return await userGraphService.GetPresence(id);
         }
 
         /// <summary>
@@ -87,15 +66,7 @@ namespace Converge.Controllers
         [AutoWrapIgnore]
         public async Task<ActionResult<System.IO.Stream>> GetPersonPhoto(string id)
         {
-            try
-            {
-                return await userGraphService.GetUserPhoto(id);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting User-photo for id: {id}.");
-                throw;
-            }
+            return await userGraphService.GetUserPhoto(id);
         }
 
         /// <summary>
@@ -108,15 +79,7 @@ namespace Converge.Controllers
         [Route("{id}/userProfile")]
         public async Task<UserProfile> GetUserProfile(string id)
         {
-            try
-            {
-                return await userGraphService.GetUserProfile(id);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting User-profile for id: {id}.");
-                throw;
-            }
+            return await userGraphService.GetUserProfile(id);
         }
 
         /// <summary>
@@ -131,20 +94,12 @@ namespace Converge.Controllers
         [Route("{id}/location")]
         public async Task<string> GetUserLocation(string id, int year, int month, int day)
         {
-            try
+            Calendar calendar = await appGraphService.GetConvergeCalendar(id);
+            if (calendar == null)
             {
-                Calendar calendar = await appGraphService.GetConvergeCalendar(id);
-                if (calendar == null)
-                {
-                    return "Unknown";
-                }
-                return await appGraphService.GetUserLocation(id, calendar.Id, year, month, day);
+                return "Unknown";
             }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting User-location for id: '{id}' for date {year}-{month}-{day}.");
-                throw;
-            }
+            return await appGraphService.GetUserLocation(id, calendar.Id, year, month, day);
         }
 
         /// <summary>
@@ -156,21 +111,13 @@ namespace Converge.Controllers
         [Route("coordinates")]
         public async Task<UserCoordinatesResponse> GetUsersCoordinates([FromBody] MultiUserAvailableTimesRequest request)
         {
-            try
-            {
-                userGraphService.SetPrincipalUserIdentity(User.Identity);
+            userGraphService.SetPrincipalUserIdentity(User.Identity);
 
-                List<UserCoordinates> userCoordinatesList = await userGraphService.GetUsersCoordinates(request);
-                return new UserCoordinatesResponse
-                {
-                    UserCoordinatesList = userCoordinatesList,
-                };
-            }
-            catch (Exception ex)
+            List<UserCoordinates> userCoordinatesList = await userGraphService.GetUsersCoordinates(request);
+            return new UserCoordinatesResponse
             {
-                logger.LogError(ex, $"Error while getting User-coordinates for request: {JsonConvert.SerializeObject(request)}.");
-                throw;
-            }
+                UserCoordinatesList = userCoordinatesList,
+            };
         }
 
         /// <summary>
@@ -183,15 +130,7 @@ namespace Converge.Controllers
         [Route("search")]
         public async Task<ActionResult<UserSearchPaginatedResponse>> SearchUsers(string searchString, string queryOptions)
         {
-            try
-            {
-                return await userGraphService.SearchUsers(searchString, queryOptions, User);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while searching Users for '{searchString}' and queryOptions: {queryOptions}.");
-                throw;
-            }
+            return await userGraphService.SearchUsers(searchString, queryOptions, User);
         }
 
         /// <summary>
@@ -203,15 +142,7 @@ namespace Converge.Controllers
         [Route("multi/availableTimes")]
         public async Task<MultiUserAvailableTimesResponse> GetMultiUserAvailabilityTimes([FromBody] MultiUserAvailableTimesRequest request)
         {
-            try
-            {
-                return await userGraphService.GetMultiUserAvailabilityTimes(request);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting multi-user available-times for request: {JsonConvert.SerializeObject(request)}.");
-                throw;
-            }
+            return await userGraphService.GetMultiUserAvailabilityTimes(request);
         }
     }
 }

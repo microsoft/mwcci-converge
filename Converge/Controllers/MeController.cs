@@ -60,15 +60,7 @@ namespace Converge.Controllers
         [Route("convergeSettings")]
         public async Task<ActionResult<ConvergeSettings>> GetMyConvergeSettings()
         {
-            try
-            {
-                return await userGraphService.GetConvergeSettings();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting Converge-settings by the user '{User.Identity.Name}'.");
-                throw;
-            }
+            return await userGraphService.GetConvergeSettings();
         }
 
         /// <summary>
@@ -80,28 +72,20 @@ namespace Converge.Controllers
         [Route("convergeSettings")]
         public async Task<ActionResult> SetMyConvergeSettings(ConvergeSettings convergeSettings)
         {
-            try
+            if (string.IsNullOrEmpty(convergeSettings.ZipCode))
             {
-                if (string.IsNullOrEmpty(convergeSettings.ZipCode))
-                {
-                    this.telemetryService.TrackEvent(TelemetryService.USER_NO_ZIP_CODE);
-                }
-                ConvergeSettings settings = await userGraphService.GetConvergeSettings();
-                if (settings == null)
-                {
-                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
-                }
-                else
-                {
-                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
-                }
-                return Ok();
+                this.telemetryService.TrackEvent(TelemetryService.USER_NO_ZIP_CODE);
             }
-            catch (Exception ex)
+            ConvergeSettings settings = await userGraphService.GetConvergeSettings();
+            if (settings == null)
             {
-                logger.LogError(ex, $"Error while setting Converge-settings by the user '{User.Identity.Name}' for request: {JsonConvert.SerializeObject(convergeSettings)}.");
-                throw;
+                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
             }
+            else
+            {
+                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
+            }
+            return Ok();
         }
 
         /// <summary>
@@ -112,41 +96,33 @@ namespace Converge.Controllers
         [Route("workgroup")]
         public async Task<List<DirectoryObject>> GetMyWorkgroup()
         {
-            try
+            var result = new List<Microsoft.Graph.DirectoryObject>();
+            var manager = await userGraphService.GetMyManager();
+
+            if (manager != null)
             {
-                var result = new List<Microsoft.Graph.DirectoryObject>();
-                var manager = await userGraphService.GetMyManager();
-
-                if (manager != null)
-                {
-                    result.Add(manager);
-                    var colleagues = await userGraphService.GetReports(manager.UserPrincipalName);
-                    result.AddRange(colleagues);
-                }
-                else
-                {
-                    this.logger.LogInformation("Manager information is null.");
-                }
-
-                var reports = await userGraphService.GetMyReports();
-
-                if (reports != null)
-                {
-                    result.AddRange(reports);
-                }
-                else
-                {
-                    this.logger.LogInformation("Reports are null.");
-                }
-
-                var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
-                return result.Where(u => u.Id != userId).ToList();
+                result.Add(manager);
+                var colleagues = await userGraphService.GetReports(manager.UserPrincipalName);
+                result.AddRange(colleagues);
             }
-            catch (Exception ex)
+            else
             {
-                logger.LogError(ex, $"Error while getting Workgroup by the user '{User.Identity.Name}'.");
-                throw;
+                this.logger.LogInformation("Manager information is null.");
             }
+
+            var reports = await userGraphService.GetMyReports();
+
+            if (reports != null)
+            {
+                result.AddRange(reports);
+            }
+            else
+            {
+                this.logger.LogInformation("Reports are null.");
+            }
+
+            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+            return result.Where(u => u.Id != userId).ToList();
         }
 
         /// <summary>
@@ -157,31 +133,23 @@ namespace Converge.Controllers
         [Route("people")]
         public async Task<List<Person>> GetMyPeople()
         {
-            try
+            List<Person> people = await userGraphService.GetMyPeople();
+            if (people == null)
             {
-                List<Person> people = await userGraphService.GetMyPeople();
-                if (people == null)
-                {
-                    this.logger.LogInformation("People information is null.");
-                    return new List<Person>();
-                }
-                string userPrincipalName = User.Claims.ToList().Find(claim => claim.Type == "preferred_username")?.Value;
-                userPrincipalName ??= User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn")?.Value;
-                userPrincipalName ??= string.Empty;
-
-                Regex tenantRegex = new Regex(@"@(.+)");
-                MatchCollection matches = tenantRegex.Matches(userPrincipalName);
-                string tenant = (matches.Count > 0) ? matches[^1].Value : string.Empty;
-
-                people.RemoveAll(p => string.IsNullOrEmpty(p.UserPrincipalName) || p.UserPrincipalName.Equals(userPrincipalName) ||
-                                        (p.PersonType != null && !p.PersonType.Class.SameAs("Person")));
-                return people.Where(p => p.UserPrincipalName.EndsWith(tenant)).ToList();
+                this.logger.LogInformation("People information is null.");
+                return new List<Person>();
             }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting People-information by the user '{User.Identity.Name}'.");
-                throw;
-            }
+            string userPrincipalName = User.Claims.ToList().Find(claim => claim.Type == "preferred_username")?.Value;
+            userPrincipalName ??= User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn")?.Value;
+            userPrincipalName ??= string.Empty;
+
+            Regex tenantRegex = new Regex(@"@(.+)");
+            MatchCollection matches = tenantRegex.Matches(userPrincipalName);
+            string tenant = (matches.Count > 0) ? matches[^1].Value : string.Empty;
+
+            people.RemoveAll(p => string.IsNullOrEmpty(p.UserPrincipalName) || p.UserPrincipalName.Equals(userPrincipalName) ||
+                                    (p.PersonType != null && !p.PersonType.Class.SameAs("Person")));
+            return people.Where(p => p.UserPrincipalName.EndsWith(tenant)).ToList();
         }
 
         /// <summary>
@@ -192,30 +160,22 @@ namespace Converge.Controllers
         [Route("list")]
         public async Task<List<DirectoryObject>> GetMyList()
         {
-            try
+            ConvergeSettings convergeSettings = await userGraphService.GetConvergeSettings();
+            List<DirectoryObject> result = new List<DirectoryObject>();
+            if (convergeSettings.MyList == null)
             {
-                ConvergeSettings convergeSettings = await userGraphService.GetConvergeSettings();
-                List<DirectoryObject> result = new List<DirectoryObject>();
-                if (convergeSettings.MyList == null)
-                {
-                    this.logger.LogInformation("Users list is null.");
-                    return result;
-                }
-                foreach (string upn in convergeSettings.MyList)
-                {
-                    DirectoryObject user = await userGraphService.GetUser(upn);
-                    if (user != null)
-                    {
-                        result.Add(user);
-                    }
-                }
+                this.logger.LogInformation("Users list is null.");
                 return result;
             }
-            catch (Exception ex)
+            foreach (string upn in convergeSettings.MyList)
             {
-                logger.LogError(ex, $"Error while getting Users-list by the user '{User.Identity.Name}'.");
-                throw;
+                DirectoryObject user = await userGraphService.GetUser(upn);
+                if (user != null)
+                {
+                    result.Add(user);
+                }
             }
+            return result;
         }
 
         /// <summary>
@@ -229,23 +189,15 @@ namespace Converge.Controllers
         [Route("recommendation")]
         public async Task<string> GetMyRecommendedLocation(int year, int month, int day)
         {
-            try
+            Microsoft.Graph.Calendar calendar = await userGraphService.GetMyConvergeCalendar();
+            if (calendar == null)
             {
-                Microsoft.Graph.Calendar calendar = await userGraphService.GetMyConvergeCalendar();
-                if (calendar == null)
-                {
-                    this.logger.LogInformation("user's calendar is null.");
-                    return "Remote";
-                }
+                this.logger.LogInformation("user's calendar is null.");
+                return "Remote";
+            }
 
-                Event prediction = await userGraphService.GetMyConvergePrediction(calendar.Id, year, month, day);
-                return prediction?.Location?.DisplayName ?? "Remote";
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting Recommended-location by the user '{User.Identity.Name}' for date {year}-{month}-{day}.");
-                throw;
-            }
+            Event prediction = await userGraphService.GetMyConvergePrediction(calendar.Id, year, month, day);
+            return prediction?.Location?.DisplayName ?? "Remote";
         }
 
         /// <summary>
@@ -258,54 +210,46 @@ namespace Converge.Controllers
         [Route("setup")]
         public async Task SetupNewUser(ConvergeSettings convergeSettings)
         {
-            try
+            ConvergeSettings settings = await userGraphService.GetConvergeSettings();
+            if (settings == null)
             {
-                ConvergeSettings settings = await userGraphService.GetConvergeSettings();
-                if (settings == null)
-                {
-                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
-                }
-                else
-                {
-                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
-                }
-                var calendar = await userGraphService.GetMyConvergeCalendar();
-                if (calendar == null)
-                {
-                    await userGraphService.CreateMyConvergeCalendar();
-                }
-
-                List<OutlookCategory> categories = await userGraphService.GetMyCalendarCategories();
-                if (categories.Find(c => c.DisplayName == userGraphService.ConvergeDisplayName) == null)
-                {
-                    await userGraphService.CreateMyCalendarCategory(new OutlookCategory
-                    {
-                        DisplayName = userGraphService.ConvergeDisplayName,
-                        Color = CategoryColor.Preset9,
-                    });
-                }
-                
-                var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
-                WorkingHours workingHours = await userGraphService.GetMyWorkingHours();
-
-                PredictionMetrics predictionMetrics = new PredictionMetrics();
-                Dictionary<string, ExchangePlace> placesDictionary = new Dictionary<string, ExchangePlace>();
-                // Perform prediction for the given user.
-                await predictionService.PerformPrediction(userId, workingHours, placesDictionary, predictionMetrics);
-
-                //If there is a failure only 1 Exception is expected. Log the failure, but do not throw to the user. They can continue to use Converge.
-                if (predictionMetrics.ExceptionsList.Count > 0)
-                {
-                    logger.LogError(predictionMetrics.ExceptionsList[0], $"Error while predicting future locations for request: {JsonConvert.SerializeObject(convergeSettings)}");
-                }
+                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
             }
-            catch (Exception ex)
+            else
             {
-                logger.LogError(ex, $"Error while setting-up New User for request: {JsonConvert.SerializeObject(convergeSettings)}.");
-                throw;
+                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
+            }
+            var calendar = await userGraphService.GetMyConvergeCalendar();
+            if (calendar == null)
+            {
+                await userGraphService.CreateMyConvergeCalendar();
+            }
+
+            List<OutlookCategory> categories = await userGraphService.GetMyCalendarCategories();
+            if (categories.Find(c => c.DisplayName == userGraphService.ConvergeDisplayName) == null)
+            {
+                await userGraphService.CreateMyCalendarCategory(new OutlookCategory
+                {
+                    DisplayName = userGraphService.ConvergeDisplayName,
+                    Color = CategoryColor.Preset9,
+                });
+            }
+                
+            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+            WorkingHours workingHours = await userGraphService.GetMyWorkingHours();
+
+            PredictionMetrics predictionMetrics = new PredictionMetrics();
+            Dictionary<string, ExchangePlace> placesDictionary = new Dictionary<string, ExchangePlace>();
+            // Perform prediction for the given user.
+            await predictionService.PerformPrediction(userId, workingHours, placesDictionary, predictionMetrics);
+
+            //If there is a failure only 1 Exception is expected. Log the failure, but do not throw to the user. They can continue to use Converge.
+            if (predictionMetrics.ExceptionsList.Count > 0)
+            {
+                logger.LogError(predictionMetrics.ExceptionsList[0], $"Error while predicting future locations for request: {JsonConvert.SerializeObject(convergeSettings)}");
             }
         }
-
+         
         /// <summary>
         /// Updates current user's predicted location.
         /// </summary>
@@ -315,19 +259,11 @@ namespace Converge.Controllers
         [Route("updatePredictedLocation")]
         public async Task<ActionResult> UpdatePredictedLocationChosenByUser(UserPredictedLocationRequest request)
         {
-            try
-            {
-                var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
-                var startDate = new DateTime(request.Year, request.Month, request.Day);
+            var userId = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+            var startDate = new DateTime(request.Year, request.Month, request.Day);
 
-                bool isUpdated = await predictionService.UpdatePredictedLocationChosenByUser(startDate, userId, request.UserPredictedLocation);
-                return isUpdated ? Ok() : StatusCode(500);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while updating Predicted-location by the user '{User.Identity.Name}' for request: {JsonConvert.SerializeObject(request)}.");
-                throw;
-            }
+            bool isUpdated = await predictionService.UpdatePredictedLocationChosenByUser(startDate, userId, request.UserPredictedLocation);
+            return isUpdated ? Ok() : StatusCode(500);
         }
 
         /// <summary>
@@ -338,15 +274,7 @@ namespace Converge.Controllers
         [Route("convergeCalendar")]
         public async Task<Microsoft.Graph.Calendar> GetMyConvergeCalendar()
         {
-            try
-            {
-                return await userGraphService.GetMyConvergeCalendar();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error while getting user's calendar by the user '{User.Identity.Name}'.");
-                throw;
-            }
+            return await userGraphService.GetMyConvergeCalendar();
         }
 
         /// <summary>
@@ -357,39 +285,31 @@ namespace Converge.Controllers
         [Route("recentBuildings")]
         public async Task<List<BuildingBasicInfo>> GetRecentBuildings()
         {
-            try
+            ConvergeSettings convergeSettings = await userGraphService.GetConvergeSettings();
+            if (convergeSettings == null)
             {
-                ConvergeSettings convergeSettings = await userGraphService.GetConvergeSettings();
-                if (convergeSettings == null)
-                {
-                    logger.LogInformation($"Converge settings is unavailable for the user '{User.Identity.Name}'.");
-                    return new List<BuildingBasicInfo>();
-                }
-                if (convergeSettings.RecentBuildingUpns == null)
-                {
-                    logger.LogInformation($"There are no saved recent buildings for the user '{User.Identity.Name}'.");
-                    return new List<BuildingBasicInfo>();
-                }
-
-                var recentBuildingUpns = convergeSettings.RecentBuildingUpns.Distinct().ToList();
-                List<BuildingBasicInfo> buildingsBasicInfoList = await buildingsService.GetBuildingsBasicInfo(recentBuildingUpns);
-                if (buildingsBasicInfoList.Count != recentBuildingUpns.Count)
-                {
-                    var missingBuildings = recentBuildingUpns.Except(buildingsBasicInfoList.Select(x => x.Identity));
-                    logger.LogInformation($"Unable to find Buildings by UPNs: {string.Join(", ", missingBuildings)}.");
-                }
-                else
-                {
-                    logger.LogInformation($"Successfully found {buildingsBasicInfoList.Count} out of {recentBuildingUpns.Count} recent buildings.");
-                }
-
-                return buildingsBasicInfoList;
+                logger.LogInformation($"Converge settings is unavailable for the user '{User.Identity.Name}'.");
+                return new List<BuildingBasicInfo>();
             }
-            catch (Exception ex)
+            if (convergeSettings.RecentBuildingUpns == null)
             {
-                logger.LogError(ex, $"Error while getting Recent Buildings by the user '{User.Identity.Name}'.");
-                throw;
+                logger.LogInformation($"There are no saved recent buildings for the user '{User.Identity.Name}'.");
+                return new List<BuildingBasicInfo>();
             }
+
+            var recentBuildingUpns = convergeSettings.RecentBuildingUpns.Distinct().ToList();
+            List<BuildingBasicInfo> buildingsBasicInfoList = await buildingsService.GetBuildingsBasicInfo(recentBuildingUpns);
+            if (buildingsBasicInfoList.Count != recentBuildingUpns.Count)
+            {
+                var missingBuildings = recentBuildingUpns.Except(buildingsBasicInfoList.Select(x => x.Identity));
+                logger.LogInformation($"Unable to find Buildings by UPNs: {string.Join(", ", missingBuildings)}.");
+            }
+            else
+            {
+                logger.LogInformation($"Successfully found {buildingsBasicInfoList.Count} out of {recentBuildingUpns.Count} recent buildings.");
+            }
+
+            return buildingsBasicInfoList;
         }
 
         /// <summary>
@@ -400,39 +320,31 @@ namespace Converge.Controllers
         [Route("favoriteCampusesDetails")]
         public async Task<List<ExchangePlace>> GetFavoriteCampuses()
         {
-            try
+            ConvergeSettings convergeSettings = await userGraphService.GetConvergeSettings();
+            if(convergeSettings == null)
             {
-                ConvergeSettings convergeSettings = await userGraphService.GetConvergeSettings();
-                if(convergeSettings == null)
-                {
-                    logger.LogInformation($"Converge settings is unavailable for the user '{User.Identity.Name}'.");
-                    return new List<ExchangePlace>();
-                }
-                if (convergeSettings.FavoriteCampusesToCollaborate == null || convergeSettings.FavoriteCampusesToCollaborate.Count == 0)
-                {
-                    logger.LogInformation($"There are no favorite campuses for the user '{User.Identity.Name}'.");
-                    return new List<ExchangePlace>();
-                }
-
-                var favoritePlacesUpns = convergeSettings.FavoriteCampusesToCollaborate.Distinct().ToList();
-                var placesResponse = await placesService.GetPlacesByPlaceUpns(favoritePlacesUpns);
-                if (placesResponse.ExchangePlacesList.Count != favoritePlacesUpns.Count)
-                {
-                    var missingBuildings = favoritePlacesUpns.Except(placesResponse.ExchangePlacesList.Select(x => x.Identity));
-                    logger.LogInformation($"Unable to find favorite campuses by UPNs: {string.Join(", ", missingBuildings)}.");
-                }
-                else
-                {
-                    logger.LogInformation($"Successfully found {placesResponse.ExchangePlacesList.Count} out of {favoritePlacesUpns.Count} favorite campuses.");
-                }
-
-                return placesResponse.ExchangePlacesList;
+                logger.LogInformation($"Converge settings is unavailable for the user '{User.Identity.Name}'.");
+                return new List<ExchangePlace>();
             }
-            catch (Exception ex)
+            if (convergeSettings.FavoriteCampusesToCollaborate == null || convergeSettings.FavoriteCampusesToCollaborate.Count == 0)
             {
-                logger.LogError(ex, $"Error while getting favorite campuses by the user '{User.Identity.Name}'.");
-                throw;
+                logger.LogInformation($"There are no favorite campuses for the user '{User.Identity.Name}'.");
+                return new List<ExchangePlace>();
             }
+
+            var favoritePlacesUpns = convergeSettings.FavoriteCampusesToCollaborate.Distinct().ToList();
+            var placesResponse = await placesService.GetPlacesByPlaceUpns(favoritePlacesUpns);
+            if (placesResponse.ExchangePlacesList.Count != favoritePlacesUpns.Count)
+            {
+                var missingBuildings = favoritePlacesUpns.Except(placesResponse.ExchangePlacesList.Select(x => x.Identity));
+                logger.LogInformation($"Unable to find favorite campuses by UPNs: {string.Join(", ", missingBuildings)}.");
+            }
+            else
+            {
+                logger.LogInformation($"Successfully found {placesResponse.ExchangePlacesList.Count} out of {favoritePlacesUpns.Count} favorite campuses.");
+            }
+
+            return placesResponse.ExchangePlacesList;
         }
     }
 }

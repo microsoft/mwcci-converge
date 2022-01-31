@@ -247,9 +247,9 @@ namespace Converge.Services
                             additionalData.Add("Longitude", $"{gpsCoordinates.Longitude}");
                         }
                     }
-                    catch(Exception e)
+                    catch(ApplicationException ae)
                     {
-                        telemetryService.TrackException(e, errorMsg);
+                        telemetryService.TrackException(ae, errorMsg);
                     }
                 }
             }

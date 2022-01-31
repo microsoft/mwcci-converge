@@ -5,8 +5,6 @@ using Converge.Models;
 using Converge.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 
 namespace Converge.Controllers
@@ -19,14 +17,10 @@ namespace Converge.Controllers
         /// <summary>
         /// Send logs to telemetry service
         /// </summary>
-        private readonly ILogger<BuildingsController> logger;
         private readonly BuildingsService buildingsService;
 
-        public BuildingsController(
-            ILogger<BuildingsController> logger,
-            BuildingsService buildingsService)
+        public BuildingsController(BuildingsService buildingsService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.buildingsService = buildingsService;
         }
 
@@ -41,17 +35,9 @@ namespace Converge.Controllers
         [Route("sortByName")]
         public async Task<ActionResult<BasicBuildingsResponse>> GetBuildingsByName(int? topCount = 10, int? skip = 0)
         {
-            try
-            {
-                buildingsService.SetPrincipalUserIdentity(User.Identity);
-                var result = await buildingsService.GetBuildingsByName(topCount, skip);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error occurred while getting the Buildings list.");
-                throw;
-            }
+            buildingsService.SetPrincipalUserIdentity(User.Identity);
+            var result = await buildingsService.GetBuildingsByName(topCount, skip);
+            return Ok(result);
         }
 
         /// <summary>
@@ -65,17 +51,9 @@ namespace Converge.Controllers
         [Route("sortByDistance")]
         public async Task<ActionResult<BasicBuildingsResponse>> GetBuildingsByDistance(string sourceGeoCoordinates, double? distanceFromSource)
         {
-            try
-            {
-                buildingsService.SetPrincipalUserIdentity(User.Identity);
-                var result = await buildingsService.GetBuildingsByDistance(sourceGeoCoordinates, distanceFromSource);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error occurred while getting the Buildings list.");
-                throw;
-            }
+            buildingsService.SetPrincipalUserIdentity(User.Identity);
+            var result = await buildingsService.GetBuildingsByDistance(sourceGeoCoordinates, distanceFromSource);
+            return Ok(result);
         }
 
         /// <summary>
@@ -87,16 +65,8 @@ namespace Converge.Controllers
         [Route("buildingByName/{buildingDisplayName}")]
         public async Task<ActionResult<BuildingBasicInfo>> GetBuildingByDisplayName(string buildingDisplayName)
         {
-            try
-            {
-                var result = await buildingsService.GetBuildingByDisplayName(buildingDisplayName);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting the Building details for display-name: {buildingDisplayName}.");
-                throw;
-            }
+            var result = await buildingsService.GetBuildingByDisplayName(buildingDisplayName);
+            return Ok(result);
         }
 
         /// <summary>
@@ -113,33 +83,23 @@ namespace Converge.Controllers
         /// <returns>ExchangePlacesResponse: Containing the Conference-rooms list and reference to Link-to-next-page.</returns>
         [HttpGet]
         [Route("{buildingUpn}/rooms")]
-        public async Task<ActionResult<GraphExchangePlacesResponse>> GetBuildingConferenceRooms(
-            string buildingUpn, 
-            int? topCount = null, 
-            string skipToken = null,
-            bool hasVideo = false,
-            bool hasAudio = false,
-            bool hasDisplay = false,
-            bool isWheelchairAccessible = false
-        )
+        public async Task<ActionResult<GraphExchangePlacesResponse>> GetBuildingConferenceRooms(string buildingUpn, 
+                                                                                                int? topCount = null, 
+                                                                                                string skipToken = null,
+                                                                                                bool hasVideo = false,
+                                                                                                bool hasAudio = false,
+                                                                                                bool hasDisplay = false,
+                                                                                                bool isWheelchairAccessible = false)
         {
-            try
+            ListItemFilterOptions listItemFilterOptions = new ListItemFilterOptions
             {
-                ListItemFilterOptions listItemFilterOptions = new ListItemFilterOptions
-                {
-                    HasAudio = hasAudio,
-                    HasVideo = hasVideo,
-                    HasDisplay = hasDisplay,
-                    IsWheelChairAccessible = isWheelchairAccessible,
-                };
-                var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Room, topCount, skipToken, listItemFilterOptions);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Conference-Rooms of the Building for upn: {buildingUpn}.");
-                throw;
-            }
+                HasAudio = hasAudio,
+                HasVideo = hasVideo,
+                HasDisplay = hasDisplay,
+                IsWheelChairAccessible = isWheelchairAccessible,
+            };
+            var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Room, topCount, skipToken, listItemFilterOptions);
+            return Ok(result);
         }
 
         /// <summary>
@@ -157,35 +117,25 @@ namespace Converge.Controllers
         /// <returns>ExchangePlacesResponse: Containing the Workspaces list and reference to Link-to-next-page.</returns>
         [HttpGet]
         [Route("{buildingUpn}/spaces")]
-        public async Task<ActionResult<GraphExchangePlacesResponse>> GetBuildingWorkspaces(
-            string buildingUpn,
-            int? topCount = null,
-            string skipToken = null,
-            bool hasVideo = false,
-            bool hasAudio = false,
-            bool hasDisplay = false,
-            bool isWheelchairAccessible = false,
-            string displayNameSearchString = null
-        )
+        public async Task<ActionResult<GraphExchangePlacesResponse>> GetBuildingWorkspaces(string buildingUpn,
+                                                                                            int? topCount = null,
+                                                                                            string skipToken = null,
+                                                                                            bool hasVideo = false,
+                                                                                            bool hasAudio = false,
+                                                                                            bool hasDisplay = false,
+                                                                                            bool isWheelchairAccessible = false,
+                                                                                            string displayNameSearchString = null)
         {
-            try
+            ListItemFilterOptions listItemFilterOptions = new ListItemFilterOptions
             {
-                ListItemFilterOptions listItemFilterOptions = new ListItemFilterOptions
-                {
-                    HasAudio = hasAudio,
-                    HasVideo = hasVideo,
-                    HasDisplay = hasDisplay,
-                    IsWheelChairAccessible = isWheelchairAccessible,
-                    DisplayNameSearchString = displayNameSearchString,
-                };
-                var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Space, topCount, skipToken, listItemFilterOptions);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Workspaces of the Building for upn: {buildingUpn}.");
-                throw;
-            }
+                HasAudio = hasAudio,
+                HasVideo = hasVideo,
+                HasDisplay = hasDisplay,
+                IsWheelChairAccessible = isWheelchairAccessible,
+                DisplayNameSearchString = displayNameSearchString,
+            };
+            var result = await buildingsService.GetPlacesOfBuilding(buildingUpn, PlaceType.Space, topCount, skipToken, listItemFilterOptions);
+            return Ok(result);
         }
 
         /// <summary>
@@ -197,16 +147,8 @@ namespace Converge.Controllers
         [Route("rooms/{roomUpn}")]
         public async Task<ActionResult<ExchangePlace>> GetConferenceRoom(string roomUpn)
         {
-            try
-            {
-                var result = await buildingsService.GetPlaceByUpn(roomUpn, PlaceType.Room);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Conference-Room-details for upn: {roomUpn}.");
-                throw;
-            }
+            var result = await buildingsService.GetPlaceByUpn(roomUpn, PlaceType.Room);
+            return Ok(result);
         }
 
         /// <summary>
@@ -218,16 +160,8 @@ namespace Converge.Controllers
         [Route("spaces/{spaceUpn}")]
         public async Task<ActionResult<ExchangePlace>> GetWorkspace(string spaceUpn)
         {
-            try
-            {
-                var result = await buildingsService.GetPlaceByUpn(spaceUpn, PlaceType.Space);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Workspace-details for upn: {spaceUpn}.");
-                throw;
-            }
+            var result = await buildingsService.GetPlaceByUpn(spaceUpn, PlaceType.Space);
+            return Ok(result);
         }
 
         /// <summary>
@@ -241,30 +175,14 @@ namespace Converge.Controllers
         [Route("{buildingUpn}/schedule")]
         public async Task<ActionResult<ConvergeSchedule>> GetWorkspacesSchedule(string buildingUpn, string start, string end)
         {
-            try
-            {
-                return await buildingsService.GetWorkspacesScheduleForBuilding(buildingUpn, start, end);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Schedule for buildingUpn:{buildingUpn} with start:{start} and end:{end}.");
-                throw;
-            }
+            return await buildingsService.GetWorkspacesScheduleForBuilding(buildingUpn, start, end);
         }
 
         [HttpGet]
         [Route("searchForBuildings/{searchString}")]
         public async Task<ActionResult<BuildingSearchInfo>> SearchForBuildings(string searchString, int? topCount = 10, int? skip = 0)
         {
-            try
-            {
-                return await buildingsService.SearchForBuildings(searchString, topCount, skip);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while searching Buildings for: {searchString}.");
-                throw;
-            }
+            return await buildingsService.SearchForBuildings(searchString, topCount, skip);
         }
     }
 }

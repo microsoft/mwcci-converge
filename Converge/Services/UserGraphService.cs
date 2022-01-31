@@ -188,7 +188,7 @@ namespace Converge.Services
                             lock (p) { invalidIdsList.Add(user.Id); }
                         }
                     }
-                    catch
+                    catch (ServiceException)
                     {
                         lock (p) { invalidIdsList.Add(user.Id); }
                     }
@@ -276,7 +276,8 @@ namespace Converge.Services
             try
             {
                 return await graphServiceClient.Users[upn].Request().GetAsync();
-            } catch (ServiceException)
+            }
+            catch (ServiceException)
             {
                 return null;
             }
@@ -301,7 +302,7 @@ namespace Converge.Services
                     purpose = JsonConvert.DeserializeObject<Purpose>(jsonWorkingHours);
                     memoryCache.Set(id, purpose, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(1)));
                 }
-                catch
+                catch (ServiceException)
                 {
                     // do not error if not found
                 }
@@ -409,7 +410,7 @@ namespace Converge.Services
                 {
                     convergeSettings.GeoCoordinates = await searchBingMapsService.GetGeoCoordsForZipcode(convergeSettings.ZipCode);
                 }
-                catch
+                catch (ApplicationException)
                 {
                     throw;
                 }
@@ -465,7 +466,7 @@ namespace Converge.Services
                             userCoordinates = !string.IsNullOrWhiteSpace(userConvergeSettings?.ZipCode) ?
                                                 await searchBingMapsService.GetGeoCoordsForZipcode(userConvergeSettings.ZipCode) : null;
                         }
-                        catch
+                        catch (ApplicationException)
                         {
                             //To supress the exception, catch and reset the Coords.
                             userCoordinates = null;
@@ -596,7 +597,7 @@ namespace Converge.Services
             {
                 timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
             }
-            catch
+            catch (TimeZoneNotFoundException)
             {
                 timeZone = Constant.TimeZonePST;
                 timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
@@ -648,7 +649,7 @@ namespace Converge.Services
                 eventHash.Add(new KeyValuePair<string, string>("EventCreationStatus", 
                                 (eventResponse.ResponseStatus == null) ? "Failure" : "Success"));
             }
-            catch(Exception ex)
+            catch(ArgumentException ex)
             {
                 eventHash.RemoveWhere(x => x.Key.SameAs(nameof(eventRequest.Subject))
                                             || x.Key.SameAs(nameof(eventRequest.Organizer))
@@ -691,7 +692,7 @@ namespace Converge.Services
                 {
                     return await searchBingMapsService.GetGeoCoordsForAnAddress(address.Street, address.City, address.State, address.PostalCode);
                 }
-                catch
+                catch (ApplicationException)
                 {
                     return null;
                 }

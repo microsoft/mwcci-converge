@@ -54,10 +54,10 @@ namespace Converge.Services
             HttpResponseMessage response = await httpClientProviderService.GetObject().GetAsync(uri);
             if (!response.IsSuccessStatusCode)
             {
-                Exception exception = new Exception(errorMessage);
+                ApplicationException appException = new ApplicationException(errorMessage);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failed URI: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failed URI: ", uri);
+                throw appException;
             }
 
             var bingMapsSearchContent = await response.Content.ReadAsStringAsync();
@@ -67,10 +67,10 @@ namespace Converge.Services
             }
             catch (Exception innerException)
             {
-                Exception exception = new Exception(errorMessage, innerException);
+                ApplicationException appException = new ApplicationException(errorMessage, innerException);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failure with Response: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failure with Response: ", uri);
+                throw appException;
             }
         }
 
@@ -100,10 +100,10 @@ namespace Converge.Services
             HttpResponseMessage response = await httpClientProviderService.GetObject().GetAsync(uri);
             if (!response.IsSuccessStatusCode)
             {
-                Exception exception = new Exception(errorMessage);
+                ApplicationException appException = new ApplicationException(errorMessage);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failed URI: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failed URI: ", uri);
+                throw appException;
             }
 
             var bingMapsSearchContent = await response.Content.ReadAsStringAsync();
@@ -113,10 +113,10 @@ namespace Converge.Services
             }
             catch (Exception innerException)
             {
-                Exception exception = new Exception(errorMessage, innerException);
+                ApplicationException appException = new ApplicationException(errorMessage, innerException);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failure with Response: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failure with Response: ", uri);
+                throw appException;
             }
         }
 
