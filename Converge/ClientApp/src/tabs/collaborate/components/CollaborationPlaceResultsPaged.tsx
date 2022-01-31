@@ -22,11 +22,17 @@ interface Props {
     places: (CampusToCollaborate | VenueToCollaborate)[];
     openPanel: () => void;
     setSelectedPlace: (selectedPlace: CampusToCollaborate | VenueToCollaborate) => void;
+    forceVenueShowMore?: boolean;
+    recommendationSearchRadius?: number;
+    moreRecommendationsfetcher?: () => void;
 }
 
 const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
   const {
     places, openPanel, setSelectedPlace,
+    forceVenueShowMore,
+    recommendationSearchRadius,
+    moreRecommendationsfetcher,
   } = props;
   const classes = CollaborationPlaceResultsPagedStyles();
   const {
@@ -42,10 +48,14 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
   };
 
   const loadFartherPlaces = () => {
-    setCampusSearchWaiting(true);
-    const increasedSearchRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
-    setCampusSearchRange(increasedSearchRange);
-    searchPlacesToCollaborate(true, increasedSearchRange);
+    if (moreRecommendationsfetcher === undefined) {
+      setCampusSearchWaiting(true);
+      const increasedSearchRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
+      setCampusSearchRange(increasedSearchRange);
+      searchPlacesToCollaborate(true, increasedSearchRange);
+    } else {
+      moreRecommendationsfetcher();
+    }
   };
 
   return (
@@ -124,10 +134,11 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
       </Box>
       <Box className={classes.loadBtnContainer}>
         {(
-          (state.venueType === CollaborationVenueType.Workspace
+          (forceVenueShowMore
+          || state.venueType === CollaborationVenueType.Workspace
           || state.venueType === CollaborationVenueType.ConferenceRoom)
         ) && (
-          state.campusSearchRangeInMiles < 4000 ? (
+          (recommendationSearchRadius ?? state.campusSearchRangeInMiles) < 4000 ? (
             <Button
               onClick={() => {
                 loadFartherPlaces();

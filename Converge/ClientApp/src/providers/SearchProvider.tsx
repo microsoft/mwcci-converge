@@ -389,10 +389,7 @@ const SearchContextProvider: React.FC = ({ children }) => {
       dispatch({ type: SEARCH_PLACES_REQUEST });
       searchPlaces(newState, specificRange)
         .then((response) => {
-          if (
-            (response as CampusesToCollaborateResponse).campusesToCollaborateList !== undefined
-            && (response as CampusesToCollaborateResponse).campusesToCollaborateList.length === 0
-          ) {
+          if (!((response as CampusesToCollaborateResponse)?.campusesToCollaborateList?.length)) {
             if (state.campusSearchRangeInMiles < 4000) {
               const nextRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
               setCampusSearchRange(nextRange);
