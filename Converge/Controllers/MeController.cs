@@ -72,20 +72,28 @@ namespace Converge.Controllers
         [Route("convergeSettings")]
         public async Task<ActionResult> SetMyConvergeSettings(ConvergeSettings convergeSettings)
         {
-            if (string.IsNullOrEmpty(convergeSettings.ZipCode))
+            try
             {
-                this.telemetryService.TrackEvent(TelemetryService.USER_NO_ZIP_CODE);
+                if (string.IsNullOrEmpty(convergeSettings.ZipCode))
+                {
+                    this.telemetryService.TrackEvent(TelemetryService.USER_NO_ZIP_CODE);
+                }
+                ConvergeSettings settings = await userGraphService.GetConvergeSettings();
+                if (settings == null)
+                {
+                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
+                }
+                else
+                {
+                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
+                }
+                return Ok();
             }
-            ConvergeSettings settings = await userGraphService.GetConvergeSettings();
-            if (settings == null)
+            catch (InvalidZipCodeException ex)
             {
-                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
+                logger.LogError(ex, "Invalid ZipCode"+ convergeSettings.ZipCode);
+                return BadRequest("Invalid ZipCode");
             }
-            else
-            {
-                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
-            }
-            return Ok();
         }
 
         /// <summary>

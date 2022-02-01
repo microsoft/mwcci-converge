@@ -31,6 +31,7 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
     state,
     setBuildingsByDistanceRadius,
     getRecentBuildings,
+    setClickBuildingListLoading,
     convergeSettings,
   } = useConvergeSettingsContextProvider();
 
@@ -40,8 +41,10 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
 
   const onClickSeeMore = () => {
     if (state.buildingsByRadiusDistance < 1000) {
+      setClickBuildingListLoading(true);
       setBuildingsByDistanceRadius(state.buildingsByRadiusDistance * 10);
     } else if (state.buildingsByRadiusDistance < 4000) {
+      setClickBuildingListLoading(true);
       setBuildingsByDistanceRadius(state.buildingsByRadiusDistance + 1000);
     }
   };
@@ -214,7 +217,7 @@ const PopupMenuContent: React.FunctionComponent<Props> = (props) => {
             </Box>
           )}
       </Box>
-      {state.buildingListLoading && <Loader label={state.buildingsLoadingMessage} />}
+      {state.clickBuildingListLoading && <Loader label={state.buildingsLoadingMessage} />}
       <Divider className="filter-popup-menu-divider" styles={{ marginTop: "0.4rem" }} />
       <Flex gap="gap.small" vAlign="center" hAlign="start" styles={{ marginBottom: "1.5%" }}>
         <Button

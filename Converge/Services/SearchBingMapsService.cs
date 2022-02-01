@@ -4,11 +4,13 @@
 using Converge.DataTransformers;
 using Converge.Models;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Converge.Services
 {
@@ -61,6 +63,18 @@ namespace Converge.Services
             }
 
             var bingMapsSearchContent = await response.Content.ReadAsStringAsync();
+            JObject json = JObject.Parse(bingMapsSearchContent.ToString());
+            var recList = json.SelectTokens("$..matchCodes").ToList();
+            if (recList != null)
+            {
+
+                string matchCode = recList.FirstOrDefault().ToString();
+                if (!matchCode.Contains("Good"))
+                {
+                    throw new InvalidZipCodeException(zipcode);
+                }
+            }
+
             try
             {
                 return BingMapsLocationByAddressTransformer.GetGeoCoordinates(bingMapsSearchContent);

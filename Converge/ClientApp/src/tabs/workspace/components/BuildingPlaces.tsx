@@ -8,6 +8,7 @@ import {
   DropdownProps,
   Flex,
   FormLabel,
+  Loader,
   Text,
   useFluentContext,
 } from "@fluentui/react-northstar";
@@ -18,7 +19,6 @@ import { PlaceType } from "../../../types/ExchangePlace";
 import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
-import Await from "../../../utilities/Await";
 import { logEvent } from "../../../utilities/LogWrapper";
 import BuildingPlacesStyles from "../styles/BuildingPlacesStyles";
 import PlaceCard from "./PlaceCard";
@@ -44,7 +44,6 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({
   const {
     placesLoading,
     places,
-    placesError,
     requestBuildingPlaces,
     hasMore,
   } = useBuildingPlaces(buildingService, buildingUpn);
@@ -119,61 +118,69 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({
           />
         </Flex>
       </Flex>
-      <Await
-        loading={placesLoading}
-        error={placesError as Error}
-      >
-        <Box styles={{ padding: "16px 0" }}>
-          <RepeatingBox>
-            {(places ?? []).map(((place, index) => (
-              <PlaceCard
-                place={place}
-                buildingName={place.building}
-                key={place.identity + place.capacity + index.toString()}
-              />
-            )))}
-          </RepeatingBox>
-        </Box>
-        <Flex
-          hAlign="center"
-          style={{
-            margin: "16px, 0",
-          }}
-        >
-          {hasMore ? (
-            <Button
-              content="Show more"
-              onClick={() => {
-                requestBuildingPlaces(
-                  placeType ?? PlaceType.Room,
-                  itemsPerPage,
-                  {
-                    isWheelchairAccessible: state.attributeFilter.indexOf("isWheelChairAccessible") > -1,
-                    hasAudio: state.attributeFilter.indexOf("audioDeviceName") > -1,
-                    hasDisplay: state.attributeFilter.indexOf("displayDeviceName") > -1,
-                    hasVideo: state.attributeFilter.indexOf("videoDeviceName") > -1,
-                  },
-                  skipTokenString,
-                  false,
-                ).then((s) => {
-                  setSkipTokenString(s.skipToken);
-                });
-                logEvent(USER_INTERACTION, [
-                  { name: UI_SECTION, value: UISections.BookPlaceModal },
-                  { name: DESCRIPTION, value: "requestWorkspaces" },
-                ]);
-              }}
+      <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+        {placesLoading === true && skipTokenString === null
+              && (<Loader />)}
+      </Flex>
+      <Box styles={{ padding: "16px 0" }}>
+        <RepeatingBox>
+          {(places ?? []).map(((place, index) => (
+            <PlaceCard
+              place={place}
+              buildingName={place.building}
+              key={place.identity + place.capacity + index.toString()}
             />
-          ) : (
-            <Text style={{
-              color: theme.siteVariables.colors.grey[400],
+          )))}
+        </RepeatingBox>
+      </Box>
+
+      <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+        {placesLoading === true && skipTokenString !== null
+              && (<Loader />)}
+      </Flex>
+      <Flex
+        hAlign="center"
+        style={{
+          margin: "16px, 0",
+        }}
+      >
+        {hasMore && (
+          <Button
+            content="Show more"
+            onClick={() => {
+              requestBuildingPlaces(
+                placeType ?? PlaceType.Room,
+                itemsPerPage,
+                {
+                  isWheelchairAccessible: state.attributeFilter.indexOf("isWheelChairAccessible") > -1,
+                  hasAudio: state.attributeFilter.indexOf("audioDeviceName") > -1,
+                  hasDisplay: state.attributeFilter.indexOf("displayDeviceName") > -1,
+                  hasVideo: state.attributeFilter.indexOf("videoDeviceName") > -1,
+                },
+                skipTokenString,
+                false,
+              ).then((s) => {
+                setSkipTokenString(s.skipToken);
+              });
+              logEvent(USER_INTERACTION, [
+                { name: UI_SECTION, value: UISections.BookPlaceModal },
+                { name: DESCRIPTION, value: "requestWorkspaces" },
+              ]);
             }}
-            >
-              No more results
-            </Text>
-          )}
-        </Flex>
-      </Await>
+          />
+        ) }
+      </Flex>
+      <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+        {placesLoading === false && hasMore === false
+              && (
+              <Text style={{
+                color: theme.siteVariables.colors.grey[400],
+              }}
+              >
+                No more results
+              </Text>
+              )}
+      </Flex>
       <Box className={classes.isThisHelpful}>
         <IsThisHelpful logId="3938cd30" sectionName={UISections.PlaceResults} />
       </Box>

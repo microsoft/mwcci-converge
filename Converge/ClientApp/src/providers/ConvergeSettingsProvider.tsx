@@ -21,6 +21,7 @@ import { useApiProvider } from "./ApiProvider";
 type IBuildingState = {
   buildingsList: BuildingBasicInfo[];
   buildingListLoading: boolean;
+  clickBuildingListLoading:boolean;
   buildingsByRadiusDistance: number,
   loadMoreBuildingsByDistance: boolean,
   buildingsListError: boolean;
@@ -41,6 +42,7 @@ interface IConvergeContext {
   loadBuildingsByDistance: (geoCoordinates: GeoCoordinates) => void;
   loadBuildingsByName: () => void;
   setBuildingListLoading: (currentState: boolean) => void;
+  setClickBuildingListLoading: (currentState: boolean) => void;
   setBuildingsByDistanceRadius: (upcomingReservationDistance: number) => void;
   setBuildingsListError: (currentState: boolean) => void;
   updateSearchString: (searchString?: string) => void;
@@ -114,6 +116,7 @@ function convergeSettingsReducer(
 
 const UPDATE_BUILDINGS_LIST = "UPDATE_BUILDINGS_LIST";
 const UPDATE_BUILDINGS_LIST_LOADING = "UPDATE_BUILDINGS_LIST_LOADING";
+const CLICK_UPDATE_BUILDINGS_LIST_LOADING = "CLICK_UPDATE_BUILDINGS_LIST_LOADING";
 const SET_BUILDINGS_DISTANCE = "SET_BUILDINGS_DISTANCE";
 const LOAD_MORE_BUILDINGS = "LOAD_MORE_BUILDINGS";
 const UPDATE_BUILDINGS_LIST_ERROR = "UPDATE_BUILDINGS_LIST_ERROR";
@@ -129,6 +132,11 @@ interface loadBuildingsByDistanceAction {
 
 interface UpdateBuildingsListLoadingAction {
   type: typeof UPDATE_BUILDINGS_LIST_LOADING,
+  payload: boolean;
+}
+
+interface ClickUpdateBuildingsListLoadingAction {
+  type: typeof CLICK_UPDATE_BUILDINGS_LIST_LOADING,
   payload: boolean;
 }
 
@@ -169,6 +177,7 @@ interface UpdateRecentBuildingsAction {
 
 type IBuildingAction = loadBuildingsByDistanceAction
 | UpdateBuildingsListLoadingAction
+| ClickUpdateBuildingsListLoadingAction
 | SetUpcomingBuildingDistanceAction
 | LoadMoreBuildingsAction
 | UpdateBuildingsListErrorAction
@@ -194,6 +203,7 @@ type IPlaceAction = GetFavoriteCampusesRequestAction | GetFavoriteCampusesRespon
 const iState: IBuildingState = {
   buildingsList: [],
   buildingListLoading: false,
+  clickBuildingListLoading: false,
   buildingsByRadiusDistance: 10,
   loadMoreBuildingsByDistance: true,
   buildingsListError: false,
@@ -221,6 +231,16 @@ const reducer = (state: IBuildingState, action: IBuildingAction): IBuildingState
       const newState = {
         ...state,
         buildingListLoading: action.payload,
+      };
+      return {
+        ...newState,
+      };
+    }
+
+    case CLICK_UPDATE_BUILDINGS_LIST_LOADING: {
+      const newState = {
+        ...state,
+        clickBuildingListLoading: action.payload,
       };
       return {
         ...newState,
@@ -370,6 +390,13 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     });
   };
 
+  const setClickBuildingListLoading = (isLoading: boolean) => {
+    dispatch({
+      type: CLICK_UPDATE_BUILDINGS_LIST_LOADING,
+      payload: isLoading,
+    });
+  };
+
   const setBuildingsListError = (isError: boolean) => {
     dispatch({
       type: UPDATE_BUILDINGS_LIST_ERROR,
@@ -387,6 +414,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
 
   const loadBuildingsByDistance = (geoCoordinates: GeoCoordinates) => {
     setBuildingListLoading(true);
+    setClickBuildingListLoading(true);
     setBuildingsLoadingMessage("No nearby results, expanding search.");
     buildingService.getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, 10)
       .then((response) => {
@@ -396,12 +424,16 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
           setBuildingsByDistanceRadius(state.buildingsByRadiusDistance + 1000);
         }
         dispatch({ type: UPDATE_BUILDINGS_LIST, payload: response });
+        if (response.buildingsList.length !== 0) {
+          setBuildingListLoading(false);
+          setClickBuildingListLoading(false);
+          setBuildingsLoadingMessage(undefined);
+        }
       })
-      .finally(() => {
+      .catch(() => {
         setBuildingListLoading(false);
-        setBuildingsLoadingMessage(undefined);
-      })
-      .catch(() => setBuildingsListError(true));
+        setBuildingsListError(true);
+      });
   };
 
   const loadBuildingsByName = () => {
@@ -414,13 +446,26 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
       .catch(() => setBuildingsListError(true));
   };
 
-  const loadMoreBuildingsByDistance = (geoCoordinates: GeoCoordinates, distance: number) => {
-    setBuildingListLoading(true);
+  const loadMoreBuildingsByDistance = (geoCoordinates: GeoCoordinates, distance: number,
+    buildingLoading:boolean) => {
+    if (buildingLoading === true) {
+      setClickBuildingListLoading(true);
+    } else {
+      setBuildingListLoading(true);
+    }
     buildingService.getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, distance)
       .then((response) => {
+        if (response.buildingsList.length === 0 && state.buildingsByRadiusDistance < 1000) {
+          setBuildingsByDistanceRadius(state.buildingsByRadiusDistance * 10);
+        } else if (response.buildingsList.length === 0 && state.buildingsByRadiusDistance < 4000) {
+          setBuildingsByDistanceRadius(state.buildingsByRadiusDistance + 1000);
+        }
         dispatch({ type: UPDATE_BUILDINGS_LIST, payload: response });
+        if (response.buildingsList.length !== 0) {
+          setBuildingListLoading(false);
+          setClickBuildingListLoading(false);
+        }
       })
-      .finally(() => setBuildingListLoading(false))
       .catch(() => setBuildingsListError(true));
   };
 
@@ -459,7 +504,13 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     if (state.buildingsByRadiusDistance !== 10 && convergeSettings?.geoCoordinates) {
-      loadMoreBuildingsByDistance(convergeSettings.geoCoordinates, state.buildingsByRadiusDistance);
+      if (state.clickBuildingListLoading === true) {
+        loadMoreBuildingsByDistance(convergeSettings.geoCoordinates,
+          state.buildingsByRadiusDistance, true);
+      } else {
+        loadMoreBuildingsByDistance(convergeSettings.geoCoordinates,
+          state.buildingsByRadiusDistance, false);
+      }
     }
   }, [state.buildingsByRadiusDistance]);
 
@@ -483,6 +534,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
         favoriteCampuses,
         getFavoriteCampuses: getFavoriteCampusesWrapper,
         setBuildingListLoading,
+        setClickBuildingListLoading,
         loadBuildingsByDistance,
         loadBuildingsByName,
         setBuildingsByDistanceRadius,

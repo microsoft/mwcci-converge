@@ -125,7 +125,7 @@ const EnterZipcode: React.FC<Props> = (props) => {
                 if (inputProps) { setZipCode(inputProps?.value); }
               }}
             />
-            {err && (<Text error content="Please enter a valid zipcode." />)}
+            {err && (<Text error content="Invalid Zip Code. Please try again." />)}
           </Flex>
       )}
         header="Remote work"
