@@ -172,7 +172,7 @@ const Map: React.FC<Props> = ({
     updateSelectedUserRecords();
     updateSelectedUserPhotos();
     updateSelectedUserCoords();
-  }, [state.selectedUsers, mapLoading, teamsContext]);
+  }, [state.selectedUsers, mapLoading, teamsContext, state.startTime]);
 
   const updatePushpins = async () => {
     if (!mapLoading && teamsContext && userCoords?.userPrincipalName) {
