@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/buildings")]
     [ApiController]
-    public class BuildingsController : Controller
+    [Route("api/v1.0/buildings")]
+    public class BuildingsV1Controller : Controller
     {
         /// <summary>
         /// Send logs to telemetry service
         /// </summary>
         private readonly BuildingsService buildingsService;
 
-        public BuildingsController(BuildingsService buildingsService)
+        public BuildingsV1Controller(BuildingsService buildingsService)
         {
             this.buildingsService = buildingsService;
         }

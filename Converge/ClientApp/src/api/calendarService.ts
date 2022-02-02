@@ -21,7 +21,7 @@ export default class CalendarService {
 
   getWorkingHours = async (): Promise<WorkingStartEnd> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const response = await axios.get<AutoWrapperResponse<WorkingStartEnd>>("/api/calendar/mailboxSettings/workingHours");
+    const response = await axios.get<AutoWrapperResponse<WorkingStartEnd>>("/api/v1.0/calendar/mailboxSettings/workingHours");
     return response.data.result;
   };
 
@@ -29,7 +29,7 @@ export default class CalendarService {
     startDateTime: string, endDateTime: string, top?:number, skip?:number,
   ): Promise<UpcomingReservationsResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const response = await axios.get<AutoWrapperResponse<UpcomingReservationsResponse>>("/api/calendar/upcomingReservations", {
+    const response = await axios.get<AutoWrapperResponse<UpcomingReservationsResponse>>("/api/v1.0/calendar/upcomingReservations", {
       params: {
         startDateTime, endDateTime, top, skip,
       },
@@ -39,7 +39,7 @@ export default class CalendarService {
 
   deleteEvent = async (eventId: string, messageComment: string): Promise<void> => {
     const axios = await this.authenticationService.getAxiosClient();
-    await axios.get(`/api/calendar/events/${eventId}/deleteEvent`, {
+    await axios.get(`/api/v1.0/calendar/events/${eventId}/deleteEvent`, {
       params: {
         messageComment,
       },
@@ -51,7 +51,7 @@ export default class CalendarService {
 
   createEvent = async (newEvent: CalendarEventRequest) : Promise<CalendarEvent> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const response = await axios.post<AutoWrapperResponse<CalendarEvent>>("/api/calendar/event", newEvent);
+    const response = await axios.post<AutoWrapperResponse<CalendarEvent>>("/api/v1.0/calendar/event", newEvent);
     logEvent(USER_INTERACTION, [
       { name: IMPORTANT_ACTION, value: ImportantActions.EventCreated },
     ]);

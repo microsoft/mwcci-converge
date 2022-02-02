@@ -15,7 +15,7 @@ export default class RouteService {
   getRoute = async (start: string, end: string): Promise<RouteResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<RouteResponse>>(
-      "/api/route/travelTime",
+      "/api/v1.0/route/travelTime",
       { params: { start, end } },
     );
     return request.data.result;

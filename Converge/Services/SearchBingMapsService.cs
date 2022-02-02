@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using Converge.Helpers;
 
 namespace Converge.Services
 {
@@ -63,16 +64,16 @@ namespace Converge.Services
             }
 
             var bingMapsSearchContent = await response.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(bingMapsSearchContent.ToString());
+            JObject json = JObject.Parse(bingMapsSearchContent);
             var recList = json.SelectTokens("$..matchCodes").ToList();
-            if (recList != null)
+            string matchCode = (recList != null && recList.Count > 0)? recList.First().ToString() : string.Empty;
+            if (!matchCode.Comprises("Good"))
             {
-
-                string matchCode = recList.FirstOrDefault().ToString();
-                if (!matchCode.Contains("Good"))
-                {
-                    throw new InvalidZipCodeException(zipcode);
-                }
+                errorMessage = "Invalid ZipCode: ";
+                ApplicationException appException = new ApplicationException(errorMessage + $"{zipcode}");
+                //Log or return exception
+                telemetryService.TrackException(appException, errorMessage, zipcode);
+                throw appException;
             }
 
             try

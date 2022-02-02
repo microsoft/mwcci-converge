@@ -57,13 +57,13 @@ export default class UserService {
 
   getCollaborator = async (userPrincipalName: string): Promise<MicrosoftGraph.User> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const response = await axios.get<AutoWrapperResponse<MicrosoftGraph.User>>(`/api/users/${userPrincipalName}`);
+    const response = await axios.get<AutoWrapperResponse<MicrosoftGraph.User>>(`/api/v1.0/users/${userPrincipalName}`);
     return response.data.result;
   };
 
   getUserPhoto = async (id: string): Promise<UserPhotoResult> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await fetch(`/api/users/${id}/photo`, {
+    const request = await fetch(`/api/v1.0/users/${id}/photo`, {
       headers: { Authorization: axios.defaults.headers.common.Authorization },
     });
     if (request.status === 200) {
@@ -97,7 +97,7 @@ export default class UserService {
 
   getUserProfile = async (id?: string): Promise<UserProfile> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<UserProfile>>(`/api/users/${id}/userProfile`, {
+    const request = await axios.get<AutoWrapperResponse<UserProfile>>(`/api/v1.0/users/${id}/userProfile`, {
       headers: { Authorization: axios.defaults.headers.common.Authorization },
     });
     return request.data.result;
@@ -108,7 +108,7 @@ export default class UserService {
   ): Promise<MicrosoftGraph.Presence> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<MicrosoftGraph.Presence>>(
-      `/api/users/${id}/presence`,
+      `/api/v1.0/users/${id}/presence`,
     );
     return request.data.result;
   };
@@ -120,7 +120,7 @@ export default class UserService {
     day: number,
   ): Promise<string> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<string>>(`/api/users/${id}/location`, {
+    const request = await axios.get<AutoWrapperResponse<string>>(`/api/v1.0/users/${id}/location`, {
       params: { year, month, day },
     });
     return request.data.result;
@@ -135,7 +135,7 @@ export default class UserService {
     scheduleTo?: Date,
   ): Promise<MultiUserAvailableTimesResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.post<AutoWrapperResponse<MultiUserAvailableTimesResponse>>("/api/users/multi/availableTimes", {
+    const request = await axios.post<AutoWrapperResponse<MultiUserAvailableTimesResponse>>("/api/v1.0/users/multi/availableTimes", {
       year, month, day, usersUpnList: userPrincipalNames, scheduleFrom, scheduleTo,
     });
     return request.data.result;
@@ -149,7 +149,7 @@ export default class UserService {
     if (!searchQuery) {
       return { users: [], queryOptions: [] };
     }
-    const request = await axios.get<AutoWrapperResponse<UserSearchPagedResponse>>("/api/users/search", {
+    const request = await axios.get<AutoWrapperResponse<UserSearchPagedResponse>>("/api/v1.0/users/search", {
       params: {
         searchString: searchQuery,
         QueryOptions: JSON.stringify(options),
@@ -167,7 +167,7 @@ export default class UserService {
     }: UserCoordinateQueryParams,
   ): Promise<UserCoordianates[]> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.post<AutoWrapperResponse<UserCoordinatesResponse>>("/api/users/coordinates", {
+    const request = await axios.post<AutoWrapperResponse<UserCoordinatesResponse>>("/api/v1.0/users/coordinates", {
       year, month, day, usersUpnList: users,
     });
     return request.data.result.userCoordinatesList;

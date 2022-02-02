@@ -19,7 +19,7 @@ export default class MeService {
   getSettings = async (): Promise<ConvergeSettings | null> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<ConvergeSettings>>(
-      "/api/me/convergeSettings",
+      "/api/v1.0/me/convergeSettings",
     );
     if (request.status === 204) {
       return null;
@@ -29,20 +29,20 @@ export default class MeService {
 
   setSettings = async (settings: ConvergeSettings): Promise<void> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = axios.post("/api/me/convergeSettings", settings);
+    const request = axios.post("/api/v1.0/me/convergeSettings", settings);
     return (await request).data.result;
   };
 
   setupNewUser = async (settings: ConvergeSettings): Promise<void> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = axios.post("/api/me/setup", settings);
+    const request = axios.post("/api/v1.0/me/setup", settings);
     return (await request).data.result;
   };
 
   getWorkgroup = async (): Promise<MicrosoftGraph.User[]> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<MicrosoftGraph.User[]>>(
-      "/api/me/workgroup",
+      "/api/v1.0/me/workgroup",
     );
     return request.data.result;
   };
@@ -50,7 +50,7 @@ export default class MeService {
   getPeople = async (): Promise<MicrosoftGraph.User[]> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<MicrosoftGraph.User[]>>(
-      "/api/me/people",
+      "/api/v1.0/me/people",
     );
     return request.data.result;
   };
@@ -58,7 +58,7 @@ export default class MeService {
   getMyList = async (): Promise<MicrosoftGraph.User[]> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<MicrosoftGraph.User[]>>(
-      "/api/me/list",
+      "/api/v1.0/me/list",
     );
     return request.data.result;
   };
@@ -67,7 +67,7 @@ export default class MeService {
     request: UserPredictedLocationRequest,
   ): Promise<void> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const response = await axios.put("/api/me/updatePredictedLocation", request);
+    const response = await axios.put("/api/v1.0/me/updatePredictedLocation", request);
     return response.data.result;
   };
 
@@ -78,7 +78,7 @@ export default class MeService {
   ): Promise<string> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<string>>(
-      "/api/me/recommendation",
+      "/api/v1.0/me/recommendation",
       { params: { year, month, day } },
     );
     return request.data.result;
@@ -87,7 +87,7 @@ export default class MeService {
   getConvergeCalendar = async (
   ): Promise<MicrosoftGraph.Calendar | null> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<MicrosoftGraph.Calendar>>("/api/me/convergeCalendar");
+    const request = await axios.get<AutoWrapperResponse<MicrosoftGraph.Calendar>>("/api/v1.0/me/convergeCalendar");
     if (request.status === 204) {
       return null;
     }
@@ -97,14 +97,14 @@ export default class MeService {
   getRecentBuildingsBasicDetails = async (
   ): Promise<BuildingBasicInfo[]> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<BuildingBasicInfo[]>>("/api/me/recentBuildings");
+    const request = await axios.get<AutoWrapperResponse<BuildingBasicInfo[]>>("/api/v1.0/me/recentBuildings");
     return request.data.result;
   };
 
   getFavoritePlaces = async (
   ): Promise<ExchangePlace[]> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<ExchangePlace[]>>("/api/me/favoriteCampusesDetails");
+    const request = await axios.get<AutoWrapperResponse<ExchangePlace[]>>("/api/v1.0/me/favoriteCampusesDetails");
     return request.data.result;
   };
 }

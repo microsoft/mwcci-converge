@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/calendar")]
+    [Route("api/v1.0/calendar")]
     [ApiController]
-    public class CalendarController : Controller
+    public class CalendarV1Controller : Controller
     {
         /// <summary>
         /// Send logs to telemetry service
@@ -24,7 +24,7 @@ namespace Converge.Controllers
         private readonly UserGraphService userGraphService;
         private readonly BuildingsService buildingsService;
 
-        public CalendarController(UserGraphService graphService, 
+        public CalendarV1Controller(UserGraphService graphService, 
                                     BuildingsService buildingsSvc)
         {
             this.userGraphService = graphService;

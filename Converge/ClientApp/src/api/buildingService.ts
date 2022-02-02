@@ -70,7 +70,7 @@ export default class BuildingService {
     const axios = await this.authenticationService.getAxiosClient();
     const type = placeType === PlaceType.Room ? "room" : "space";
     const request = await axios.get<AutoWrapperResponse<IExchangePlacesResponse>>(
-      `/api/buildings/${buildingUpn}/${type}s`, {
+      `/api/v1.0/buildings/${buildingUpn}/${type}s`, {
         params,
       },
     );
@@ -83,7 +83,7 @@ export default class BuildingService {
   ): Promise<UpcomingBuildingsResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<UpcomingBuildingsResponse>>(
-      "/api/buildings/sortByDistance", {
+      "/api/v1.0/buildings/sortByDistance", {
         params: {
           sourceGeoCoordinates,
           distanceFromSource,
@@ -98,7 +98,7 @@ export default class BuildingService {
   ): Promise<BuildingBasicInfo> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<BuildingBasicInfo>>(
-      `/api/buildings/buildingByName/${buildingDisplayName}`, {
+      `/api/v1.0/buildings/buildingByName/${buildingDisplayName}`, {
       },
     );
     return request.data.result;
@@ -107,7 +107,7 @@ export default class BuildingService {
   getBuildingsByName = async (): Promise<UpcomingBuildingsResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<UpcomingBuildingsResponse>>(
-      "/api/buildings/sortByName",
+      "/api/v1.0/buildings/sortByName",
     );
     return request.data.result;
   };
@@ -116,7 +116,7 @@ export default class BuildingService {
   : Promise<BuildingSearchInfo> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.get<AutoWrapperResponse<BuildingSearchInfo>>(
-      `/api/buildings/searchForBuildings/${searchString}`, {
+      `/api/v1.0/buildings/searchForBuildings/${searchString}`, {
         params: {
           searchString,
         },
@@ -129,7 +129,7 @@ export default class BuildingService {
     id: string, start: string, end: string,
   ): Promise<Schedule> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<Schedule>>(`/api/buildings/${id}/schedule`, {
+    const request = await axios.get<AutoWrapperResponse<Schedule>>(`/api/v1.0/buildings/${id}/schedule`, {
       params: {
         start,
         end,
@@ -146,7 +146,7 @@ export default class BuildingService {
     }: PlaceDetailsQueryParams,
   ): Promise<CampusToCollaborate> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<CampusToCollaborate>>(`/api/places/${id}/details`, {
+    const request = await axios.get<AutoWrapperResponse<CampusToCollaborate>>(`/api/v1.0/places/${id}/details`, {
       params: {
         start,
         end,
@@ -162,7 +162,7 @@ export default class BuildingService {
     sharePointId: string,
   ): Promise<PlacePhotosResult> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<ExchangePlacePhoto[]>>(`/api/places/${sharePointId}/photos`, {
+    const request = await axios.get<AutoWrapperResponse<ExchangePlacePhoto[]>>(`/api/v1.0/places/${sharePointId}/photos`, {
       cache: {
         maxAge: Constants.TWO_HOURS_IN_MILLISECONDS,
       },

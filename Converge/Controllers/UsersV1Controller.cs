@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/users")]
+    [Route("api/v1.0/users")]
     [ApiController]
-    public class UsersController : Controller
+    public class UsersV1Controller : Controller
     {
         private readonly AppGraphService appGraphService;
         private readonly UserGraphService userGraphService;
 
-        public UsersController(AppGraphService appGraphService, UserGraphService userGraphService)
+        public UsersV1Controller(AppGraphService appGraphService, UserGraphService userGraphService)
         {
             this.appGraphService = appGraphService;
             this.userGraphService = userGraphService;

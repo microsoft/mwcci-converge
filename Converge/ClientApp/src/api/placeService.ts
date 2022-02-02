@@ -15,7 +15,7 @@ export default class PlaceService {
     id: string, start: string, end: string,
   ): Promise<number> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<number>>(`/api/places/${id}/maxReserved`, {
+    const request = await axios.get<AutoWrapperResponse<number>>(`/api/v1.0/places/${id}/maxReserved`, {
       params: {
         start,
         end,
@@ -28,7 +28,7 @@ export default class PlaceService {
     id: string, start: string, end: string,
   ): Promise<boolean> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<boolean>>(`/api/places/${id}/availability`, {
+    const request = await axios.get<AutoWrapperResponse<boolean>>(`/api/v1.0/places/${id}/availability`, {
       params: {
         start,
         end,

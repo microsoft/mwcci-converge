@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/route")]
+    [Route("api/v1.0/route")]
     [ApiController]
-    public class RouteController : Controller
+    public class RouteV1Controller : Controller
     {
         private readonly RouteService routeService;
 
-        public RouteController(RouteService routeService)
+        public RouteV1Controller(RouteService routeService)
         {
             this.routeService = routeService;
         }

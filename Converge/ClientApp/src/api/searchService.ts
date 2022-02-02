@@ -23,7 +23,7 @@ export default class SearchService {
   ): Promise<CampusesToCollaborateResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
     const request = await axios.post<AutoWrapperResponse<CampusesToCollaborateResponse>>(
-      "/api/search/campusesToCollaborate",
+      "/api/v1.0/search/campusesToCollaborate",
       campusesToCollaborateRequest, { params: {} },
     );
     return request.data.result;
@@ -33,7 +33,7 @@ export default class SearchService {
     venuesToCollaborateRequest: VenuesToCollaborateRequest,
   ): Promise<VenuesToCollaborateResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.post<AutoWrapperResponse<VenuesToCollaborateResponse>>("/api/search/venuesToCollaborate", venuesToCollaborateRequest);
+    const request = await axios.post<AutoWrapperResponse<VenuesToCollaborateResponse>>("/api/v1.0/search/venuesToCollaborate", venuesToCollaborateRequest);
     return request.data.result;
   };
 
@@ -41,7 +41,7 @@ export default class SearchService {
     venueId: string,
   ): Promise<VenueDetails> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<VenueDetails>>(`/api/search/venues/${venueId}/details`, {
+    const request = await axios.get<AutoWrapperResponse<VenueDetails>>(`/api/v1.0/search/venues/${venueId}/details`, {
       cache: {
         maxAge: Constants.TWO_HOURS_IN_MILLISECONDS,
       },
@@ -53,7 +53,7 @@ export default class SearchService {
     venueId: string,
   ): Promise<VenueReviewsResponse> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<VenueReviewsResponse>>(`/api/search/venues/${venueId}/reviews`);
+    const request = await axios.get<AutoWrapperResponse<VenueReviewsResponse>>(`/api/v1.0/search/venues/${venueId}/reviews`);
     return request.data.result;
   };
 }

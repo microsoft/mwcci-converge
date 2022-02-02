@@ -14,7 +14,7 @@ export default class SettingsService {
 
   getAppSettings = async (): Promise<AppSettings> => {
     const axios = await this.authenticationService.getAxiosClient();
-    const request = await axios.get<AutoWrapperResponse<AppSettings>>("/api/settings/appSettings");
+    const request = await axios.get<AutoWrapperResponse<AppSettings>>("/api/v1.0/settings/appSettings");
     return request.data.result;
   };
 }

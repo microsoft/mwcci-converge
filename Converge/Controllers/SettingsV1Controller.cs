@@ -9,13 +9,13 @@ using Microsoft.Extensions.Configuration;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/settings")]
+    [Route("api/v1.0/settings")]
     [ApiController]
-    public class SettingsController : Controller
+    public class SettingsV1Controller : Controller
     {
         private readonly IConfiguration configuration;
 
-        public SettingsController(IConfiguration configuration)
+        public SettingsV1Controller(IConfiguration configuration)
         {
             this.configuration = configuration;
         }

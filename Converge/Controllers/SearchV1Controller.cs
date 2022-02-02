@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/search")]
+    [Route("api/v1.0/search")]
     [ApiController]
-    public class SearchController : Controller
+    public class SearchV1Controller : Controller
     {
         private readonly SearchService searchService;
 
-        public SearchController(SearchService searchSvc)
+        public SearchV1Controller(SearchService searchSvc)
         {
             searchService = searchSvc;
         }

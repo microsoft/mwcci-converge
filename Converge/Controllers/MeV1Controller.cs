@@ -20,14 +20,14 @@ using System.Threading.Tasks;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/me")]
+    [Route("api/v1.0/me")]
     [ApiController]
-    public class MeController : Controller
+    public class MeV1Controller : Controller
     {
         /// <summary>
         /// Send logs to telemetry service
         /// </summary>
-        private readonly ILogger<MeController> logger;
+        private readonly ILogger<MeV1Controller> logger;
         private readonly UserGraphService userGraphService;
         private readonly PredictionService predictionService;
         private readonly IConfiguration configuration;
@@ -35,7 +35,7 @@ namespace Converge.Controllers
         private readonly BuildingsService buildingsService;
         private readonly PlacesService placesService;
 
-        public MeController(ILogger<MeController> logger,
+        public MeV1Controller(ILogger<MeV1Controller> logger,
                             IConfiguration configuration,
                             UserGraphService userGraphService, 
                             PredictionService predictionService, 
@@ -72,28 +72,20 @@ namespace Converge.Controllers
         [Route("convergeSettings")]
         public async Task<ActionResult> SetMyConvergeSettings(ConvergeSettings convergeSettings)
         {
-            try
+            if (string.IsNullOrEmpty(convergeSettings.ZipCode))
             {
-                if (string.IsNullOrEmpty(convergeSettings.ZipCode))
-                {
-                    this.telemetryService.TrackEvent(TelemetryService.USER_NO_ZIP_CODE);
-                }
-                ConvergeSettings settings = await userGraphService.GetConvergeSettings();
-                if (settings == null)
-                {
-                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
-                }
-                else
-                {
-                    await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
-                }
-                return Ok();
+                this.telemetryService.TrackEvent(TelemetryService.USER_NO_ZIP_CODE);
             }
-            catch (InvalidZipCodeException ex)
+            ConvergeSettings settings = await userGraphService.GetConvergeSettings();
+            if (settings == null)
             {
-                logger.LogError(ex, "Invalid ZipCode"+ convergeSettings.ZipCode);
-                return BadRequest("Invalid ZipCode");
+                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsAdd);
             }
+            else
+            {
+                await userGraphService.SaveConvergeSettings(convergeSettings, DataOperationType.IsUpdate);
+            }
+            return Ok();
         }
 
         /// <summary>
