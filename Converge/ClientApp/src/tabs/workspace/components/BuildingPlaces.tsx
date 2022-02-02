@@ -6,6 +6,7 @@ import {
   Button,
   Dropdown,
   DropdownProps,
+  ErrorIcon,
   Flex,
   FormLabel,
   Loader,
@@ -52,6 +53,7 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({
     10, 15, 25, 50,
   ];
   const [itemsPerPage, setItemsPerPage] = useState<number>(pageSizeOptions[0]);
+  const [count, setCount] = useState<number>(0);
   const [skipTokenString, setSkipTokenString] = useState<string>(skipToken);
   const handleItemCountChange = (
     event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | null,
@@ -73,6 +75,7 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({
       skipTokenString,
       true,
     ).then((s) => {
+      setCount(s.exchangePlacesList.length);
       setSkipTokenString(s.skipToken);
     });
   }, [buildingUpn, state.attributeFilter]);
@@ -117,6 +120,25 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({
             value="Capacity"
           />
         </Flex>
+      </Flex>
+      <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+        {placesLoading === false && hasMore === false && count === 0
+              && (
+                <>
+                  <ErrorIcon styles={{ paddingLeft: "5rem" }} />
+                  <Text
+                    error
+                    styles={{ paddingLeft: "0.5rem" }}
+                  >
+                    There was a problem loading
+                    {" "}
+                    {buildingUpn}
+                    .Please choose another building from the menu
+                  </Text>
+
+                </>
+
+              )}
       </Flex>
       <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
         {placesLoading === true && skipTokenString === null
@@ -171,7 +193,7 @@ const BuildingPlaces: React.FC<IPlaceResultSetProps> = ({
         ) }
       </Flex>
       <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
-        {placesLoading === false && hasMore === false
+        {placesLoading === false && hasMore === false && skipTokenString === null
               && (
               <Text style={{
                 color: theme.siteVariables.colors.grey[400],
