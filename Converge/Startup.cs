@@ -227,6 +227,7 @@ namespace Converge
         private void RegisterServices(IServiceCollection services)
         {
             services.AddScoped<UserGraphService>();
+            services.AddScoped<ChatGraphService>();
             services.AddScoped<PlacesService>();
             services.AddScoped<ScheduleService>();
             services.AddScoped<RouteService>();

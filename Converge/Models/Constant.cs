@@ -16,7 +16,13 @@ namespace Converge.Models
             "Presence.Read.All",
             "User.Read.All",
             "User.ReadWrite",
-            "Place.Read.All",
+            "Place.Read.All"
+        };
+
+        public static readonly string[] GraphChatScopes = new string[] {
+            "Chat.Create",
+            "Chat.ReadWrite",
+            "ChatMessage.Send"
         };
 
         public static string TimeZonePST = "Pacific Standard Time";

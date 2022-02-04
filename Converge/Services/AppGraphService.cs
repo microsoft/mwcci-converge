@@ -3,7 +3,6 @@
 
 using Converge.Helpers;
 using Converge.Models;
-using Converge.Models.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
