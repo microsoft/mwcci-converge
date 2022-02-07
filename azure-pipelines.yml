@@ -23,6 +23,7 @@
 # WEBSITE*: The URL of the site that contains the about page for Converge for your organization
 # APP_ID*: The ClientID of the Converge Azure app service
 # DOMAIN*: The domain of the Azure app service
+# DESCRIPTION*: The description of the Converge application
 variables:
 - name: BuildParameters.solution
   value: '**\*.sln'

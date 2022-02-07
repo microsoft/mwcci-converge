@@ -16,11 +16,11 @@
   },
   "name": {
     "short": "Converge%AppEnvironment%",
-    "full": "Go further together."
+    "full": "Converge%AppEnvironment%"
   },
   "description": {
-    "short": "Go further together.",
-    "full": "Go further together."
+    "short": "%DESCRIPTION%",
+    "full": "%DESCRIPTION%"
   },
   "accentColor": "#FFFFFF",
   "bots": [],
