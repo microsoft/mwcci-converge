@@ -31,7 +31,6 @@ const SET_VENUE_SKIP = "SET_VENUE_SKIP";
 const SEARCH_PLACES_LOAD_MORE_RESPONSE = "SEARCH_PLACES_LOAD_MORE_RESPONSE";
 const SEARCH_PLACES_LOAD_MORE_REQUEST = "SEARCH_PLACES_LOAD_MORE_REQUEST";
 const SET_CAMPUS_SEARCH_RANGE = "SET_CAMPUS_SEARCH_RANGE";
-const SET_CAMPUS_SEARCH_WAITING = "SET_CAMPUS_SEARCH_WAITING";
 
 interface SetStartTimeAction {
   type: typeof SET_START_TIME;
@@ -114,11 +113,6 @@ interface SetCampusSearchRangeAction {
   payload: number;
 }
 
-interface SetCampusSearchWaitingAction {
-  type: typeof SET_CAMPUS_SEARCH_WAITING;
-  payload: boolean;
-}
-
 type ISearchAction =
   SetStartTimeAction
   | SetEndTimeAction
@@ -136,8 +130,7 @@ type ISearchAction =
   | SetVenueSkipAction
   | LoadMorePlacesResponseAction
   | LoadMorePlacesRequestAction
-  | SetCampusSearchRangeAction
-  | SetCampusSearchWaitingAction;
+  | SetCampusSearchRangeAction;
 
 interface ISearchState {
   placesToCollaborate: (CampusToCollaborate|VenueToCollaborate)[];
@@ -154,7 +147,6 @@ interface ISearchState {
   venueSkip: number;
   loadMorePlacesLoading: boolean;
   campusSearchRangeInMiles: number;
-  campusSearchWaiting: boolean;
 }
 
 interface ISearchProviderModel {
@@ -172,7 +164,6 @@ interface ISearchProviderModel {
   setStartAndEndTime: (startTime: Dayjs, endTime: Dayjs) => void;
   setVenueSkip: (skip: number) => void;
   setCampusSearchRange: (range: number) => void;
-  setCampusSearchWaiting: (waitState: boolean) => void;
 }
 
 const iState: ISearchState = {
@@ -190,7 +181,6 @@ const iState: ISearchState = {
   venueSkip: 0,
   loadMorePlacesLoading: false,
   campusSearchRangeInMiles: 10,
-  campusSearchWaiting: false,
 };
 
 const Context = createContext({} as ISearchProviderModel);
@@ -292,11 +282,6 @@ const reducer = (state: ISearchState, action: ISearchAction): ISearchState => {
         ...state,
         campusSearchRangeInMiles: action.payload,
       };
-    case SET_CAMPUS_SEARCH_WAITING:
-      return {
-        ...state,
-        campusSearchWaiting: action.payload,
-      };
     default:
       return state;
   }
@@ -326,6 +311,10 @@ const SearchContextProvider: React.FC = ({ children }) => {
     reducer,
     { ...iState },
   );
+
+  const setPlacesLoading = (placesLoading: boolean) => {
+    dispatch({ type: SET_PLACES_LOADING, payload: placesLoading });
+  };
 
   const searchPlaces = (
     searchState: ISearchState,
@@ -366,13 +355,6 @@ const SearchContextProvider: React.FC = ({ children }) => {
     });
   };
 
-  const setCampusSearchWaiting = (waitState: boolean) => {
-    dispatch({
-      type: SET_CAMPUS_SEARCH_WAITING,
-      payload: waitState,
-    });
-  };
-
   const setCampusSearchRange = (range: number) => {
     dispatch({
       type: SET_CAMPUS_SEARCH_RANGE,
@@ -389,9 +371,13 @@ const SearchContextProvider: React.FC = ({ children }) => {
       dispatch({ type: SEARCH_PLACES_REQUEST });
       searchPlaces(newState, specificRange)
         .then((response) => {
-          if (!((response as CampusesToCollaborateResponse)?.campusesToCollaborateList?.length)) {
-            if (state.campusSearchRangeInMiles < 4000) {
-              const nextRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
+          if ((response as CampusesToCollaborateResponse)
+            ?.campusesToCollaborateList
+            ?.length === 0
+          ) {
+            const currentRange = specificRange || state.campusSearchRangeInMiles;
+            if (currentRange < 4000) {
+              const nextRange = getCampusSearchNextRange(currentRange);
               setCampusSearchRange(nextRange);
               searchPlacesToCollaborate(true, nextRange);
             } else {
@@ -406,7 +392,7 @@ const SearchContextProvider: React.FC = ({ children }) => {
           }
         })
         .catch(() => dispatch({ type: SEARCH_PLACES_ERROR }))
-        .finally(() => setCampusSearchWaiting(false));
+        .finally(() => setPlacesLoading(false));
     }
   };
 
@@ -432,10 +418,6 @@ const SearchContextProvider: React.FC = ({ children }) => {
 
   const setMapPlaces = (mapPlaces: (CampusToCollaborate|VenueToCollaborate)[]) => {
     dispatch({ type: SET_MAP_PLACES, payload: mapPlaces });
-  };
-
-  const setPlacesLoading = (placesLoading: boolean) => {
-    dispatch({ type: SET_PLACES_LOADING, payload: placesLoading });
   };
 
   const clearPlaceSearch = () => {
@@ -502,7 +484,6 @@ const SearchContextProvider: React.FC = ({ children }) => {
         setStartAndEndTime,
         setVenueSkip,
         setCampusSearchRange,
-        setCampusSearchWaiting,
       }}
     >
       {children}

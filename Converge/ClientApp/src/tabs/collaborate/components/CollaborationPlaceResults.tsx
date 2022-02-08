@@ -89,7 +89,7 @@ const CollaborationPlaceResults: React.FC<Props> = (props) => {
           <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
             {state.loadMorePlacesLoading
                && (<Loader />)}
-            {state.venueSkip < 1000 && state.loadMorePlacesLoading === false ? (
+            {state.venueSkip < 1000 && !state.loadMorePlacesLoading && (
               <Button
                 content="Show more"
                 onClick={() => {
@@ -100,14 +100,14 @@ const CollaborationPlaceResults: React.FC<Props> = (props) => {
                   ]);
                 }}
               />
-            )
-              : (
-                <Text
-                  className={classes.textNoMore}
-                >
-                  No more results
-                </Text>
-              )}
+            )}
+            {state.venueSkip > 1000 && !state.loadMorePlacesLoading && (
+            <Text
+              className={classes.textNoMore}
+            >
+              No more results
+            </Text>
+            )}
           </Flex>
         )}
 

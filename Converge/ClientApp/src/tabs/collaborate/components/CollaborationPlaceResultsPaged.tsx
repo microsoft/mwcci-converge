@@ -39,7 +39,7 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
     state,
     setVenueSkip,
     setCampusSearchRange,
-    setCampusSearchWaiting,
+    setPlacesLoading,
     searchPlacesToCollaborate,
   } = useSearchContextProvider();
 
@@ -49,7 +49,7 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
 
   const loadFartherPlaces = () => {
     if (moreRecommendationsfetcher === undefined) {
-      setCampusSearchWaiting(true);
+      setPlacesLoading(true);
       const increasedSearchRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
       setCampusSearchRange(increasedSearchRange);
       searchPlacesToCollaborate(true, increasedSearchRange);
@@ -109,7 +109,7 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
               && (<Loader />)}
             </Flex>
             <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
-              {state.venueSkip < 1000 && state.loadMorePlacesLoading === false ? (
+              {state.venueSkip < 1000 && !state.loadMorePlacesLoading && (
                 <Button
                   content="Show more"
                   onClick={() => {
@@ -120,14 +120,14 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
                     ]);
                   }}
                 />
-              )
-                : (
-                  <Text
-                    className={classes.textNoMore}
-                  >
-                    No more results
-                  </Text>
-                )}
+              )}
+              {state.venueSkip > 1000 && !state.loadMorePlacesLoading && (
+              <Text
+                className={classes.textNoMore}
+              >
+                No more results
+              </Text>
+              )}
             </Flex>
           </>
         )}
@@ -148,8 +148,8 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
                 ]);
               }}
               className={classes.showMoreBtn}
-              disabled={state.campusSearchWaiting}
-              loading={state.campusSearchWaiting}
+              disabled={state.placesLoading}
+              loading={state.placesLoading}
               content="Show more"
             />
           )
