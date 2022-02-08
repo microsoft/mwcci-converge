@@ -5679,6 +5679,11 @@
     "locate-path" "^6.0.0"
     "path-exists" "^4.0.0"
 
+"flagged@^2.0.1":
+  "integrity" "sha512-cKkJdbHruBbi4CAufayqDs1X6PYMKE+MZmG/3mYBPZw1M0dY+tA14tDTkg5+TISQwZ7tTIzwubFZNv4lm7XENw=="
+  "resolved" "https://registry.npmjs.org/flagged/-/flagged-2.0.1.tgz"
+  "version" "2.0.1"
+
 "flat-cache@^3.0.4":
   "integrity" "sha512-dm9s5Pw7Jc0GvMYbshN6zchCA9RgQlzzEZX3vylR9IqFfS8XciblUXOKfW6SiuJ0e13eDYZoZV5wdrev7P3Nwg=="
   "resolved" "https://registry.npmjs.org/flat-cache/-/flat-cache-3.0.4.tgz"
@@ -8915,7 +8920,7 @@
     "loose-envify" "^1.4.0"
     "prop-types" "^15.6.2"
 
-"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^16.0.0", "react@^16.3.0", "react@^16.8.0", "react@^16.8.0 || ^17", "react@^17.0.1", "react@>= 16", "react@>=0.14.9", "react@>=15", "react@>=16.6.0", "react@>=16.8.0 <17.0.0", "react@>=16.8.0 <18.0.0", "react@16.10":
+"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^16.0.0", "react@^16.3.0", "react@^16.8.0", "react@^16.8.0 || ^17", "react@^17.0.1", "react@>= 16", "react@>=0.14.9", "react@>=15", "react@>=16", "react@>=16.6.0", "react@>=16.8.0 <17.0.0", "react@>=16.8.0 <18.0.0", "react@16.10":
   "integrity" "sha512-MFVIq0DpIhrHFyqLU0S3+4dIcBhhOvBE8bJ/5kHPVOVaGdo0KuiQzpcjCPsf585WvhypqtrMILyoE2th6dT+Lw=="
   "resolved" "https://registry.npmjs.org/react/-/react-16.10.2.tgz"
   "version" "16.10.2"

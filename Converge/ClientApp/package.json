@@ -27,6 +27,7 @@
     "axios-cache-adapter": "2.7.3",
     "bingmaps": "2.0.3",
     "dayjs": "1.10.5",
+    "flagged": "^2.0.1",
     "lodash": "4.17.21",
     "office-ui-fabric-react": "7.170.3",
     "react": "16.10",
