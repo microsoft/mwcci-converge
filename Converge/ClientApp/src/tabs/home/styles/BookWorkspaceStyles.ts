@@ -73,7 +73,6 @@ const BookWorkspaceStyles = makeStyles(() => ({
   buildingContent: {
     overflowy: "auto",
     overflowX: "hidden !important",
-    maxHeight: "320px",
     MsOverflowStyle: "none",
     "@media (max-width: 1366px)": {
       height: "auto",
@@ -82,7 +81,6 @@ const BookWorkspaceStyles = makeStyles(() => ({
   WorkSpacebuildingContent: {
     overflowy: "auto",
     overflowX: "hidden !important",
-    maxHeight: "260px",
     MsOverflowStyle: "none",
     "@media (max-width: 1366px)": {
       height: "auto",

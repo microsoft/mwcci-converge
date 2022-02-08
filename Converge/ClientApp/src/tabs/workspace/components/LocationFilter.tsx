@@ -30,7 +30,7 @@ const LocationFilter: React.FC<Props> = (props) => {
   const { buildings } = props;
   const classes = LocationFilterStyles();
 
-  const handleDropdownChange = (bldg:string | undefined) => {
+  const handleDropdownChange = (bldg: string | undefined) => {
     logEvent(USER_INTERACTION, [
       { name: UI_SECTION, value: UISections.WorkspaceHome },
       { name: DESCRIPTION, value: `selected_building_change_${bldg}` },
@@ -54,6 +54,9 @@ const LocationFilter: React.FC<Props> = (props) => {
         value={buildings.find((b) => b.identity === state.location)?.displayName}
         placeholderTitle="Select a building"
         buttonTitle="Show more"
+        otherOptionsList={[]}
+        maxHeight="260px"
+
       />
     </FormField>
   );

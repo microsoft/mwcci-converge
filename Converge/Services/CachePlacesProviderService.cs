@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Converge.Services
 {
@@ -27,6 +26,11 @@ namespace Converge.Services
         private const string keyBuildingsUpnInfo = "BuildingsUpnInfo";
         private const string keyPlacesUpnInfo = "PlacesUpnInfo";
         private const string keySkipTokens = "SkipTokens";
+
+        /// <summary>
+        /// Left empty for testing purposes.
+        /// </summary>
+        public CachePlacesProviderService() { }
 
         public CachePlacesProviderService(IConfiguration paramConfiguration,
                                             ILogger<CachePlacesProviderService> paramLogger,
@@ -52,7 +56,7 @@ namespace Converge.Services
             }
         }
 
-        private bool CacheConfigEnabled => bool.Parse(configuration["CachingEnabled:BuildingsService"] ?? "false");
+        private bool CacheConfigEnabled => configuration != null ? bool.Parse(configuration["CachingEnabled:BuildingsService"] ?? "false") : false;
 
         private void AddBuildingUpnInfoToCache(List<BuildingBasicInfo> buildingsList, string cacheKey)
         {
@@ -147,7 +151,7 @@ namespace Converge.Services
             return partCacheKey.ToString();
         }
 
-        public BasicBuildingsResponse GetBuildings(int? topCount = null, string skipTokenString = null)
+        public BasicBuildingsResponse GetBuildings(int? topCount = 10, int? skip = 0)
         {
             BasicBuildingsResponse buildingsResponse = null;
             if (!CacheConfigEnabled)
@@ -158,7 +162,7 @@ namespace Converge.Services
             try
             {
                 string cacheKey = new StringBuilder(BuildPartCacheKey(keyBuildings)
-                                                    + BuildPartCacheKey(topCount, skipTokenString)).ToString();
+                                                    + BuildPartCacheKey(topCount, skip.ToString())).ToString();
                 //Get Buildings-Upns-List from the Cache
                 buildingsPlacesCache.TryGetValue(keyBuildingsUpnInfo, out List<CachedDataUpnInfo> buildingsUpnInfoList);
                 //Get Buildings-list from the Cache
@@ -173,13 +177,7 @@ namespace Converge.Services
                 var buildingsList = new List<BuildingBasicInfo>(cachedBuildingsList.Select(b => new BuildingBasicInfo(b.Identity, b.DisplayName)));
                 buildingsList = SortBuildingsAsCached(buildingsUpnInfoList, buildingsList, cacheKey);
 
-                //Get Skip-Token-Upns-List from the Cache
-                buildingsPlacesCache.TryGetValue(keySkipTokens, out List<CachedDataSkipToken> skipTokensList);
-                //Get Skip-token from the Cache.
-                var skipTokenData = skipTokensList?.FirstOrDefault(x => x.CachedPageKey.SameAs(cacheKey));
-                var skipToken = skipTokenData?.SkipToken;
-
-                return new BasicBuildingsResponse(buildingsList, skipToken);
+                return new BasicBuildingsResponse(buildingsList);
             }
             catch (Exception ex)
             {
@@ -188,7 +186,21 @@ namespace Converge.Services
             }
         }
 
-        public void AddBuildings(BasicBuildingsResponse buildingsResponse, int? topCount = null, string skipTokenString = null)
+        public BuildingBasicInfo GetBuildingFromCache(string buildingUpn)
+        {
+            if (!buildingsPlacesCache.TryGetValue(keyBuildings, out List<BuildingBasicInfo> cachedBuildingsList))
+            {
+                return null;
+            }
+            var building = cachedBuildingsList.FirstOrDefault(b => b.Identity.Equals(buildingUpn));
+            if (building == null)
+            {
+                return null;
+            }
+            return new BuildingBasicInfo(building.Identity, building.DisplayName);
+        }
+
+        public void AddBuildings(BasicBuildingsResponse buildingsResponse, int? topCount = null, int? skip = null)
         {
             if (!CacheConfigEnabled)
             {
@@ -198,7 +210,7 @@ namespace Converge.Services
             try
             {
                 string cacheKey = new StringBuilder(BuildPartCacheKey(keyBuildings)
-                                                + BuildPartCacheKey(topCount, skipTokenString)).ToString();
+                                                + BuildPartCacheKey(topCount, skip.ToString())).ToString();
 
                 //Get Buildings-list from the Cache
                 buildingsPlacesCache.TryGetValue(keyBuildings, out List<BuildingBasicInfo> buildingsList);
@@ -209,9 +221,6 @@ namespace Converge.Services
                 buildingsPlacesCache.Set(keyBuildings, buildingsList, memoryCacheEntryOptions);
                 //Add Buildings-Places-Upn-list from the Cache
                 AddBuildingUpnInfoToCache(buildingsList, cacheKey);
-
-                //Add Skip-token to the Cache.
-                AddSkipTokenToCache(skipTokenString, cacheKey);
             }
             catch (Exception ex)
             {

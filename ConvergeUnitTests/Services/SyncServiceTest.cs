@@ -23,8 +23,14 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            appGraphService.Setup(x => x.GetRoomLists()).Returns(() => Task.FromResult(new List<Place>()));
-            SyncService syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
+            var cachePlacesProviderService = new Mock<CachePlacesProviderService>();
+            appGraphService.Setup(x => x.GetAllRoomLists()).Returns(() => Task.FromResult(new List<Place>()));
+            SyncService syncService = new SyncService(
+                telemetryService.Object, 
+                appGraphService.Object, 
+                bingMapService.Object,
+                cachePlacesProviderService.Object
+            );
 
             // Act
             List<GraphPlace> places = syncService.GetAllGraphPlaces().GetAwaiter().GetResult();
@@ -40,13 +46,14 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            appGraphService.Setup(x => x.GetRoomLists()).Returns(() => Task.FromResult(new List<Place>
+            var cachePlacesProviderService = new Mock<CachePlacesProviderService>();
+            appGraphService.Setup(x => x.GetAllRoomLists()).Returns(() => Task.FromResult(new List<Place>
                 {
                     It.IsAny<Place>()
                 }));
             appGraphService.Setup(x => x.GetAllWorkspaces(It.IsAny<string>())).Returns(() => Task.FromResult(new List<GraphPlace>()));
             appGraphService.Setup(x => x.GetAllConferenceRooms(It.IsAny<string>())).Returns(() => Task.FromResult(new List<GraphPlace>()));
-            SyncService syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
+            SyncService syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object, cachePlacesProviderService.Object);
 
             // Act
             List<GraphPlace> places = syncService.GetAllGraphPlaces().GetAwaiter().GetResult();
@@ -62,13 +69,14 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
+            var cachePlacesProviderService = new Mock<CachePlacesProviderService>();
 
             string testRoomListEmail1 = "roomList1@example.com";
             string testRoomListEmail2 = "roomList2example.com";
             Place room1 = JsonConvert.DeserializeObject<Place>($"{{ \"emailAddress\": \"{testRoomListEmail1}\" }}");
             Place room2 = JsonConvert.DeserializeObject<Place>($"{{ \"emailAddress\": \"{testRoomListEmail2}\" }}");
 
-            appGraphService.Setup(x => x.GetRoomLists()).Returns(() => Task.FromResult(new List<Place>
+            appGraphService.Setup(x => x.GetAllRoomLists()).Returns(() => Task.FromResult(new List<Place>
                 {
                     room1,
                     room2
@@ -81,7 +89,7 @@ namespace ConvergeUnitTests.Services
 
             appGraphService.Setup(x => x.GetAllWorkspaces(testRoomListEmail1)).Returns(() => Task.FromResult(new List<GraphPlace> { workspace.Object }));
             appGraphService.Setup(x => x.GetAllConferenceRooms(testRoomListEmail2)).Returns(() => Task.FromResult(new List<GraphPlace> { conferenceRoom.Object }));
-            SyncService syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
+            SyncService syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object, cachePlacesProviderService.Object);
 
             // Act
             List<GraphPlace> places = syncService.GetAllGraphPlaces().GetAwaiter().GetResult();
@@ -99,7 +107,8 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
+            var cachePlacesProviderService = new Mock<CachePlacesProviderService>();
+            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object, cachePlacesProviderService.Object);
 
             // Act
             List<ListItem> placesToUpdate = syncService.GetSharePointPlacesToUpdate(graphPlaces, exchangePlaces);
@@ -117,7 +126,8 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
+            var cachePlacesProviderService = new Mock<CachePlacesProviderService>();
+            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object, cachePlacesProviderService.Object);
 
             // Act
             List<ListItem> placesToUpdate = syncService.GetSharePointPlacesToUpdate(graphPlaces, exchangePlaces);
@@ -141,7 +151,8 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
+            var cachePlacesProviderService = new Mock<CachePlacesProviderService>();
+            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object, cachePlacesProviderService.Object);
 
             // Act
             List<ListItem> placesToUpdate = syncService.GetSharePointPlacesToUpdate(graphPlaces, exchangePlaces);
@@ -174,7 +185,8 @@ namespace ConvergeUnitTests.Services
             var telemetryService = new Mock<TelemetryService>();
             var appGraphService = new Mock<AppGraphService>();
             var bingMapService = new Mock<SearchBingMapsService>();
-            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object);
+            var cachePlacesProviderService = new Mock<CachePlacesProviderService>();
+            var syncService = new SyncService(telemetryService.Object, appGraphService.Object, bingMapService.Object, cachePlacesProviderService.Object);
 
             // Act
             // fix this

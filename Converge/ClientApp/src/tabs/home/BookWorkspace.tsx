@@ -17,15 +17,12 @@ import AvailabilityChart from "./components/AvailabilityChart";
 import BuildingCapacity from "./components/BuildingCapacity";
 import Schedule from "../../types/Schedule";
 import ExchangePlace, { PlaceType } from "../../types/ExchangePlace";
-import { getBuildingSchedule, getBuildingPlaces } from "../../api/buildingService";
-import { getWorkingHours, createEvent } from "../../api/calendarService";
 import {
   DESCRIPTION,
   UISections, UI_SECTION, USER_INTERACTION,
 } from "../../types/LoggerTypes";
 import { logEvent } from "../../utilities/LogWrapper";
 import createDeepLink from "../../utilities/deepLink";
-import { getMyRecommendation, updateMyPredictedLocation } from "../../api/meService";
 import TravelTimes from "./components/TravelTimes";
 import WorkingStartEnd from "../../types/WorkingStartEnd";
 import IsThisHelpful from "../../utilities/IsThisHelpful";
@@ -41,11 +38,17 @@ import { useAppSettingsProvider } from "../../providers/AppSettingsProvider";
 import AddRecentBuildings from "../../utilities/RecentBuildingsManager";
 import PopupMenuWrapper from "../../utilities/popupMenuWrapper";
 import BuildingBasicInfo from "../../types/BuildingBasicInfo";
+import { useApiProvider } from "../../providers/ApiProvider";
 
 const RECOMMENDED = "My Location";
 
 const BookWorkspace: React.FC = () => {
   const classes = BookWorkspaceStyles();
+  const {
+    calendarService,
+    meService,
+    buildingService,
+  } = useApiProvider();
   const {
     state,
     convergeSettings,
@@ -118,17 +121,14 @@ const BookWorkspace: React.FC = () => {
     setIsError(false);
     let hours = workingHours;
     if (!hours) {
-      hours = await getWorkingHours();
+      hours = await calendarService.getWorkingHours();
       setWorkingHours(hours);
     }
     const startHours = dayjs(hours.start);
     const endHours = dayjs(hours.end);
-    const startBuilding = dayjs.utc(start).set("hour", startHours.hour()).set("minute", startHours.minute());
-    let endBuilding = dayjs.utc(start).set("hour", endHours.hour()).set("minute", endHours.minute());
-    if (endBuilding.isBefore(startBuilding)) {
-      endBuilding = endBuilding.add(1, "day");
-    }
-    return getBuildingSchedule(
+    const startBuilding = dayjs(start).set("hour", startHours.hour()).set("minute", startHours.minute()).utc();
+    const endBuilding = dayjs(start).set("hour", endHours.hour()).set("minute", endHours.minute()).utc();
+    return buildingService.getBuildingSchedule(
       building.identity,
       startBuilding.toISOString(),
       endBuilding.toISOString(),
@@ -137,19 +137,20 @@ const BookWorkspace: React.FC = () => {
       .finally(() => setLoading(false));
   };
 
-  const refreshRecommendation = async () => {
+  const refreshRecommendation = () => {
     setIsError(false);
     const day = dayjs.utc(start);
     setSelectedBuilding(undefined);
-    await getMyRecommendation(day.year(), day.month() + 1, day.date())
+    meService.getMyRecommendation(day.year(), day.month() + 1, day.date())
       .then((recommendation) => {
         setMyRecommendation(recommendation);
         if (recommendation !== "Remote" && recommendation !== "Out of Office") {
-          const building = buildingsList.find((b) => b.displayName === recommendation);
-          if (building) {
-            getSchedule(building);
-            setSelectedBuilding(building);
-          }
+          buildingService.getBuildingByDisplayName(recommendation).then((building) => {
+            if (building) {
+              getSchedule(building);
+              setSelectedBuilding(building);
+            }
+          }).catch(() => setIsError(true));
         }
       }).catch(() => setIsError(true));
   };
@@ -169,7 +170,7 @@ const BookWorkspace: React.FC = () => {
 
   useEffect(() => {
     if (selectedBuilding) {
-      getBuildingPlaces(
+      buildingService.getBuildingPlaces(
         selectedBuilding.identity,
         PlaceType.Space,
         {
@@ -183,7 +184,7 @@ const BookWorkspace: React.FC = () => {
     }
   }, [selectedBuilding]);
 
-  const handleDropdownChange = (bldg:string | undefined) => {
+  const handleDropdownChange = (bldg: string | undefined) => {
     if (bldg !== "Remote" && bldg !== "Out of Office") {
       setSelectedBuildingName(bldg);
     } else {
@@ -217,11 +218,21 @@ const BookWorkspace: React.FC = () => {
     }
     setLoading(false);
   };
+  const onClearTextBox = async (isValid:boolean) => {
+    if (isValid === true) {
+      setMyRecommendation(myRecommendation);
+      const building = buildingsList.find((b) => b.displayName === myRecommendation);
+      if (building) {
+        getSchedule(building);
+        setSelectedBuilding(building);
+      }
+    }
+  };
 
   const refreshRecommended = async () => {
     setLoading(true);
     const day = dayjs.utc(start);
-    getMyRecommendation(day.year(), day.month() + 1, day.date())
+    meService.getMyRecommendation(day.year(), day.month() + 1, day.date())
       .then((recommendation) => {
         setMyRecommendation(recommendation);
         if (recommendation !== "Remote" && recommendation !== "Out of Office") {
@@ -237,7 +248,7 @@ const BookWorkspace: React.FC = () => {
 
   useEffect(() => {
     if (selectedBuilding?.identity) {
-      getBuildingPlaces(selectedBuilding?.identity, PlaceType.Room)
+      buildingService.getBuildingPlaces(selectedBuilding?.identity, PlaceType.Room)
         .then((response) => {
           const place = response.exchangePlacesList.find((ep) => (
             ep.street || ep.city || ep.postalCode || ep.countryOrRegion
@@ -259,7 +270,7 @@ const BookWorkspace: React.FC = () => {
       <Box className={classes.root}>
         <Flex gap="gap.small" wrap className={classes.actions}>
           <Box className={classes.halfWidthDropDown}>
-            <PopupMenuWrapper headerTitle={RECOMMENDED} handleDropdownChange={handleDropdownChange} buildingList={buildingsList.map((x) => x.displayName)} locationBuildingName={myRecommendation !== "Remote" && myRecommendation !== "Out of Office" ? selectedBuilding?.displayName : myRecommendation} width="320px" marginContent="5.1rem" value={selectedBuildingName === RECOMMENDED ? "" : selectedBuildingName} placeholderTitle={RECOMMENDED} buttonTitle="See more" />
+            <PopupMenuWrapper headerTitle={RECOMMENDED} handleDropdownChange={handleDropdownChange} buildingList={buildingsList.map((x) => x.displayName)} locationBuildingName={myRecommendation} width="320px" marginContent="5.1rem" value={selectedBuildingName === RECOMMENDED ? "" : selectedBuildingName} placeholderTitle={RECOMMENDED} buttonTitle="See more" otherOptionsList={[]} maxHeight="320px" clearTextBox={onClearTextBox} />
           </Box>
           <Box className={classes.datePickerStyles}>
             <DatePickerPrimary
@@ -269,23 +280,23 @@ const BookWorkspace: React.FC = () => {
           </Box>
         </Flex>
         {isError
-              && selectedBuildingName === RECOMMENDED && (
-              <Box className={classes.errBox}>
-                <Text content="Something went wrong." color="red" />
-                <Button
-                  content="Try again"
-                  text
-                  onClick={() => {
-                    refreshRecommended();
-                    logEvent(USER_INTERACTION, [
-                      { name: UI_SECTION, value: UISections.WorkspaceHome },
-                      { name: DESCRIPTION, value: "refreshRecommended" },
-                    ]);
-                  }}
-                  color="red"
-                  className={classes.retryBtn}
-                />
-              </Box>
+          && selectedBuildingName === RECOMMENDED && (
+            <Box className={classes.errBox}>
+              <Text content="Something went wrong." color="red" />
+              <Button
+                content="Try again"
+                text
+                onClick={() => {
+                  refreshRecommended();
+                  logEvent(USER_INTERACTION, [
+                    { name: UI_SECTION, value: UISections.WorkspaceHome },
+                    { name: DESCRIPTION, value: "refreshRecommended" },
+                  ]);
+                }}
+                color="red"
+                className={classes.retryBtn}
+              />
+            </Box>
         )}
         {!isError && selectedBuildingName === RECOMMENDED && myRecommendation === "Out of Office"
           && (
@@ -295,219 +306,219 @@ const BookWorkspace: React.FC = () => {
             />
           )}
         {!isError && selectedBuildingName === RECOMMENDED && myRecommendation === "Remote"
-        && (
-          <RemoteCard
-            title="Work from home"
-            description="Go into an office if you want, but save yourself the commute. "
-          />
-        )}
+          && (
+            <RemoteCard
+              title="Work from home"
+              description="Go into an office if you want, but save yourself the commute. "
+            />
+          )}
         {selectedBuilding && (
-        <Box className={classes.boxStyle}>
-          <Flex vAlign="center" space="between" gap="gap.small">
-            <Flex vAlign="end" gap="gap.small" className={classes.displayNameBox}>
-              <Header
-                as="h3"
-                content={selectedBuilding.displayName}
-                className={classes.displayName}
-              />
-              <BuildingCapacity availableSpace={schedule?.available || 100} />
+          <Box className={classes.boxStyle}>
+            <Flex vAlign="center" space="between" gap="gap.small">
+              <Flex vAlign="end" gap="gap.small" className={classes.displayNameBox}>
+                <Header
+                  as="h3"
+                  content={selectedBuilding.displayName}
+                  className={classes.displayName}
+                />
+                <BuildingCapacity availableSpace={schedule?.available || 100} />
+              </Flex>
             </Flex>
-          </Flex>
-          {convergeSettings
-          && convergeSettings.zipCode
-          && address
-          && <TravelTimes start={convergeSettings?.zipCode} end={address} />}
+            {convergeSettings
+              && convergeSettings.zipCode
+              && address
+              && <TravelTimes start={convergeSettings?.zipCode} end={address} />}
             {isError
-             && selectedBuildingName !== RECOMMENDED && (
-             <Box className={classes.errBox}>
-               <Text content="Something went wrong." color="red" />
-               <Button
-                 content="Try again"
-                 text
-                 onClick={() => {
-                   refreshWorkSpace();
-                   logEvent(USER_INTERACTION, [
-                     { name: UI_SECTION, value: UISections.WorkspaceHome },
-                     { name: DESCRIPTION, value: "refreshWorkSpace" },
-                   ]);
-                 }}
-                 color="red"
-                 className={classes.retryBtn}
-               />
-             </Box>
-            )}
-          <Flex hAlign="center">
-            {loading && <Box className={classes.loaderBox}><Loader /></Box>}
-            {!loading && schedule && <AvailabilityChart schedule={schedule} />}
-          </Flex>
-          <Flex
-            vAlign="center"
-            space="between"
-            gap="gap.small"
-            padding="padding.medium"
-            className={isError ? classes.errorMessage : classes.hideErrorMessage}
-          >
-            <Provider
-              theme={{
-                componentVariables: {
-                  Dialog: ({ colorScheme }: SiteVariablesPrepared) => ({
-                    rootWidth: "795px",
-                    headerFontSize: "18px",
-                    rootBackground: colorScheme.default.background,
-                    color: colorScheme.default.background3,
-                  }),
-                },
-              }}
-            >
-              <Dialog
-                open={open}
-                onOpen={() => {
-                  logEvent(USER_INTERACTION, [
-                    { name: UI_SECTION, value: UISections.WorkspaceHome },
-                    { name: DESCRIPTION, value: "open_workspace_dialog" },
-                  ]);
-                  setOpen(true);
-                }}
-                onCancel={() => {
-                  clearEvent();
-                  logEvent(USER_INTERACTION, [
-                    { name: UI_SECTION, value: UISections.WorkspaceHome },
-                    { name: DESCRIPTION, value: "cancel_workspace_dialog" },
-                  ]);
-                  setOpen(false);
-                }}
-                onConfirm={() => {
-                  logEvent(USER_INTERACTION, [
-                    { name: UI_SECTION, value: UISections.WorkspaceHome },
-                    { name: DESCRIPTION, value: "confirm_workspace_dialog" },
-                  ]);
-                  setLoading(true);
-                  let startDate = start.toDate();
-                  let endDate = end.toDate();
-                  if (isAllDay) {
-                    startDate = dayjs(start.format("YYYY-MM-DD")).toDate();
-                    endDate = dayjs(end.add(1, "day").format("YYYY-MM-DD")).toDate();
-                  }
-                  createEvent({
-                    isAllDay,
-                    start: startDate,
-                    end: endDate,
-                    attendees: [{
-                      emailAddress: flexiblePlace?.identity,
-                      type: "resource" as MicrosoftGraph.AttendeeType,
-                    }],
-                    location: {
-                      displayName: flexiblePlace?.displayName,
-                      locationEmailAddress: flexiblePlace?.identity,
-                      locationType: "conferenceRoom",
-                    },
-                    title: "Converge Workspace Booking",
-                    showAs: "free" as MicrosoftGraph.FreeBusyStatus,
-                  })
-                    .then(() => {
-                      updateMyPredictedLocation({
-                        year: dayjs.utc(startDate).year(),
-                        month: dayjs.utc(startDate).month() + 1,
-                        day: dayjs.utc(startDate).date(),
-                        userPredictedLocation: {
-                          campusUpn: flexiblePlace?.locality,
-                        },
-                      });
-                      if (flexiblePlace) {
-                        const newSettings = {
-                          ...convergeSettings,
-                          recentBuildingUpns: AddRecentBuildings(
-                            convergeSettings?.recentBuildingUpns,
-                            flexiblePlace.locality,
-                          ),
-                        };
-                        setConvergeSettings(newSettings);
-                      }
-                    })
-                    .then(refreshRecommended)
-                    .then(() => {
-                      setOpen(false);
-                      clearEvent();
-                      Notifications.show({
-                        duration: 5000,
-                        title: "You reserved a workspace.",
-                        content: `${flexiblePlace?.displayName} (${dayjs(startDate).format("ddd @ h:mm A")})`,
-                      });
-                    })
-                    .catch(() => {
-                      setErr("Something went wrong with your workspace reservation. Please try again.");
-                    })
-                    .finally(() => {
-                      setLoading(false);
-                    });
-                }}
-                confirmButton={{
-                  content: "Reserve",
-                  loading,
-                }}
-                cancelButton="Cancel"
-                content={(
-                   flexiblePlace && (
-                   <BookPlaceModal
-                     place={flexiblePlace}
-                     bookable={bookable}
-                     setBookable={setBookable}
-                     buildingName={selectedBuildingName}
-                     err={err}
-                     start={start}
-                     end={end}
-                     setStart={setStart}
-                     setEnd={setEnd}
-                     isAllDay={isAllDay}
-                     setIsAllDay={setIsAllDay}
-                     isFlexible={!!flexiblePlace}
-                   />
-                   )
-                )}
-                header={(
-                  <Text
-                    as="h2"
-                    content="Book a workspace"
-                    className={classes.header}
-                  />
-                )}
-                trigger={(
+              && selectedBuildingName !== RECOMMENDED && (
+                <Box className={classes.errBox}>
+                  <Text content="Something went wrong." color="red" />
                   <Button
-                    primary
+                    content="Try again"
                     text
-                    disabled={!flexiblePlace}
-                  >
-                    Flexible seating
-                  </Button>
-                )}
-                headerAction={{
-                  icon: <CloseIcon />,
-                  title: "Close",
-                  onClick: () => {
-                    logEvent(USER_INTERACTION, [
-                      { name: UI_SECTION, value: UISections.WorkspaceHome },
-                      { name: DESCRIPTION, value: "close_workspace_dialog" },
-                    ]);
-                    clearEvent();
-                    setOpen(false);
+                    onClick={() => {
+                      refreshWorkSpace();
+                      logEvent(USER_INTERACTION, [
+                        { name: UI_SECTION, value: UISections.WorkspaceHome },
+                        { name: DESCRIPTION, value: "refreshWorkSpace" },
+                      ]);
+                    }}
+                    color="red"
+                    className={classes.retryBtn}
+                  />
+                </Box>
+            )}
+            <Flex hAlign="center">
+              {loading && <Box className={classes.loaderBox}><Loader /></Box>}
+              {!loading && schedule && <AvailabilityChart schedule={schedule} />}
+            </Flex>
+            <Flex
+              vAlign="center"
+              space="between"
+              gap="gap.small"
+              padding="padding.medium"
+              className={isError ? classes.errorMessage : classes.hideErrorMessage}
+            >
+              <Provider
+                theme={{
+                  componentVariables: {
+                    Dialog: ({ colorScheme }: SiteVariablesPrepared) => ({
+                      rootWidth: "795px",
+                      headerFontSize: "18px",
+                      rootBackground: colorScheme.default.background,
+                      color: colorScheme.default.background3,
+                    }),
                   },
                 }}
-                className={classes.dialog}
-              />
-            </Provider>
-            <Button
-              onClick={() => {
-                goToWorkspaces();
-                logEvent(USER_INTERACTION, [
-                  { name: UI_SECTION, value: UISections.WorkspaceHome },
-                  { name: DESCRIPTION, value: "go_to_search_workspaces" },
-                ]);
-              }}
-            >
-              Search spaces
-            </Button>
-          </Flex>
-        </Box>
+              >
+                <Dialog
+                  open={open}
+                  onOpen={() => {
+                    logEvent(USER_INTERACTION, [
+                      { name: UI_SECTION, value: UISections.WorkspaceHome },
+                      { name: DESCRIPTION, value: "open_workspace_dialog" },
+                    ]);
+                    setOpen(true);
+                  }}
+                  onCancel={() => {
+                    clearEvent();
+                    logEvent(USER_INTERACTION, [
+                      { name: UI_SECTION, value: UISections.WorkspaceHome },
+                      { name: DESCRIPTION, value: "cancel_workspace_dialog" },
+                    ]);
+                    setOpen(false);
+                  }}
+                  onConfirm={() => {
+                    logEvent(USER_INTERACTION, [
+                      { name: UI_SECTION, value: UISections.WorkspaceHome },
+                      { name: DESCRIPTION, value: "confirm_workspace_dialog" },
+                    ]);
+                    setLoading(true);
+                    let startDate = start.toDate();
+                    let endDate = end.toDate();
+                    if (isAllDay) {
+                      startDate = dayjs(start.format("YYYY-MM-DD")).toDate();
+                      endDate = dayjs(end.add(1, "day").format("YYYY-MM-DD")).toDate();
+                    }
+                    calendarService.createEvent({
+                      isAllDay,
+                      start: startDate,
+                      end: endDate,
+                      attendees: [{
+                        emailAddress: flexiblePlace?.identity,
+                        type: "resource" as MicrosoftGraph.AttendeeType,
+                      }],
+                      location: {
+                        displayName: flexiblePlace?.displayName,
+                        locationEmailAddress: flexiblePlace?.identity,
+                        locationType: "conferenceRoom",
+                      },
+                      title: "Converge Workspace Booking",
+                      showAs: "free" as MicrosoftGraph.FreeBusyStatus,
+                    })
+                      .then(() => {
+                        meService.updateMyPredictedLocation({
+                          year: dayjs.utc(startDate).year(),
+                          month: dayjs.utc(startDate).month() + 1,
+                          day: dayjs.utc(startDate).date(),
+                          userPredictedLocation: {
+                            campusUpn: flexiblePlace?.locality,
+                          },
+                        });
+                        if (flexiblePlace) {
+                          const newSettings = {
+                            ...convergeSettings,
+                            recentBuildingUpns: AddRecentBuildings(
+                              convergeSettings?.recentBuildingUpns,
+                              flexiblePlace.locality,
+                            ),
+                          };
+                          setConvergeSettings(newSettings);
+                        }
+                      })
+                      .then(refreshRecommended)
+                      .then(() => {
+                        setOpen(false);
+                        clearEvent();
+                        Notifications.show({
+                          duration: 5000,
+                          title: "You reserved a workspace.",
+                          content: `${flexiblePlace?.displayName} (${dayjs(startDate).format("ddd @ h:mm A")})`,
+                        });
+                      })
+                      .catch(() => {
+                        setErr("Something went wrong with your workspace reservation. Please try again.");
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                  }}
+                  confirmButton={{
+                    content: "Reserve",
+                    loading,
+                  }}
+                  cancelButton="Cancel"
+                  content={(
+                    flexiblePlace && (
+                      <BookPlaceModal
+                        place={flexiblePlace}
+                        bookable={bookable}
+                        setBookable={setBookable}
+                        buildingName={selectedBuildingName}
+                        err={err}
+                        start={start}
+                        end={end}
+                        setStart={setStart}
+                        setEnd={setEnd}
+                        isAllDay={isAllDay}
+                        setIsAllDay={setIsAllDay}
+                        isFlexible={!!flexiblePlace}
+                      />
+                    )
+                  )}
+                  header={(
+                    <Text
+                      as="h2"
+                      content="Book a workspace"
+                      className={classes.header}
+                    />
+                  )}
+                  trigger={(
+                    <Button
+                      primary
+                      text
+                      disabled={!flexiblePlace}
+                    >
+                      Flexible seating
+                    </Button>
+                  )}
+                  headerAction={{
+                    icon: <CloseIcon />,
+                    title: "Close",
+                    onClick: () => {
+                      logEvent(USER_INTERACTION, [
+                        { name: UI_SECTION, value: UISections.WorkspaceHome },
+                        { name: DESCRIPTION, value: "close_workspace_dialog" },
+                      ]);
+                      clearEvent();
+                      setOpen(false);
+                    },
+                  }}
+                  className={classes.dialog}
+                />
+              </Provider>
+              <Button
+                onClick={() => {
+                  goToWorkspaces();
+                  logEvent(USER_INTERACTION, [
+                    { name: UI_SECTION, value: UISections.WorkspaceHome },
+                    { name: DESCRIPTION, value: "go_to_search_workspaces" },
+                  ]);
+                }}
+              >
+                Search spaces
+              </Button>
+            </Flex>
+          </Box>
         )}
         <IsThisHelpful logId="e0510597" sectionName={UISections.WorkspaceHome} />
         <Box className={classes.changeLocation}>

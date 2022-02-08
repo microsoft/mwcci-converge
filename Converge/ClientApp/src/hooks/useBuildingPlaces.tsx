@@ -2,8 +2,9 @@
 // Licensed under the MIT License.
 
 import { useEffect, useState } from "react";
-import { getBuildingPlaces, IExchangePlacesResponse } from "../api/buildingService";
+import BuildingService from "../api/buildingService";
 import ExchangePlace, { PlaceType } from "../types/ExchangePlace";
+import { IExchangePlacesResponse } from "../types/IExchangePlacesResponse";
 import usePromise, { ILoadingState, IPromiseError } from "./usePromise";
 
 interface BuildingPlacesFilterOptions {
@@ -21,13 +22,15 @@ interface IUseBuildingWorkspacesHookReturnType {
     placeType: PlaceType,
     itemsPerPage: number,
     filterOptions: BuildingPlacesFilterOptions,
-    clearList?: boolean
+    skipTokens?:string|undefined|null,
+    clearList?: boolean,
   ) => Promise<IExchangePlacesResponse>,
   clearList: () => void,
   hasMore: boolean
 }
 
 function useBuildingPlaces(
+  buildingService: BuildingService,
   buildingUpn?: string,
 ): IUseBuildingWorkspacesHookReturnType {
   const [
@@ -43,18 +46,19 @@ function useBuildingPlaces(
     placeType: PlaceType,
     itemsPerPage: number,
     filterOptions?: BuildingPlacesFilterOptions,
+    skipTokens?:string|undefined|null,
     clearList?: boolean,
   ) => {
     if (clearList) {
       setPlaces([]);
     }
     if (buildingUpn && placeType !== undefined) {
-      const result = getBuildingPlaces(
+      const result = buildingService.getBuildingPlaces(
         buildingUpn,
         placeType,
         {
           topCount: itemsPerPage,
-          skipToken: placesResult?.skipToken,
+          skipToken: skipTokens,
           ...filterOptions,
         },
       );
@@ -62,7 +66,7 @@ function useBuildingPlaces(
       return result;
     }
     setPlaces([]);
-    const result = { exchangePlacesList: [], skipToken: null };
+    const result = { exchangePlacesList: [], skipToken: "" };
     waitFor(Promise.resolve(result));
     return Promise.resolve(result);
   };
@@ -71,7 +75,7 @@ function useBuildingPlaces(
     setPlaces([]);
     waitFor(Promise.resolve({
       exchangePlacesList: [],
-      skipToken: null,
+      skipToken: "",
     }));
   };
 

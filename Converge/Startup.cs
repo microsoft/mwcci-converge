@@ -3,24 +3,25 @@
 
 using AutoWrapper;
 using Converge.Jobs;
+using Converge.Middleware;
 using Converge.Models;
 using Converge.Services;
+using Cronos;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Net.Http.Headers;
-using Microsoft.Extensions.Logging;
-using Cronos;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -151,6 +152,8 @@ namespace Converge
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddlewareExtensions();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -224,6 +227,7 @@ namespace Converge
         private void RegisterServices(IServiceCollection services)
         {
             services.AddScoped<UserGraphService>();
+            services.AddScoped<ChatGraphService>();
             services.AddScoped<PlacesService>();
             services.AddScoped<ScheduleService>();
             services.AddScoped<RouteService>();
@@ -239,6 +243,7 @@ namespace Converge
             services.AddTransient<BuildingsService>();
             services.AddTransient<IHttpClientProviderService, HttpClientProviderService>();
             services.AddSingleton<CachePlacesProviderService>();
+            services.AddSingleton<CacheSharePointContentService>();
         }
 
         private void RegisterValidators(IServiceCollection services)

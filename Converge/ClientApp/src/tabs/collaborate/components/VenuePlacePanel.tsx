@@ -16,11 +16,11 @@ import {
   USER_INTERACTION, UI_SECTION, UISections, DESCRIPTION, IMPORTANT_ACTION, ImportantActions,
 } from "../../../types/LoggerTypes";
 import VenueReviews from "./VenueReviews";
-import { getVenueDetails } from "../../../api/searchService";
 import VenueDetails from "../../../types/VenueDetails";
 import VenueDetailsDisplay from "./VenueDetailsDisplay";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import VenuePlacePanelStyles from "../styles/VenuePlacePanelStyles";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   setOpen: (open: boolean) => void;
@@ -34,6 +34,7 @@ enum VenueDetailsTabs {
 }
 
 const PlacePanel: React.FC<Props> = (props) => {
+  const { searchService } = useApiProvider();
   const {
     convergeSettings,
     setConvergeSettings,
@@ -50,7 +51,7 @@ const PlacePanel: React.FC<Props> = (props) => {
 
   useEffect(() => {
     setLoading(true);
-    getVenueDetails(place.venueId)
+    searchService.getVenueDetails(place.venueId)
       .then(
         (response) => setVenueDetails(
           response,

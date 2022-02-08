@@ -45,7 +45,7 @@ namespace Converge.Models
             var errorBuilder = new StringBuilder();
 
             errorBuilder = errorBuilder.Clear().Append("Start-time should be later than now.");
-            RuleFor(req => req.StartTime).GreaterThan(DateTime.Now).WithMessage(errorBuilder.ToString());
+            RuleFor(req => req.StartTime).GreaterThan(DateTime.UtcNow.Date).WithMessage(errorBuilder.ToString());
             errorBuilder = errorBuilder.Clear().Append("Start-time should be earlier than End-time.");
             RuleFor(req => req.StartTime).LessThan(x => x.EndTime).WithMessage(errorBuilder.ToString());
 

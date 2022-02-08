@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box, Image, Flex, Button, Divider, Text,
 } from "@fluentui/react-northstar";
@@ -12,14 +12,14 @@ import { Icon } from "office-ui-fabric-react";
 import { logEvent } from "../../../utilities/LogWrapper";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import PlaceAmmenities from "../../workspace/components/PlaceAmmenities";
-import { setSettings } from "../../../api/meService";
 import {
   ImportantActions, IMPORTANT_ACTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import ImagePlaceholder from "../../../utilities/ImagePlaceholder";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import CampusPlacePanelStyles from "../styles/CampusPlacePanelStyles";
-import { usePlacePhotos } from "../../../providers/PlacePhotosProvider";
+import { useApiProvider } from "../../../providers/ApiProvider";
+import { PlacePhotosResult } from "../../../api/buildingService";
 
 interface Props {
   setOpen: (open: boolean) => void;
@@ -28,6 +28,7 @@ interface Props {
 }
 
 const CampusPlacePanel: React.FC<Props> = (props) => {
+  const { meService, buildingService } = useApiProvider();
   const {
     convergeSettings,
     setConvergeSettings,
@@ -39,15 +40,12 @@ const CampusPlacePanel: React.FC<Props> = (props) => {
   } = props;
   const classes = CampusPlacePanelStyles();
 
-  const [,
-    placePhotos = [],,
-    getPlacePhotos,
-  ] = usePlacePhotos();
+  const [placePhotos, setPlacePhotos] = useState<PlacePhotosResult | undefined>(undefined);
 
   const images = useMemo<string[]>(() => {
     const img: string[] = [];
-    const cover = placePhotos?.[0]?.coverPhoto?.url;
-    const floorPlan = placePhotos?.[0]?.floorPlan?.url;
+    const cover = placePhotos?.coverPhoto?.url;
+    const floorPlan = placePhotos?.floorPlan?.url;
     if (cover) {
       img.push(cover);
     }
@@ -59,7 +57,8 @@ const CampusPlacePanel: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (place.sharePointID) {
-      getPlacePhotos([place.sharePointID]);
+      buildingService.getPlacePhotos(place.sharePointID)
+        .then(setPlacePhotos);
     }
   }, [place.sharePointID]);
 
@@ -126,7 +125,7 @@ const CampusPlacePanel: React.FC<Props> = (props) => {
                 favoriteCampusesToCollaborate,
               };
               setConvergeSettings(newSettings);
-              setSettings(newSettings)
+              meService.setSettings(newSettings)
                 .then(() => {
                   if (!isFavorite) {
                     logEvent(USER_INTERACTION, [

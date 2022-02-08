@@ -29,7 +29,7 @@ const cleanManifest = async () => {
 async function setDevEnvironment() {
   dotenv.config();
 
-  process.env.NAME_SUFFIX = process.env.NAME_SUFFIX ?? "_local";
+  process.env.AppEnvironment = "_dev";
 
   if (!process.env.DOMAIN) {
     throw new Error("Missing required environment variable: DOMAIN!");
@@ -42,33 +42,10 @@ async function setDevEnvironment() {
   }
 }
 
-async function setProdEnvironment() {
+function checkEnvironmentVariables() {
   if (!process.env.WEBSITE) {
     throw new Error("Missing required environment variable: WEBSITE!");
   }
-  if (!process.env.DOMAIN) {
-    throw new Error("Missing required environment variable: DOMAIN!");
-  }
-  if (!process.env.APP_ID) {
-    throw new Error("Missing required environment variable: APP_ID!");
-  }
-}
-
-async function setStagingEnvironment() {
-  if (!process.env.WEBSITE) {
-    throw new Error("Missing required environment variable: WEBSITE!");
-  }
-  if (!process.env.DOMAIN) {
-    throw new Error("Missing required environment variable: DOMAIN!");
-  }
-  if (!process.env.APP_ID) {
-    throw new Error("Missing required environment variable: APP_ID!");
-  }
-}
-
-async function setTestingEnvironment() {
-  process.env.NAME_SUFFIX = process.env.NAME_SUFFIX ?? "_test";
-
   if (!process.env.DOMAIN) {
     throw new Error("Missing required environment variable: DOMAIN!");
   }
@@ -88,15 +65,8 @@ const buildManifest = async () => {
     case "dev":
       setDevEnvironment();
       break;
-    case "prod":
-      setProdEnvironment();
-      break;
-    case "stage":
-      setStagingEnvironment();
-      break;
-    case "test":
-      setTestingEnvironment();
-      break;
+    default:
+      checkEnvironmentVariables()
   }
 
   const manifestTemplateString = await new Promise((resolve, reject) => {

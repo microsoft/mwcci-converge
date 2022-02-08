@@ -15,12 +15,12 @@
     "outline": "outline.png"
   },
   "name": {
-    "short": "Converge%NAME_SUFFIX%",
-    "full": "Go further together."
+    "short": "Converge%AppEnvironment%",
+    "full": "Converge%AppEnvironment%"
   },
   "description": {
-    "short": "Go further together.",
-    "full": "Go further together."
+    "short": "%DESCRIPTION%",
+    "full": "%DESCRIPTION%"
   },
   "accentColor": "#FFFFFF",
   "bots": [],

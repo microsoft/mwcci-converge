@@ -8,8 +8,8 @@ import React, {
 import ExchangePlace, { PlaceType } from "../types/ExchangePlace";
 import SortOptions from "../types/SortOptions";
 import CalendarEvent from "../types/CalendarEvent";
-import { getUpcomingReservations } from "../api/calendarService";
 import UpcomingReservationsResponse from "../types/UpcomingReservationsResponse";
+import { useApiProvider } from "./ApiProvider";
 
 const UPDATE_LOCATION = "UPDATE_LOCATION";
 const UPDATE_START_DATE = "UPDATE_START_DATE";
@@ -399,6 +399,7 @@ const iState: IPlaceState = {
 };
 
 const PlaceContextProvider: React.FC = ({ children }) => {
+  const { calendarService } = useApiProvider();
   const [state, dispatch] = useReducer(
     reducer,
     {
@@ -425,7 +426,7 @@ const PlaceContextProvider: React.FC = ({ children }) => {
     setReservationsListLoading(true);
     const resStartRange = dayjs.utc(start).toISOString();
     const resEndRange = dayjs.utc(end).toISOString();
-    getUpcomingReservations(resStartRange, resEndRange, 10, 0)
+    calendarService.getUpcomingReservations(resStartRange, resEndRange, 10, 0)
       .then((response) => {
         dispatch({
           type: UPDATE_UPCOMING_RESERVATIONS_LIST,
@@ -440,7 +441,7 @@ const PlaceContextProvider: React.FC = ({ children }) => {
     setReservationsListLoading(true);
     const resStartRange = dayjs.utc(state.upcomingReservationsStartDate).toISOString();
     const resEndRange = dayjs.utc(state.upcomingReservationsEndDate).toISOString();
-    getUpcomingReservations(resStartRange, resEndRange, 10, skip)
+    calendarService.getUpcomingReservations(resStartRange, resEndRange, 10, skip)
       .then((response) => {
         dispatch({
           type: LOAD_MORE_UPCOMING_RESERVATIONS,

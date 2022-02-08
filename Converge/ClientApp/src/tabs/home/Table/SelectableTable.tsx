@@ -39,15 +39,21 @@ import { Teammate, TeammateList, useTeammateProvider } from "../../../providers/
 import WorkgroupAvatar from "../components/WorkgroupAvatar";
 import AvailableTimesCell from "./AvailableTimesCell";
 import UserLocationCell from "./UserLocationCell";
-import { getMultiUserAvailabilityTimes } from "../../../api/userService";
 import TimeLimit from "../../../types/TimeLimit";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import SelectableTableStyles from "../styles/SelectableTableStyles";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
+const RELOAD_ROWS = "RELOAD_ROWS";
 const USER_AVAILABILITY_REQUEST = "USER_AVAILABILITY_REQUEST";
 const USER_AVAILABILITY_RESPONSE = "USER_AVAILABILITY_RESPONSE";
 const TOGGLE_ITEM = "TOGGLE_ITEM";
 const TOGGLE_ALL = "TOGGLE_ALL";
+
+interface ReloadRowsAction {
+  type: typeof RELOAD_ROWS,
+  payload: Teammate[],
+}
 
 interface UserAvailabilityRequestAction {
   type: typeof USER_AVAILABILITY_REQUEST,
@@ -72,7 +78,8 @@ interface ToggleAllAction {
 type SelectableTableAction = UserAvailabilityRequestAction
   | UserAvailabilityResponseAction
   | ToggleAllAction
-  | ToggleItemAction;
+  | ToggleItemAction
+  | ReloadRowsAction;
 
 type SelectableTableState = {
   rows: Record<string, boolean>;
@@ -81,10 +88,28 @@ type SelectableTableState = {
   selectedAvailableTimes: Record<string, TimeLimit[]>;
 }
 
+const getRowKeys = (teammateList: Teammate[]): Record<string, boolean> => {
+  const teammateRows = teammateList.reduce((items: Record<string, boolean>, teammate) => {
+    // eslint-disable-next-line no-param-reassign
+    items[teammate.user.id as string] = false;
+    return items;
+  }, {});
+  return teammateRows;
+};
+
 const selectableTableStateReducer: React.Reducer<SelectableTableState, SelectableTableAction> = (
   state, action,
 ) => {
   switch (action.type) {
+    case RELOAD_ROWS: {
+      const newState: SelectableTableState = {
+        rows: getRowKeys(action.payload),
+        availableTimes: {},
+        loadingAvailableTimes: {},
+        selectedAvailableTimes: {},
+      };
+      return newState;
+    }
     case TOGGLE_ITEM: {
       const newState = {
         ...state,
@@ -163,6 +188,7 @@ interface Props {
 }
 
 const SelectableTable: React.FC<Props> = (props) => {
+  const { userService } = useApiProvider();
   const { teammates } = props;
   const {
     convergeSettings,
@@ -187,7 +213,7 @@ const SelectableTable: React.FC<Props> = (props) => {
       setConvergeSettings(newSettings).then(() => {
         if (state.list === TeammateList.MyList) {
           setLoading(false);
-          getTeammates(state.list, state.date, state.searchString);
+          getTeammates(state.list, state.searchString);
         }
       }).catch(() => {
         if (state.list === TeammateList.MyList) {
@@ -239,11 +265,7 @@ const SelectableTable: React.FC<Props> = (props) => {
   ];
 
   const initialState: SelectableTableState = {
-    rows: teammates.reduce((items: Record<string, boolean>, teammate) => {
-      // eslint-disable-next-line no-param-reassign
-      items[teammate.user.id as string] = false;
-      return items;
-    }, {}),
+    rows: getRowKeys(teammates),
     availableTimes: {},
     loadingAvailableTimes: {},
     selectedAvailableTimes: {},
@@ -275,7 +297,7 @@ const SelectableTable: React.FC<Props> = (props) => {
       .second(0);
     const scheduleStart = scheduleDate.toDate();
     const scheduleEnd = dayjs(scheduleStart).add(1, "day").toDate();
-    getMultiUserAvailabilityTimes(
+    userService.getMultiUserAvailabilityTimes(
       users.map((teammate) => teammate.user.userPrincipalName as string),
       day.year(),
       day.month() + 1,
@@ -308,9 +330,10 @@ const SelectableTable: React.FC<Props> = (props) => {
 
   React.useEffect(() => {
     if (teammates.length) {
+      dispatch({ type: RELOAD_ROWS, payload: teammates });
       getAvailability(teammates);
     }
-  }, [teammates.length]);
+  }, [teammates.length, state.date]);
 
   const refreshPageTeammates = async () => {
     getAvailability(teammates);
@@ -344,7 +367,7 @@ const SelectableTable: React.FC<Props> = (props) => {
         }}
       >
         <ResponsiveTableContainer columns={responsiveColumnsConfig}>
-          <Table aria-label="Selectable table" accessibility={gridNestedBehavior}>
+          <Table aria-label="Selectable table" accessibility={gridNestedBehavior} className={classes.tableheight}>
             <Table.Row
               header
               accessibility={gridRowBehavior}

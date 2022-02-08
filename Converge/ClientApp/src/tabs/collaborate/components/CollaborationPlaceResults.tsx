@@ -1,9 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import React from "react";
 import {
-  Box, Button, Flex, Loader,
+  Box, Button, Flex, Loader, Text,
 } from "@fluentui/react-northstar";
 import { logEvent } from "../../../utilities/LogWrapper";
 import CollaborationCampusPlaceCard from "../../workspace/components/CollaborationCampusPlaceCard";
@@ -85,19 +88,26 @@ const CollaborationPlaceResults: React.FC<Props> = (props) => {
         ) && (
           <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
             {state.loadMorePlacesLoading
-              ? (<Loader />)
-              : (
-                <Button
-                  content="Show more"
-                  onClick={() => {
-                    loadMoreResults();
-                    logEvent(USER_INTERACTION, [
-                      { name: UI_SECTION, value: UISections.CollaborateResults },
-                      { name: DESCRIPTION, value: "loadMoreResults" },
-                    ]);
-                  }}
-                />
-              )}
+               && (<Loader />)}
+            {state.venueSkip < 1000 && !state.loadMorePlacesLoading && (
+              <Button
+                content="Show more"
+                onClick={() => {
+                  loadMoreResults();
+                  logEvent(USER_INTERACTION, [
+                    { name: UI_SECTION, value: UISections.CollaborateResults },
+                    { name: DESCRIPTION, value: "loadMoreResults" },
+                  ]);
+                }}
+              />
+            )}
+            {state.venueSkip > 1000 && !state.loadMorePlacesLoading && (
+            <Text
+              className={classes.textNoMore}
+            >
+              No more results
+            </Text>
+            )}
           </Flex>
         )}
 

@@ -44,4 +44,5 @@ Background Jobs for Location prediction - A good configured server (with configu
 										  around minimum of 50K-60K users (who have calendar events) within 24 hours' job-execution-window (considering 1.5 seconds on an average per user). 
 										  And it may go maximum upto 100K users.
 
+Graph Throttling Limitation - Based on single user statistics, and pro-rata based calculation, the number of users that can be supported = 5859 users simultaneously.
 

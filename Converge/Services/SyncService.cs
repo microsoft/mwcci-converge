@@ -6,6 +6,7 @@ using Converge.Models;
 using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Converge.Services
@@ -15,11 +16,18 @@ namespace Converge.Services
         private readonly TelemetryService telemetryService;
         private readonly AppGraphService appGraphService;
         private readonly SearchBingMapsService searchBingMapsService;
-        public SyncService(TelemetryService telemetryService, AppGraphService appGraphService, SearchBingMapsService searchBingMapsSvc)
+        private readonly CachePlacesProviderService cachePlacesProviderService;
+
+        public SyncService(
+            TelemetryService telemetryService, 
+            AppGraphService appGraphService, 
+            SearchBingMapsService searchBingMapsSvc,
+            CachePlacesProviderService cachePlacesProviderService)
         {
             this.telemetryService = telemetryService;
             this.appGraphService = appGraphService;
             this.searchBingMapsService = searchBingMapsSvc;
+            this.cachePlacesProviderService = cachePlacesProviderService;
         }
 
         /// <summary>
@@ -30,7 +38,8 @@ namespace Converge.Services
         {
             try
             {
-                List<Place> roomLists = await appGraphService.GetRoomLists();
+                List<Place> roomLists = await appGraphService.GetAllRoomLists();
+                cachePlacesProviderService.AddBuildings(new BasicBuildingsResponse(roomLists.Select(rl => new BuildingBasicInfo(rl.AdditionalData["emailAddress"].ToString(),rl.DisplayName)).ToList()));
                 List<GraphPlace> allGraphPlaces = new List<GraphPlace>();
                 foreach (Place roomList in roomLists)
                 {
@@ -238,9 +247,9 @@ namespace Converge.Services
                             additionalData.Add("Longitude", $"{gpsCoordinates.Longitude}");
                         }
                     }
-                    catch(Exception e)
+                    catch(ApplicationException ae)
                     {
-                        telemetryService.TrackException(e, errorMsg);
+                        telemetryService.TrackException(ae, errorMsg);
                     }
                 }
             }

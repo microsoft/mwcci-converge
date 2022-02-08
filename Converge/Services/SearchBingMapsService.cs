@@ -4,11 +4,14 @@
 using Converge.DataTransformers;
 using Converge.Models;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using Converge.Helpers;
 
 namespace Converge.Services
 {
@@ -54,23 +57,35 @@ namespace Converge.Services
             HttpResponseMessage response = await httpClientProviderService.GetObject().GetAsync(uri);
             if (!response.IsSuccessStatusCode)
             {
-                Exception exception = new Exception(errorMessage);
+                ApplicationException appException = new ApplicationException(errorMessage);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failed URI: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failed URI: ", uri);
+                throw appException;
             }
 
             var bingMapsSearchContent = await response.Content.ReadAsStringAsync();
+            JObject json = JObject.Parse(bingMapsSearchContent);
+            var recList = json.SelectTokens("$..matchCodes").ToList();
+            string matchCode = (recList != null && recList.Count > 0)? recList.First().ToString() : string.Empty;
+            if (!matchCode.Comprises("Good"))
+            {
+                errorMessage = "Invalid ZipCode: ";
+                ApplicationException appException = new ApplicationException(errorMessage + $"{zipcode}");
+                //Log or return exception
+                telemetryService.TrackException(appException, errorMessage, zipcode);
+                throw appException;
+            }
+
             try
             {
                 return BingMapsLocationByAddressTransformer.GetGeoCoordinates(bingMapsSearchContent);
             }
             catch (Exception innerException)
             {
-                Exception exception = new Exception(errorMessage, innerException);
+                ApplicationException appException = new ApplicationException(errorMessage, innerException);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failure with Response: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failure with Response: ", uri);
+                throw appException;
             }
         }
 
@@ -100,10 +115,10 @@ namespace Converge.Services
             HttpResponseMessage response = await httpClientProviderService.GetObject().GetAsync(uri);
             if (!response.IsSuccessStatusCode)
             {
-                Exception exception = new Exception(errorMessage);
+                ApplicationException appException = new ApplicationException(errorMessage);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failed URI: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failed URI: ", uri);
+                throw appException;
             }
 
             var bingMapsSearchContent = await response.Content.ReadAsStringAsync();
@@ -113,10 +128,10 @@ namespace Converge.Services
             }
             catch (Exception innerException)
             {
-                Exception exception = new Exception(errorMessage, innerException);
+                ApplicationException appException = new ApplicationException(errorMessage, innerException);
                 //Log or return exception
-                telemetryService.TrackException(exception, "Failure with Response: ", uri);
-                throw exception;
+                telemetryService.TrackException(appException, "Failure with Response: ", uri);
+                throw appException;
             }
         }
 

@@ -3,15 +3,21 @@
 
 import AutoWrapperResponse from "../types/AutoWrapperResponse";
 import RouteResponse from "../types/RouteResponse";
-import getAxiosClient from "./AuthenticationService";
+import AuthenticationService from "./AuthenticationService";
 
-const getRoute = async (start: string, end: string): Promise<RouteResponse> => {
-  const axios = await getAxiosClient();
-  const request = await axios.get<AutoWrapperResponse<RouteResponse>>(
-    "/api/route/travelTime",
-    { params: { start, end } },
-  );
-  return request.data.result;
-};
+export default class RouteService {
+  private authenticationService: AuthenticationService;
 
-export default getRoute;
+  constructor(authenticationService: AuthenticationService) {
+    this.authenticationService = authenticationService;
+  }
+
+  getRoute = async (start: string, end: string): Promise<RouteResponse> => {
+    const axios = await this.authenticationService.getAxiosClient();
+    const request = await axios.get<AutoWrapperResponse<RouteResponse>>(
+      "/api/v1.0/route/travelTime",
+      { params: { start, end } },
+    );
+    return request.data.result;
+  };
+}

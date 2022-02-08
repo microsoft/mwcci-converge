@@ -15,25 +15,31 @@ import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import CollaborationPlaceResultsPagedStyles from "../styles/CollaborationPlaceResultsPagedStyles";
-import { useSearchContextProvider } from "../../../providers/SearchProvider";
+import { useSearchContextProvider, getCampusSearchNextRange } from "../../../providers/SearchProvider";
 import { CollaborationVenueType } from "../../../types/ExchangePlace";
 
 interface Props {
     places: (CampusToCollaborate | VenueToCollaborate)[];
     openPanel: () => void;
     setSelectedPlace: (selectedPlace: CampusToCollaborate | VenueToCollaborate) => void;
+    forceVenueShowMore?: boolean;
+    recommendationSearchRadius?: number;
+    moreRecommendationsfetcher?: () => void;
 }
 
 const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
   const {
     places, openPanel, setSelectedPlace,
+    forceVenueShowMore,
+    recommendationSearchRadius,
+    moreRecommendationsfetcher,
   } = props;
   const classes = CollaborationPlaceResultsPagedStyles();
   const {
     state,
     setVenueSkip,
-    setCampusSearchNextRange,
-    setCampusSearchWaiting,
+    setCampusSearchRange,
+    setPlacesLoading,
     searchPlacesToCollaborate,
   } = useSearchContextProvider();
 
@@ -42,9 +48,14 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
   };
 
   const loadFartherPlaces = () => {
-    setCampusSearchWaiting(true);
-    setCampusSearchNextRange();
-    searchPlacesToCollaborate();
+    if (moreRecommendationsfetcher === undefined) {
+      setPlacesLoading(true);
+      const increasedSearchRange = getCampusSearchNextRange(state.campusSearchRangeInMiles);
+      setCampusSearchRange(increasedSearchRange);
+      searchPlacesToCollaborate(true, increasedSearchRange);
+    } else {
+      moreRecommendationsfetcher();
+    }
   };
 
   return (
@@ -92,10 +103,13 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
           state.venueType === CollaborationVenueType.FoodAndDrink
           || state.venueType === CollaborationVenueType.ParksAndRecreation
         ) && (
-          <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
-            {state.loadMorePlacesLoading
-              ? (<Loader />)
-              : (
+          <>
+            <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+              {state.loadMorePlacesLoading === true
+              && (<Loader />)}
+            </Flex>
+            <Flex hAlign="center" vAlign="center" style={{ marginTop: "8px" }}>
+              {state.venueSkip < 1000 && !state.loadMorePlacesLoading && (
                 <Button
                   content="Show more"
                   onClick={() => {
@@ -107,15 +121,24 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
                   }}
                 />
               )}
-          </Flex>
+              {state.venueSkip > 1000 && !state.loadMorePlacesLoading && (
+              <Text
+                className={classes.textNoMore}
+              >
+                No more results
+              </Text>
+              )}
+            </Flex>
+          </>
         )}
       </Box>
       <Box className={classes.loadBtnContainer}>
         {(
-          (state.venueType === CollaborationVenueType.Workspace
+          (forceVenueShowMore
+          || state.venueType === CollaborationVenueType.Workspace
           || state.venueType === CollaborationVenueType.ConferenceRoom)
         ) && (
-          state.campusSearchRangeInMiles < 4000 ? (
+          (recommendationSearchRadius ?? state.campusSearchRangeInMiles) < 4000 ? (
             <Button
               onClick={() => {
                 loadFartherPlaces();
@@ -125,8 +148,8 @@ const CollaborationPlaceResultsPaged: React.FC<Props> = (props) => {
                 ]);
               }}
               className={classes.showMoreBtn}
-              disabled={state.campusSearchWaiting}
-              loading={state.campusSearchWaiting}
+              disabled={state.placesLoading}
+              loading={state.placesLoading}
               content="Show more"
             />
           )

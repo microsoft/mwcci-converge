@@ -27,10 +27,10 @@ import IsThisHelpful from "../../utilities/IsThisHelpful";
 import PrimaryDropdown from "../../utilities/PrimaryDropdown";
 import DatePickerPrimary from "../../utilities/datePickerPrimary";
 import EnterZipcode from "../../utilities/EnterZipCodeDialog";
-import { getConvergeCalendar, setupNewUser } from "../../api/meService";
 import ConvergeSettings from "../../types/ConvergeSettings";
 import { useConvergeSettingsContextProvider } from "../../providers/ConvergeSettingsProvider";
 import ConnectTeammatesStyles from "./styles/ConnectTeammatesStyles";
+import { useApiProvider } from "../../providers/ApiProvider";
 
 type IWidget = {
   id: string;
@@ -38,6 +38,7 @@ type IWidget = {
 }
 
 const ConnectTeammates: React.FC = () => {
+  const { meService } = useApiProvider();
   const { convergeSettings } = useConvergeSettingsContextProvider();
   const classes = ConnectTeammatesStyles();
   const [isError, setIsError] = React.useState(false);
@@ -55,7 +56,7 @@ const ConnectTeammates: React.FC = () => {
   const [widget, setWidget] = React.useState<IWidget[]>([]);
 
   useEffect(() => {
-    if (state.list !== TeammateList.All) getTeammates(state.list, state.date);
+    if (state.list !== TeammateList.All) getTeammates(state.list);
     else searchMoreTeammates(state.searchString);
   }, []);
 
@@ -75,9 +76,6 @@ const ConnectTeammates: React.FC = () => {
   ) => {
     const eventData = data?.value?.toString() as TeammateList;
     updateList(eventData);
-    if (eventData === TeammateList.All && state.searchString && state.searchString.length > 0) {
-      searchMoreTeammates(state.searchString);
-    }
     logEvent(USER_INTERACTION, [
       { name: UI_SECTION, value: UISections.ConnectWithTeammates },
       { name: DESCRIPTION, value: `dropdown_change_${data?.value}` },
@@ -87,7 +85,7 @@ const ConnectTeammates: React.FC = () => {
   const handleInputChange: ComponentEventHandler<InputProps & {
     value: string;
   }> = (event, data) => {
-    updateSearchString(data?.value);
+    updateSearchString(state.list, data?.value);
     logEvent(USER_INTERACTION, [
       { name: UI_SECTION, value: UISections.ConnectWithTeammates },
       { name: DESCRIPTION, value: "input_change_search_users" },
@@ -95,11 +93,11 @@ const ConnectTeammates: React.FC = () => {
   };
   const refreshPageTeammates = async () => {
     setIsError(false);
-    getTeammates(state.list, state.date);
+    getTeammates(state.list);
   };
 
   const getMyConvergeCalendar = async () => {
-    getConvergeCalendar()
+    meService.getConvergeCalendar()
       .then((ConvergeCalendar) => {
         if (ConvergeCalendar === null || ConvergeCalendar === undefined) {
           setConvergeCalendar(true);
@@ -113,7 +111,8 @@ const ConnectTeammates: React.FC = () => {
     getMyConvergeCalendar();
   }, []);
 
-  const setupNewUserWrapper = (settings: ConvergeSettings): Promise<void> => setupNewUser(settings)
+  const setupNewUserWrapper = (settings: ConvergeSettings):
+  Promise<void> => meService.setupNewUser(settings)
     .then(() => {
       setConvergeCalendar(false);
     })
@@ -162,7 +161,6 @@ const ConnectTeammates: React.FC = () => {
         headerContent="Connect with teammates"
         descriptionContent="Improve team collaboration by spending time with people in your network"
         gridArea="ConnectTeammates"
-        height="95vh"
         showCallOut
         widgetActions={widget}
         handleCalloutItemClick={openEnterZipCodeDialog}
@@ -277,11 +275,7 @@ const ConnectTeammates: React.FC = () => {
               className={classes.header}
             >
               <PrimaryDropdown
-                items={[
-                  TeammateList.Suggested,
-                  TeammateList.MyOrganization,
-                  TeammateList.MyList,
-                  TeammateList.All]}
+                items={state.teammatesDropdown}
                 handleDropdownChange={handleDropdownChange}
                 value={state.list}
                 width="168px"

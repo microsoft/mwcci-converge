@@ -3,28 +3,59 @@
 
 import React, { useState } from "react";
 import {
-  Box, Button, Form, FormButton, FormLabel, FormField, Input,
+  Box, Button, Form, FormButton, FormLabel, FormField, Input, Alert,
 } from "@fluentui/react-northstar";
 import WelcomeBanner from "./WelcomeBanner";
 import { logEvent } from "../../utilities/LogWrapper";
 import {
-  DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
+  DESCRIPTION, ImportantActions, IMPORTANT_ACTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../types/LoggerTypes";
 import InitialLoader from "../../InitialLoader";
 import WelcomeStyles from "./styles/WelcomeStyles";
+import { useConvergeSettingsContextProvider } from "../../providers/ConvergeSettingsProvider";
 
-type Props = {
-  onZipCodeSubmission: (zipCode: string) => Promise<void>
-}
-
-const Welcome: React.FC<Props> = (props) => {
+const Welcome: React.FC = () => {
+  const {
+    convergeSettings,
+    setupNewUser,
+  } = useConvergeSettingsContextProvider();
   const [zipCode, setZipCode] = useState("");
   const [getStarted, setGetStarted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isErr, setIsErr] = useState(false);
   const classes = WelcomeStyles();
 
-  const getStartedCallback = () => {
+  const handleGetStartedButton = () => {
     setGetStarted(true);
+    logEvent(USER_INTERACTION, [
+      { name: UI_SECTION, value: UISections.Welcome },
+      { name: DESCRIPTION, value: "submit_zipcode" },
+    ]);
+  };
+
+  const handleFormSubmission = () => {
+    setLoading(true);
+    setIsErr(false);
+    logEvent(USER_INTERACTION, [
+      { name: "didSubmitZipCode", value: (!!zipCode).toString() },
+      { name: UI_SECTION, value: UISections.Welcome },
+      { name: DESCRIPTION, value: "zip_code_submit" },
+    ]);
+    const convergeSettingsCopy = convergeSettings ? { ...convergeSettings } : {};
+    setupNewUser({
+      ...convergeSettingsCopy,
+      isConvergeUser: true,
+      zipCode,
+    })
+      .then(() => {
+        if (zipCode && zipCode !== "") {
+          logEvent(USER_INTERACTION, [
+            { name: IMPORTANT_ACTION, value: ImportantActions.AddZipCode },
+          ]);
+        }
+      })
+      .catch(() => setIsErr(true))
+      .finally(() => setLoading(false));
   };
 
   const descriptiontext1 = "Converge needs to know your most frequent remote work location zipcode to determine office recommendations, commute times, and team collaboration opportunities. ";
@@ -44,17 +75,7 @@ const Welcome: React.FC<Props> = (props) => {
                     <p className={classes.description}>{descriptiontext1}</p>
                     <p className={classes.description}>{descriptiontext2}</p>
                     <Box>
-                      <Form
-                        onSubmit={() => {
-                          setLoading(true);
-                          logEvent(USER_INTERACTION, [
-                            { name: "didSubmitZipCode", value: (!!zipCode).toString() },
-                            { name: UI_SECTION, value: UISections.Welcome },
-                            { name: DESCRIPTION, value: "zip_code_submit" },
-                          ]);
-                          props.onZipCodeSubmission(zipCode).finally(() => setLoading(false));
-                        }}
-                      >
+                      <Form onSubmit={handleFormSubmission}>
                         <p className={classes.contentText}>
                           Where are you most likely to work remote from?
                         </p>
@@ -80,6 +101,7 @@ const Welcome: React.FC<Props> = (props) => {
                             }}
                           />
                         </FormField>
+                        {isErr && <Alert danger content="There was a problem setting up your account. Please try again." />}
                         <Box className={classes.btnWrapper}>
                           <FormButton
                             content="Done"
@@ -106,13 +128,7 @@ const Welcome: React.FC<Props> = (props) => {
               primary
               className={classes.getStartedBtn}
               styles={{ padding: "12px 0" }}
-              onClick={() => {
-                getStartedCallback();
-                logEvent(USER_INTERACTION, [
-                  { name: UI_SECTION, value: UISections.Welcome },
-                  { name: DESCRIPTION, value: "submit_zipcode" },
-                ]);
-              }}
+              onClick={handleGetStartedButton}
             />
           </Box>
         )

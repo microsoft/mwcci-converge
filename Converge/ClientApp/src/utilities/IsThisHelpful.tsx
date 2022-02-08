@@ -12,9 +12,9 @@ import {
   UI_SECTION,
   USER_INTERACTION,
 } from "../types/LoggerTypes";
-import { setSettings } from "../api/meService";
 import { useConvergeSettingsContextProvider } from "../providers/ConvergeSettingsProvider";
 import { logEvent } from "./LogWrapper";
+import { useApiProvider } from "../providers/ApiProvider";
 
 const useIsThisHelpfulStyles = makeStyles(() => ({
   root: {
@@ -37,6 +37,9 @@ const IsThisHelpful: React.FC<ILog> = (props) => {
     convergeSettings,
     setConvergeSettings,
   } = useConvergeSettingsContextProvider();
+  const {
+    meService,
+  } = useApiProvider();
 
   const likeSection = () => {
     const didLike = convergeSettings?.likedSections?.includes(sectionName) || false;
@@ -75,7 +78,7 @@ const IsThisHelpful: React.FC<ILog> = (props) => {
       likedSections: newLikedSections,
       dislikedSections: newDislikedSections,
     };
-    setSettings(newSettings);
+    meService.setSettings(newSettings);
     setConvergeSettings(newSettings);
   };
   const likeIsTrue = convergeSettings?.likedSections?.includes(sectionName) || false;

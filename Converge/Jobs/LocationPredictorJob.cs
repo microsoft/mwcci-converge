@@ -3,7 +3,6 @@
 
 using Converge.Models;
 using Converge.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
@@ -50,6 +49,12 @@ namespace Converge.Jobs
             catch (Exception ex)
             {
                 telemetryService.TrackException(ex, "Failed to get converge users.");
+                return;
+            }
+            if (users == null || users.Count == 0)
+            {
+                timePerRun.Stop();
+                telemetryService.TrackEvent("Users not found", "Location Predictor Job found no Users.", timePerRun.ElapsedMilliseconds);
                 return;
             }
 

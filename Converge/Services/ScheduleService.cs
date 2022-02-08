@@ -26,8 +26,8 @@ namespace Converge.Services
                 start,
                 end
             );
-            double reserved = TimeHelper.GetAverageReserved(DateTime.Parse(start), DateTime.Parse(end), events);
-            return reserved / workspace.Capacity * 100;
+            double reserved = TimeHelper.GetAverageReserved(DateTime.Parse(start).ToUniversalTime(), DateTime.Parse(end).ToUniversalTime(), events);
+            return (workspace.Capacity == 0) ? 0 : reserved / workspace.Capacity * 100;
         }
 
         public async Task<int> GetMaxReserved(string start, string end, string id)

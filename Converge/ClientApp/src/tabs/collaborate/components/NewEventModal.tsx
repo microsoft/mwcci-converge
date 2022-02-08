@@ -31,9 +31,9 @@ import { logEvent } from "../../../utilities/LogWrapper";
 import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
-import { searchUsers } from "../../../api/userService";
 import DatePickerPrimary from "../../../utilities/datePickerPrimary";
 import NewEventModalStyles from "../styles/NewEventModalStyles";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 type Props = {
   attendees: MicrosoftGraph.User[];
@@ -74,6 +74,7 @@ const NewEventModal: React.FC<Props> = (props) => {
     setMessage,
     err,
   } = props;
+  const { userService } = useApiProvider();
   const classes = NewEventModalStyles();
   const [attendeesLoading, setAttendeesLoading] = useState<boolean>(false);
   const [attendeeItems, setAttendeeItems] = useState<string[]>([]);
@@ -169,14 +170,14 @@ const NewEventModal: React.FC<Props> = (props) => {
   ) => {
     if (data?.searchQuery) {
       setAttendeesLoading(true);
-      searchUsers(data.searchQuery.toString())
-        .then((users) => {
+      userService.searchUsers(data.searchQuery.toString())
+        .then((response) => {
           setAttendeeItems(
-            users
+            response.users
               .filter((u) => !!u.displayName)
               .map((u) => u.displayName as string),
           );
-          setFullUserData(fullUserData.concat(users));
+          setFullUserData(fullUserData.concat(response.users));
         })
         .finally(() => setAttendeesLoading(false));
     } else {

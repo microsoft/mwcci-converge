@@ -4,7 +4,6 @@
 import { User } from "@microsoft/microsoft-graph-types";
 import { Dayjs } from "dayjs";
 import React, { createContext, useContext, useEffect } from "react";
-import { searchCampusesToCollaborate, searchVenuesToCollaborate } from "../api/searchService";
 import CampusesToCollaborateRequest from "../types/CampusesToCollaborateRequest";
 import CampusesToCollaborateResponse from "../types/CampusesToCollaborateResponse";
 import CampusToCollaborate from "../types/CampusToCollaborate";
@@ -12,6 +11,7 @@ import { CollaborationVenueType, getCollaborationVenueTypeString } from "../type
 import VenuesToCollaborateResponse from "../types/VenuesToCollaborateResponse";
 import VenueToCollaborate from "../types/VenueToCollaborate";
 import useEnhancedReducer from "../utilities/enhancedReducer";
+import { useApiProvider } from "./ApiProvider";
 import { getDefaultTime } from "./PlaceFilterProvider";
 
 const SET_START_TIME = "SET_START_TIME";
@@ -31,7 +31,6 @@ const SET_VENUE_SKIP = "SET_VENUE_SKIP";
 const SEARCH_PLACES_LOAD_MORE_RESPONSE = "SEARCH_PLACES_LOAD_MORE_RESPONSE";
 const SEARCH_PLACES_LOAD_MORE_REQUEST = "SEARCH_PLACES_LOAD_MORE_REQUEST";
 const SET_CAMPUS_SEARCH_RANGE = "SET_CAMPUS_SEARCH_RANGE";
-const SET_CAMPUS_SEARCH_WAITING = "SET_CAMPUS_SEARCH_WAITING";
 
 interface SetStartTimeAction {
   type: typeof SET_START_TIME;
@@ -114,11 +113,6 @@ interface SetCampusSearchRangeAction {
   payload: number;
 }
 
-interface SetCampusSearchWaitingAction {
-  type: typeof SET_CAMPUS_SEARCH_WAITING;
-  payload: boolean;
-}
-
 type ISearchAction =
   SetStartTimeAction
   | SetEndTimeAction
@@ -136,8 +130,7 @@ type ISearchAction =
   | SetVenueSkipAction
   | LoadMorePlacesResponseAction
   | LoadMorePlacesRequestAction
-  | SetCampusSearchRangeAction
-  | SetCampusSearchWaitingAction;
+  | SetCampusSearchRangeAction;
 
 interface ISearchState {
   placesToCollaborate: (CampusToCollaborate|VenueToCollaborate)[];
@@ -154,7 +147,6 @@ interface ISearchState {
   venueSkip: number;
   loadMorePlacesLoading: boolean;
   campusSearchRangeInMiles: number;
-  campusSearchWaiting: boolean;
 }
 
 interface ISearchProviderModel {
@@ -164,15 +156,14 @@ interface ISearchProviderModel {
   setVenueType: (venueType: CollaborationVenueType) => void;
   setSelectedUsers: (users: User[]) => void;
   setMeetUsers: (meetUsers: string[]) => void;
-  searchPlacesToCollaborate: (force?: boolean) => void;
+  searchPlacesToCollaborate: (force?: boolean, specificRange?: number) => void;
   setLoginUser:(loginUser:string) => void;
   setMapPlaces: (mapPlaces: (CampusToCollaborate|VenueToCollaborate)[]) => void;
   setPlacesLoading: (placesLoading: boolean) => void;
   clearPlaceSearch: () => void;
   setStartAndEndTime: (startTime: Dayjs, endTime: Dayjs) => void;
   setVenueSkip: (skip: number) => void;
-  setCampusSearchNextRange: (reset?: boolean) => boolean;
-  setCampusSearchWaiting: (waitState: boolean) => void;
+  setCampusSearchRange: (range: number) => void;
 }
 
 const iState: ISearchState = {
@@ -190,7 +181,6 @@ const iState: ISearchState = {
   venueSkip: 0,
   loadMorePlacesLoading: false,
   campusSearchRangeInMiles: 10,
-  campusSearchWaiting: false,
 };
 
 const Context = createContext({} as ISearchProviderModel);
@@ -268,6 +258,7 @@ const reducer = (state: ISearchState, action: ISearchAction): ISearchState => {
         placesToCollaborate: [],
         venueType: CollaborationVenueType.Workspace,
         placesLoading: false,
+        campusSearchRangeInMiles: 10,
       };
     case SET_VENUE_SKIP:
       return {
@@ -291,24 +282,43 @@ const reducer = (state: ISearchState, action: ISearchAction): ISearchState => {
         ...state,
         campusSearchRangeInMiles: action.payload,
       };
-    case SET_CAMPUS_SEARCH_WAITING:
-      return {
-        ...state,
-        campusSearchWaiting: action.payload,
-      };
     default:
       return state;
   }
 };
 
+export const getCampusSearchNextRange = (currentRange: number, reset?: boolean) : number => {
+  let newRange = 0;
+  if (reset) {
+    newRange = 10;
+  }
+  if (currentRange <= 4000) {
+    if (currentRange < 1000) {
+      newRange = currentRange * 10;
+    } else {
+      newRange = currentRange + 1000;
+    }
+  }
+  if (newRange !== 0) {
+    return newRange;
+  }
+  return currentRange;
+};
+
 const SearchContextProvider: React.FC = ({ children }) => {
+  const { searchService } = useApiProvider();
   const [state, dispatch, getState] = useEnhancedReducer(
     reducer,
     { ...iState },
   );
 
+  const setPlacesLoading = (placesLoading: boolean) => {
+    dispatch({ type: SET_PLACES_LOADING, payload: placesLoading });
+  };
+
   const searchPlaces = (
     searchState: ISearchState,
+    specificRange?: number,
   ): Promise<CampusesToCollaborateResponse | VenuesToCollaborateResponse> => {
     const userList: string[] = [];
     userList.push(searchState.loginUser);
@@ -329,11 +339,11 @@ const SearchContextProvider: React.FC = ({ children }) => {
         placeType: searchState.venueType === CollaborationVenueType.Workspace ? "space" : "room",
         // If multiple meetUsers, it will use location in between.
         closeToUser: searchState.meetUsers.length > 1 ? "" : searchState.meetUsers[0],
-        distanceFromSource: searchState.campusSearchRangeInMiles,
+        distanceFromSource: specificRange ?? searchState.campusSearchRangeInMiles,
       };
-      return searchCampusesToCollaborate(request);
+      return searchService.searchCampusesToCollaborate(request);
     }
-    return searchVenuesToCollaborate({
+    return searchService.searchVenuesToCollaborate({
       teamMembers: userList,
       venueType: getCollaborationVenueTypeString(searchState.venueType as CollaborationVenueType),
       endTime: searchState.endTime.utc().toDate(),
@@ -345,53 +355,31 @@ const SearchContextProvider: React.FC = ({ children }) => {
     });
   };
 
-  const setCampusSearchWaiting = (waitState: boolean) => {
+  const setCampusSearchRange = (range: number) => {
     dispatch({
-      type: SET_CAMPUS_SEARCH_WAITING,
-      payload: waitState,
+      type: SET_CAMPUS_SEARCH_RANGE,
+      payload: range,
     });
   };
 
-  const setCampusSearchNextRange = (reset?: boolean) : boolean => {
-    if (reset) {
-      dispatch({
-        type: SET_CAMPUS_SEARCH_RANGE,
-        payload: 10,
-      });
-      return true;
-    }
-    if (state.campusSearchRangeInMiles <= 4000) {
-      if (state.campusSearchRangeInMiles < 1000) {
-        dispatch({
-          type: SET_CAMPUS_SEARCH_RANGE,
-          payload: state.campusSearchRangeInMiles * 10,
-        });
-      } else {
-        dispatch({
-          type: SET_CAMPUS_SEARCH_RANGE,
-          payload: state.campusSearchRangeInMiles + 1000,
-        });
-      }
-      return true;
-    }
-    return false;
-  };
-
-  const searchPlacesToCollaborate = (force?: boolean) => {
+  const searchPlacesToCollaborate = (force?: boolean, specificRange?: number) => {
     const newState = getState();
 
     const shouldSearch = !(newState.venueType === undefined) || force;
 
     if (shouldSearch) {
       dispatch({ type: SEARCH_PLACES_REQUEST });
-      searchPlaces(newState)
+      searchPlaces(newState, specificRange)
         .then((response) => {
-          if (
-            (response as CampusesToCollaborateResponse).campusesToCollaborateList !== undefined
-            && (response as CampusesToCollaborateResponse).campusesToCollaborateList.length === 0
+          if ((response as CampusesToCollaborateResponse)
+            ?.campusesToCollaborateList
+            ?.length === 0
           ) {
-            if (setCampusSearchNextRange()) {
-              searchPlacesToCollaborate();
+            const currentRange = specificRange || state.campusSearchRangeInMiles;
+            if (currentRange < 4000) {
+              const nextRange = getCampusSearchNextRange(currentRange);
+              setCampusSearchRange(nextRange);
+              searchPlacesToCollaborate(true, nextRange);
             } else {
               const payload = (response as CampusesToCollaborateResponse).campusesToCollaborateList
                 || (response as VenuesToCollaborateResponse).venuesToCollaborateList;
@@ -404,7 +392,7 @@ const SearchContextProvider: React.FC = ({ children }) => {
           }
         })
         .catch(() => dispatch({ type: SEARCH_PLACES_ERROR }))
-        .finally(() => setCampusSearchWaiting(false));
+        .finally(() => setPlacesLoading(false));
     }
   };
 
@@ -430,10 +418,6 @@ const SearchContextProvider: React.FC = ({ children }) => {
 
   const setMapPlaces = (mapPlaces: (CampusToCollaborate|VenueToCollaborate)[]) => {
     dispatch({ type: SET_MAP_PLACES, payload: mapPlaces });
-  };
-
-  const setPlacesLoading = (placesLoading: boolean) => {
-    dispatch({ type: SET_PLACES_LOADING, payload: placesLoading });
   };
 
   const clearPlaceSearch = () => {
@@ -499,8 +483,7 @@ const SearchContextProvider: React.FC = ({ children }) => {
         clearPlaceSearch,
         setStartAndEndTime,
         setVenueSkip,
-        setCampusSearchNextRange,
-        setCampusSearchWaiting,
+        setCampusSearchRange,
       }}
     >
       {children}

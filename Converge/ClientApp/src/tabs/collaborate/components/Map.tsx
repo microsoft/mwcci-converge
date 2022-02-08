@@ -12,7 +12,6 @@ import { useBoolean } from "@fluentui/react-hooks";
 import { User } from "@microsoft/microsoft-graph-types";
 import BingMaps from "../../../utilities/BingMaps";
 import { loadBingApi, Microsoft } from "../../../utilities/BingMapLoader";
-import { createUserCoordinateService } from "../../../api/userService";
 import { useSearchContextProvider } from "../../../providers/SearchProvider";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import VenueToCollaborate from "../../../types/VenueToCollaborate";
@@ -27,6 +26,7 @@ import useAsyncRecord from "../../../hooks/useAsyncRecord";
 import { ItemRecord } from "../../../hooks/useRecord";
 import ErrorBoundary from "../../../utilities/ErrorBoundary";
 import { createUserPushpin } from "../../../utilities/Pushpins";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   userRecord: ItemRecord<User>,
@@ -40,10 +40,13 @@ const Map: React.FC<Props> = ({
   setUsersMissingCoordinates,
 }) => {
   const {
+    userService,
+  } = useApiProvider();
+  const {
     convergeSettings,
   } = useConvergeSettingsContextProvider();
   const { teamsContext } = useTeamsContext();
-  const userCoordinateService = useMemo(createUserCoordinateService, []);
+  const userCoordinateService = useMemo(userService.createUserCoordinateService, []);
   const {
     state,
   } = useSearchContextProvider();
@@ -67,6 +70,7 @@ const Map: React.FC<Props> = ({
   >(undefined);
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
   const { appSettings } = useAppSettingsProvider();
+  const [userCoordsFetchCompleted, setCoordsFetchCompleted] = useState<boolean>(false);
 
   useEffect(() => {
     if (appSettings?.bingAPIKey && appSettings?.bingAPIKey !== "") {
@@ -86,11 +90,14 @@ const Map: React.FC<Props> = ({
           day: day.date(),
         },
       );
-      setUserCoords({
-        latitude: newCoordinates.latitude,
-        longitude: newCoordinates.longitude,
-        userPrincipalName: teamsContext.userPrincipalName,
-      });
+      if (newCoordinates !== undefined) {
+        setUserCoords({
+          latitude: newCoordinates.latitude,
+          longitude: newCoordinates.longitude,
+          userPrincipalName: teamsContext.userPrincipalName,
+        });
+      }
+      setCoordsFetchCompleted(true);
     }
   };
 
@@ -150,7 +157,14 @@ const Map: React.FC<Props> = ({
     }
   };
 
+  const updateCurrentUserPhotoRecord = async () => {
+    if (teamsContext?.userPrincipalName && !photoRecord[teamsContext.userPrincipalName]) {
+      updatePhotoRecord(teamsContext.userPrincipalName);
+    }
+  };
+
   useEffect(() => {
+    updateCurrentUserPhotoRecord();
     updateCurrentUserRecord();
   }, [teamsContext]);
 
@@ -158,7 +172,7 @@ const Map: React.FC<Props> = ({
     updateSelectedUserRecords();
     updateSelectedUserPhotos();
     updateSelectedUserCoords();
-  }, [state.selectedUsers, mapLoading, teamsContext]);
+  }, [state.selectedUsers, mapLoading, teamsContext, state.startTime]);
 
   const updatePushpins = async () => {
     if (!mapLoading && teamsContext && userCoords?.userPrincipalName) {
@@ -209,7 +223,7 @@ const Map: React.FC<Props> = ({
 
   return (
     <Box className={classes.root}>
-      {finishedLoading ? (
+      {finishedLoading && userCoordsFetchCompleted ? (
         <ErrorBoundary errorMessage="Oops! We can't load the map right now. Please try again later.">
           <BingMaps
             coordinates={userCoords}

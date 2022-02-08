@@ -26,6 +26,17 @@ namespace Converge.Helpers
         }
 
         /// <summary>
+        /// Case-insensitive Sub-string functionality.
+        /// </summary>
+        /// <param name="actualString"></param>
+        /// <param name="partString"></param>
+        /// <returns></returns>
+        public static bool Comprises(this string actualString, string partString)
+        {
+            return actualString.ToLower().Contains(partString.ToLower());
+        }
+
+        /// <summary>
         /// Case-insensitive search for an element in a given collection.
         /// </summary>
         /// <param name="element"></param>

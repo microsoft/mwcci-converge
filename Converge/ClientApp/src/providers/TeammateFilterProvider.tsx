@@ -3,21 +3,19 @@
 
 import React, { createContext, useContext, useReducer } from "react";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
-import {
-  getMyList, getPeople, getWorkgroup,
-} from "../api/meService";
-import { searchUsers, searchUsersByPage } from "../api/userService";
 import TimeLimit from "../types/TimeLimit";
 import { logEvent } from "../utilities/LogWrapper";
 import {
   DESCRIPTION, OVERLAP_PERCENTAGE, USER_INTERACTION, ViralityMeasures, VIRALITY_MEASURE,
 } from "../types/LoggerTypes";
 import QueryOption from "../types/QueryOption";
+import { useApiProvider } from "./ApiProvider";
+import { useConvergeSettingsContextProvider } from "./ConvergeSettingsProvider";
 
 export enum TeammateList {
+  MyList = "My List",
   Suggested = "Suggested",
   MyOrganization = "My Organization",
-  MyList = "My List",
   All = "All",
 }
 
@@ -26,6 +24,25 @@ export interface Teammate {
   location?: string,
   availableTimes?: TimeLimit[],
 }
+
+export interface TeammateListSettings {
+  optionSelected: TeammateList,
+  optionsOrdered: TeammateList[],
+}
+
+export const teammateFilterListFirst = [
+  TeammateList.MyList,
+  TeammateList.Suggested,
+  TeammateList.MyOrganization,
+  TeammateList.All,
+];
+
+export const teammateFilterSuggestedFirst = [
+  TeammateList.Suggested,
+  TeammateList.MyList,
+  TeammateList.MyOrganization,
+  TeammateList.All,
+];
 
 const UPDATE_LOCATION = "UPDATE_LOCATION";
 const TEAMMATES_REQUEST = "TEAMMATES_REQUEST";
@@ -37,6 +54,7 @@ const UPDATE_SEARCH_STRING = "UPDATE_SEARCH_STRING";
 const UPDATE_SEARCH_QUERY_OPTIONS = "UPDATE_SEARCH_QUERY_OPTIONS";
 const SET_TEAMMATE_LOCATION = "SET_TEAMMATE_LOCATION";
 const SET_MORE_TEAMMATES_LOADING = "SET_TEAMMATE_LOADING";
+const SET_TEAMMATES_DROPDOWN = "SET_TEAMMATES_DROPDOWN";
 
 interface UpdateTeammateLocationAction {
   type: typeof UPDATE_LOCATION,
@@ -86,6 +104,11 @@ interface SetMoreTeammateLoadingAction {
   payload: boolean,
 }
 
+interface SetTeammatesDropdownAction {
+  type: typeof SET_TEAMMATES_DROPDOWN,
+  payload: TeammateList[],
+}
+
 type ITeammateAction = UpdateTeammateLocationAction
  | GetTeammatesRequestAction
  | GetTeammatesResponseAction
@@ -95,7 +118,8 @@ type ITeammateAction = UpdateTeammateLocationAction
  | UpdateSearchString
  | UpdateSearchQueryOptions
  | SetTeammateLocationAction
- | SetMoreTeammateLoadingAction;
+ | SetMoreTeammateLoadingAction
+ | SetTeammatesDropdownAction;
 
 type ITeammateState = {
   list: TeammateList;
@@ -108,15 +132,16 @@ type ITeammateState = {
   searchQueryOptions?: QueryOption[];
   teammatesLoading: boolean;
   moreTeammatesLoading: boolean;
+  teammatesDropdown: TeammateList[];
 };
 
 type ITeammateFilterModel = {
   state: ITeammateState;
   updateLocations: (locations: string[]) => void;
-  updateList: (list: TeammateList) => void;
+  updateList: (list: TeammateList, force?: boolean) => void;
   updateDate: (date: Date) => void;
-  getTeammates: (list: TeammateList, date: Date, searchString?: string) => void;
-  updateSearchString: (searchString?: string) => void;
+  getTeammates: (list: TeammateList, searchString?: string) => void;
+  updateSearchString: (list: TeammateList, searchString?: string) => void;
   updateSearchQueryOptions:(searchQueryOptions?: QueryOption[]) => void;
   searchMoreTeammates:(
     searchString?: string,
@@ -125,17 +150,7 @@ type ITeammateFilterModel = {
     ) => void;
   setTeammateLocation: (id: string, location: string) => void;
   setMoreTeammatesLoading: (buttonLoading: boolean) => void;
-};
-
-const initialState: ITeammateState = {
-  teammates: [],
-  locations: [],
-  teammatesLoading: false,
-  list: TeammateList.MyList,
-  date: new Date(),
-  getFilteredTeammates: (teammates: Teammate[]) => teammates,
-  searchQueryOptions: [],
-  moreTeammatesLoading: false,
+  setTeammatesDropdown: (listOptions: TeammateList[]) => void;
 };
 
 const getFilterMethod = (state: ITeammateState) => {
@@ -260,12 +275,57 @@ const reducer = (state: ITeammateState, action: ITeammateAction): ITeammateState
 
       return newState;
     }
+
+    case SET_TEAMMATES_DROPDOWN: {
+      const newState = {
+        ...state,
+        teammatesDropdown: action.payload,
+      };
+      return {
+        ...newState,
+        getFilteredTeammates: getFilterMethod(newState),
+      };
+    }
+
     default:
       return state;
   }
 };
 
 const TeammateFilterProvider: React.FC = ({ children }) => {
+  const { meService, userService } = useApiProvider();
+  const { convergeSettings } = useConvergeSettingsContextProvider();
+
+  const getInitialTeammatesListSettings = (): TeammateListSettings => {
+    if (convergeSettings !== undefined) {
+      const userMyList = convergeSettings?.myList ?? [];
+      if (userMyList.length === 0) {
+        return {
+          optionSelected: TeammateList.Suggested,
+          optionsOrdered: teammateFilterSuggestedFirst,
+        };
+      }
+    }
+    return {
+      optionSelected: TeammateList.MyList,
+      optionsOrdered: teammateFilterListFirst,
+    };
+  };
+
+  const teammateListPerSessionSetup = getInitialTeammatesListSettings();
+
+  const initialState: ITeammateState = {
+    teammates: [],
+    locations: [],
+    teammatesLoading: false,
+    list: teammateListPerSessionSetup.optionSelected,
+    date: new Date(),
+    getFilteredTeammates: (teammates: Teammate[]) => teammates,
+    searchQueryOptions: [],
+    moreTeammatesLoading: false,
+    teammatesDropdown: teammateListPerSessionSetup.optionsOrdered,
+  };
+
   const [state, dispatch] = useReducer(
     reducer,
     initialState,
@@ -273,34 +333,57 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
 
   const updateLocations = (location: string[]) => {
     dispatch({ type: UPDATE_LOCATION, payload: location });
+    dispatch({ type: UPDATE_LIST, payload: TeammateList.Suggested });
   };
 
-  const getTeammates = (list: TeammateList, date: Date, searchString?: string) => {
+  const getTeammates = (list: TeammateList, searchString?: string) => {
     dispatch({ type: TEAMMATES_REQUEST });
     let requestMethod;
     switch (list) {
       case TeammateList.Suggested:
-        requestMethod = getPeople;
+        requestMethod = meService.getPeople;
         break;
       case TeammateList.MyList:
-        requestMethod = getMyList;
+        requestMethod = meService.getMyList;
         break;
       case TeammateList.MyOrganization:
-        requestMethod = getWorkgroup;
-        break;
-      case TeammateList.All:
-        requestMethod = searchUsers;
+        requestMethod = meService.getWorkgroup;
         break;
       default:
         throw new Error("Invalid list type requested.");
     }
-    requestMethod(searchString).then(async (teammates) => {
-      const payload = await Promise.all(teammates.map(async (teammate) => ({
-        user: teammate,
-      })));
-      dispatch({ type: TEAMMATES_RESPONSE, payload });
-    })
-      .catch(() => dispatch({ type: TEAMMATES_ERROR }));
+    if (requestMethod) {
+      requestMethod().then((teammates) => {
+        if (searchString !== undefined && searchString.length > 0) {
+          const payload = teammates.filter((x) => {
+            if (x.displayName) {
+              return x.displayName.toLowerCase().indexOf(
+                searchString.toLowerCase(),
+              ) > -1;
+            }
+            return false;
+          }).map((teammate) => ({
+            user: teammate,
+          }));
+          dispatch({ type: TEAMMATES_RESPONSE, payload });
+        } else {
+          const payload = teammates.map((teammate) => ({
+            user: teammate,
+          }));
+          dispatch({ type: TEAMMATES_RESPONSE, payload });
+        }
+      })
+        .catch(() => dispatch({ type: TEAMMATES_ERROR }));
+    } else {
+      userService.searchUsers(searchString)
+        .then((response) => {
+          const payload = response.users.map((teammate) => ({
+            user: teammate,
+          }));
+          dispatch({ type: TEAMMATES_RESPONSE, payload });
+        })
+        .catch(() => dispatch({ type: TEAMMATES_ERROR }));
+    }
   };
 
   const setMoreTeammatesLoading = (buttonLoading: boolean) => {
@@ -312,43 +395,48 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
     qOptions?: QueryOption[],
     teammatesPreset?: Teammate[],
   ) => {
-    setMoreTeammatesLoading(true);
-    searchUsersByPage(searchString, qOptions).then(async (data) => {
-      const payload = await Promise.all(data.users.map(async (teammate) => ({
-        user: teammate,
-      })));
-      if (!teammatesPreset) dispatch({ type: TEAMMATES_RESPONSE, payload });
-      else dispatch({ type: TEAMMATES_RESPONSE, payload: teammatesPreset.concat(payload) });
-      dispatch({ type: UPDATE_SEARCH_QUERY_OPTIONS, payload: data.queryOptions });
-      setMoreTeammatesLoading(false);
-    })
-      .catch(() => {
-        dispatch({ type: TEAMMATES_ERROR });
-        setMoreTeammatesLoading(false);
-      });
+    if (searchString?.length) {
+      setMoreTeammatesLoading(true);
+      userService.searchUsers(searchString, qOptions)
+        .then((data) => {
+          const payload = data.users.map((teammate) => ({
+            user: teammate,
+          }));
+          if (!teammatesPreset) {
+            dispatch({ type: TEAMMATES_RESPONSE, payload });
+          } else {
+            dispatch({ type: TEAMMATES_RESPONSE, payload: teammatesPreset.concat(payload) });
+          }
+          dispatch({ type: UPDATE_SEARCH_QUERY_OPTIONS, payload: data.queryOptions });
+          setMoreTeammatesLoading(false);
+        })
+        .catch(() => {
+          dispatch({ type: TEAMMATES_ERROR });
+          setMoreTeammatesLoading(false);
+        });
+    } else {
+      dispatch({ type: TEAMMATES_RESPONSE, payload: [] });
+    }
   };
 
-  const updateSearchString = (searchString?: string) => {
+  const updateSearchString = (list: TeammateList, searchString?: string) => {
     dispatch({ type: UPDATE_SEARCH_STRING, payload: searchString });
-    if (state.list === TeammateList.All) {
+    if (list === TeammateList.All) {
       const qOptions: QueryOption[] | undefined = undefined;
       const resetTeam: Teammate[] | undefined = undefined;
       searchMoreTeammates(searchString, qOptions, resetTeam);
+    } else {
+      getTeammates(list, searchString);
     }
   };
 
   const updateList = (list: TeammateList) => {
     dispatch({ type: UPDATE_LIST, payload: list });
-    if (list !== TeammateList.All) {
-      getTeammates(list, state.date, state.searchString);
-    } else {
-      updateSearchString(state.searchString);
-    }
+    updateSearchString(list, state.searchString);
   };
 
   const updateDate = (date: Date) => {
     dispatch({ type: UPDATE_DATE, payload: date });
-    getTeammates(state.list, date, state.searchString);
   };
 
   const updateSearchQueryOptions = (queryOptions?: QueryOption[]) => {
@@ -357,6 +445,10 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
 
   const setTeammateLocation = (id: string, location: string) => {
     dispatch({ type: SET_TEAMMATE_LOCATION, payload: { id, location } });
+  };
+
+  const setTeammatesDropdown = (listOptions: TeammateList[]) => {
+    dispatch({ type: SET_TEAMMATES_DROPDOWN, payload: listOptions });
   };
 
   return (
@@ -371,6 +463,7 @@ const TeammateFilterProvider: React.FC = ({ children }) => {
       searchMoreTeammates,
       setTeammateLocation,
       setMoreTeammatesLoading,
+      setTeammatesDropdown,
     }}
     >
       {children}

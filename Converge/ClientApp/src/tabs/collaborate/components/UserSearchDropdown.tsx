@@ -9,12 +9,12 @@ import { User } from "@microsoft/microsoft-graph-types";
 import React, { useEffect, useState } from "react";
 import debounce from "lodash/debounce";
 import { logEvent } from "../../../utilities/LogWrapper";
-import { searchUsers } from "../../../api/userService";
 import PrimaryDropdown from "../../../utilities/PrimaryDropdown";
 import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import UserSearchDropdownStyles from "../styles/UserSearchDropdownStyles";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   maxSelected?: number,
@@ -30,6 +30,7 @@ const getA11ySelectionMessage = {
 };
 
 const UserSearchDropdown:React.FC<Props> = (props) => {
+  const { userService } = useApiProvider();
   const {
     selectedUsers,
     onSelectedUsersChange,
@@ -84,16 +85,18 @@ const UserSearchDropdown:React.FC<Props> = (props) => {
   ) => {
     if (data?.searchQuery) {
       setLoading(true);
-      searchUsers(data.searchQuery.toString())
-        .then((users) => {
-          setInputItems(users.filter((u) => !!u.displayName).map((u) => u.displayName as string));
+      userService.searchUsers(data.searchQuery.toString())
+        .then((response) => {
+          setInputItems(response.users
+            .filter((u) => !!u.displayName)
+            .map((u) => u.displayName as string));
           setDropdownUsers(dropdownUsers.filter((u) => {
             if (u.displayName) {
               return selectedUsers.includes(u.displayName)
                 || defaultDropdownUsers?.find((ddu) => ddu.displayName === u.displayName);
             }
             return false;
-          }).concat(users.filter((u) => !!u.displayName)));
+          }).concat(response.users.filter((u) => !!u.displayName)));
         }).catch(() => setIsError(true))
         .finally(() => setLoading(false));
     } else {

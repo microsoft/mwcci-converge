@@ -11,17 +11,16 @@ import { useBoolean } from "@fluentui/react-hooks";
 import dayjs from "dayjs";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import VenueToCollaborate from "../../../types/VenueToCollaborate";
-import { createCachedVenueDetailsQuery } from "../../../api/searchService";
-import VenueDetails from "../../../types/VenueDetails";
 import CollaborationPlaceResults from "./CollaborationPlaceResults";
 import CollaborationPlaceDetails from "./CollaborationPlaceDetails";
-import { createCachedPlaceDetailsQuery } from "../../../api/buildingService";
+import VenueDetails from "../../../types/VenueDetails";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
 import FavoritesToCollaborateStyles from "../styles/FavoritesToCollaborateStyles";
 import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import { logEvent } from "../../../utilities/LogWrapper";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   setMapPlaces: (places: (CampusToCollaborate | VenueToCollaborate)[]) => void;
@@ -50,10 +49,12 @@ function createVenueToCollaborate(v: VenueDetails): VenueToCollaborate {
     transactions: v.transactions,
   };
 }
-const { getItems: getPlaceDetails } = createCachedPlaceDetailsQuery();
-const { getItems: getVenueDetails } = createCachedVenueDetailsQuery();
 
 const FavoritesToCollaborate: React.FC<Props> = (props) => {
+  const {
+    searchService,
+    buildingService,
+  } = useApiProvider();
   const classes = FavoritesToCollaborateStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -78,8 +79,7 @@ const FavoritesToCollaborate: React.FC<Props> = (props) => {
     if (convergeSettings?.favoriteCampusesToCollaborate) {
       const placeDetails = await Promise.all(
         convergeSettings.favoriteCampusesToCollaborate
-          .map((v) => getPlaceDetails([v], { start: new Date(), end: dayjs().utc().add(30, "minute").toDate() })
-            .then((results) => results[0])
+          .map((v) => buildingService.getPlaceDetails(v, { start: new Date(), end: dayjs().utc().add(30, "minute").toDate() })
             .catch(() => {
               setIsError(true);
               const isErrorPlace = 0 as unknown as CampusToCollaborate;
@@ -90,8 +90,7 @@ const FavoritesToCollaborate: React.FC<Props> = (props) => {
     }
     if (convergeSettings?.favoriteVenuesToCollaborate) {
       const venueDetails = await Promise.all(
-        convergeSettings.favoriteVenuesToCollaborate.map((v) => getVenueDetails([v])
-          .then((results) => results[0])
+        convergeSettings.favoriteVenuesToCollaborate.map((v) => searchService.getVenueDetails(v)
           .catch(() => {
             setIsError(true);
             const isErrorVenue = 0 as unknown as VenueToCollaborate;

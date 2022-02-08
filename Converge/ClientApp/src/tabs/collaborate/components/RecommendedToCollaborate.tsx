@@ -9,10 +9,8 @@ import {
   Button,
   ErrorIcon, Loader, Text,
 } from "@fluentui/react-northstar";
-import { searchCampusesToCollaborate } from "../../../api/searchService";
 import CampusToCollaborate from "../../../types/CampusToCollaborate";
 import CollaborationPlaceDetails from "./CollaborationPlaceDetails";
-import CollaborationPlaceResults from "./CollaborationPlaceResults";
 import VenueToCollaborate from "../../../types/VenueToCollaborate";
 import RecommendedToCollaborateStyles from "../styles/RecommendedToCollaborateStyles";
 import { useTeamsContext } from "../../../providers/TeamsContextProvider";
@@ -20,6 +18,9 @@ import {
   DESCRIPTION, UISections, UI_SECTION, USER_INTERACTION,
 } from "../../../types/LoggerTypes";
 import { logEvent } from "../../../utilities/LogWrapper";
+import { useApiProvider } from "../../../providers/ApiProvider";
+import CollaborationPlaceResultsPaged from "./CollaborationPlaceResultsPaged";
+import { getCampusSearchNextRange } from "../../../providers/SearchProvider";
 
 interface Props {
   setMapPlaces: (places: (CampusToCollaborate | VenueToCollaborate)[]) => void;
@@ -33,6 +34,7 @@ const RecommendedToCollaborate: React.FC<Props> = (props) => {
     placesLoading,
     setPlacesLoading,
   } = props;
+  const { searchService } = useApiProvider();
   const { teamsContext } = useTeamsContext();
   const classes = RecommendedToCollaborateStyles();
   const [open, setOpen] = useState<boolean>(false);
@@ -43,46 +45,56 @@ const RecommendedToCollaborate: React.FC<Props> = (props) => {
   >(undefined);
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
   const [placesToCollaborate, setPlacesToCollaborate] = useState<CampusToCollaborate[]>([]);
-  useEffect(() => {
-    if (teamsContext?.userPrincipalName) {
-      setUserPrincipalName(teamsContext.userPrincipalName);
-      setPlacesLoading(true);
-      searchCampusesToCollaborate({
-        teamMembers: [teamsContext.userPrincipalName],
-        startTime: dayjs().utc().add(5, "minutes").toDate(),
-        endTime: dayjs().utc().add(35, "minutes").toDate(),
-        capacitySortOrder: "Asc",
-        placeType: "space",
-      })
-        .then((data) => {
-          setPlacesToCollaborate(data.campusesToCollaborateList);
-          setMapPlaces(data.campusesToCollaborateList);
-        }).catch(() => setIsError(true))
-        .finally(() => setPlacesLoading(false));
-    }
-  }, []);
+  const [recommendationsRadius, setRecommendationsRadius] = useState<number>(10);
 
-  const getRecommendations = () => {
-    setIsError(false);
+  const getRecommendedPlaces = () => {
     setPlacesLoading(true);
-    searchCampusesToCollaborate({
-      teamMembers: [upn],
+    searchService.searchCampusesToCollaborate({
+      teamMembers: teamsContext?.userPrincipalName ? [teamsContext.userPrincipalName] : [upn],
       startTime: dayjs().utc().add(5, "minutes").toDate(),
       endTime: dayjs().utc().add(35, "minutes").toDate(),
       capacitySortOrder: "Asc",
       placeType: "space",
+      distanceFromSource: recommendationsRadius,
     })
       .then((data) => {
-        setPlacesToCollaborate(data.campusesToCollaborateList);
-        setMapPlaces(data.campusesToCollaborateList);
+        if (!data?.campusesToCollaborateList?.length) {
+          const newSearchRange = getCampusSearchNextRange(recommendationsRadius);
+          if (newSearchRange !== recommendationsRadius) {
+            setRecommendationsRadius(newSearchRange);
+          } else {
+            setPlacesToCollaborate(data.campusesToCollaborateList);
+            setMapPlaces(data.campusesToCollaborateList);
+          }
+        } else {
+          setPlacesToCollaborate(data.campusesToCollaborateList);
+          setMapPlaces(data.campusesToCollaborateList);
+        }
       }).catch(() => setIsError(true))
       .finally(() => setPlacesLoading(false));
   };
 
-  if (placesLoading) {
-    return <Loader />;
-  }
-  return (
+  useEffect(() => {
+    if (teamsContext?.userPrincipalName) {
+      setUserPrincipalName(teamsContext.userPrincipalName);
+      getRecommendedPlaces();
+    }
+  }, [recommendationsRadius]);
+
+  const moreRecommendationsSearch = () => {
+    const newSearchRange = getCampusSearchNextRange(recommendationsRadius);
+    if (newSearchRange !== recommendationsRadius) {
+      setRecommendationsRadius(newSearchRange);
+    }
+  };
+
+  const getRecommendations = () => {
+    setIsError(false);
+    setPlacesLoading(true);
+    getRecommendedPlaces();
+  };
+
+  return (placesLoading ? <Loader /> : (
     <div className={classes.recommendations}>
       {!isError && placesToCollaborate.length === 0
       && <Text content="No results in the recommended Places. " className={!isError ? classes.noResult : classes.isError} />}
@@ -108,10 +120,13 @@ const RecommendedToCollaborate: React.FC<Props> = (props) => {
             </Box>
           </Box>
         )}
-      <CollaborationPlaceResults
+      <CollaborationPlaceResultsPaged
         places={placesToCollaborate}
         openPanel={openPanel}
         setSelectedPlace={setSelectedPlace}
+        forceVenueShowMore
+        recommendationSearchRadius={recommendationsRadius}
+        moreRecommendationsfetcher={moreRecommendationsSearch}
       />
       {selectedPlace && (
         <CollaborationPlaceDetails
@@ -123,7 +138,7 @@ const RecommendedToCollaborate: React.FC<Props> = (props) => {
         />
       )}
     </div>
-  );
+  ));
 };
 
 export default RecommendedToCollaborate;

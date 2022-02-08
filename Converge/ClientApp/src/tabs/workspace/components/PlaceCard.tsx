@@ -17,15 +17,13 @@ import {
   UI_SECTION, UISections, USER_INTERACTION, DESCRIPTION,
 } from "../../../types/LoggerTypes";
 import NewConfRoomEvent from "./NewConfRoomEvent";
-import { createEvent } from "../../../api/calendarService";
 import Notifications from "../../../utilities/ToastManager";
 import ImagePlaceholder from "../../../utilities/ImagePlaceholder";
 import PlaceCardStyles from "../styles/PlaceCardStyles";
-import { updateMyPredictedLocation } from "../../../api/meService";
-import { usePlacePhotos } from "../../../providers/PlacePhotosProvider";
+import { useApiProvider } from "../../../providers/ApiProvider";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
-import { AddRecentBuildings } from "../../../utilities/RecentBuildingsManager";
-import getPlaceMaxReserved, { getRoomAvailability } from "../../../api/placeService";
+import { PlacePhotosResult } from "../../../api/buildingService";
+import AddRecentBuildings from "../../../utilities/RecentBuildingsManager";
 
 type Props = {
   place: ExchangePlace,
@@ -34,6 +32,12 @@ type Props = {
 
 const PlaceCard: React.FC<Props> = (props) => {
   const { place, buildingName } = props;
+  const {
+    calendarService,
+    meService,
+    placeService,
+    buildingService,
+  } = useApiProvider();
   const classes = PlaceCardStyles();
   const {
     convergeSettings,
@@ -45,7 +49,7 @@ const PlaceCard: React.FC<Props> = (props) => {
   const [bookable, setBookable] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [err, setErr] = useState<string | undefined>(undefined);
-  const { state } = PlaceProvider();
+  const { state, loadUpcomingReservations } = PlaceProvider();
   const [start, setStart] = useState<Dayjs>(state.startDate);
   const [end, setEnd] = useState<Dayjs>(state.endDate);
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
@@ -53,15 +57,12 @@ const PlaceCard: React.FC<Props> = (props) => {
   const [availability, setAvailability] = useState(0);
   const [isAvailable, setIsAvailable] = useState(false);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [placePhotos, setPlacePhotos] = useState<PlacePhotosResult | undefined>(undefined);
 
-  const [,
-    placePhotos,,
-    getPlacePhotos,
-  ] = usePlacePhotos();
-  const photoUrl = placePhotos?.[0].coverPhoto?.url;
+  const photoUrl = placePhotos?.coverPhoto?.url;
   useEffect(() => {
     if (place.sharePointID) {
-      getPlacePhotos([place.sharePointID]);
+      buildingService.getPlacePhotos(place.sharePointID).then(setPlacePhotos);
     }
   }, [place.sharePointID]);
 
@@ -84,7 +85,7 @@ const PlaceCard: React.FC<Props> = (props) => {
     setAvailabilityLoading(true);
     if (state.startDate.utc().toISOString() <= state.endDate.utc().toISOString()) {
       if (place.type === PlaceType.Space) {
-        getPlaceMaxReserved(
+        placeService.getPlaceMaxReserved(
           place.identity,
           (state.startDate).utc().toISOString(),
           (state.endDate).utc().toISOString(),
@@ -93,7 +94,7 @@ const PlaceCard: React.FC<Props> = (props) => {
         })
           .finally(() => setAvailabilityLoading(false));
       } else {
-        getRoomAvailability(
+        placeService.getRoomAvailability(
           place.identity,
           (state.startDate).utc().toISOString(),
           (state.endDate).utc().toISOString(),
@@ -218,7 +219,7 @@ const PlaceCard: React.FC<Props> = (props) => {
                       startDate = dayjs(start.format("YYYY-MM-DD")).toDate();
                       endDate = dayjs(end.add(1, "day").format("YYYY-MM-DD")).toDate();
                     }
-                    createEvent({
+                    calendarService.createEvent({
                       isAllDay,
                       start: startDate,
                       end: endDate,
@@ -244,7 +245,7 @@ const PlaceCard: React.FC<Props> = (props) => {
                         };
                         setConvergeSettings(newSettings);
                         createReservation(calendarEvent);
-                        return updateMyPredictedLocation({
+                        return meService.updateMyPredictedLocation({
                           year: dayjs.utc(startDate).year(),
                           month: dayjs.utc(startDate).month() + 1,
                           day: dayjs.utc(startDate).date(),
@@ -257,6 +258,10 @@ const PlaceCard: React.FC<Props> = (props) => {
                         clearPlaceCard();
                         setOpen(false);
                         getAvailability();
+                        loadUpcomingReservations(
+                          state.upcomingReservationsStartDate,
+                          state.upcomingReservationsEndDate,
+                        );
                         Notifications.show({
                           duration: 5000,
                           title: "You reserved a workspace.",

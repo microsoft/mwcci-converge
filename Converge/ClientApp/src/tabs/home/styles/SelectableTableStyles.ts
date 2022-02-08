@@ -64,6 +64,12 @@ const SelectableTableStyles = makeStyles(() => ({
     fontSize: "small",
     color: "red important",
   },
+  tableheight: {
+    maxHeight: "67vh",
+    "@media (max-width: 1366px)": {
+      height: "auto",
+    },
+  },
 }));
 
 export default SelectableTableStyles;

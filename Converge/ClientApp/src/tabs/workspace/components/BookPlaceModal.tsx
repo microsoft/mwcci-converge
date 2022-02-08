@@ -13,8 +13,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { IComboBox, IComboBoxOption } from "@fluentui/react";
 import TimePicker from "./TimePicker";
 import PlaceCarousel from "./PlaceCarousel";
-import ExchangePlace, { PhotoType, PlaceType } from "../../../types/ExchangePlace";
-import getPlaceMaxReserved, { getRoomAvailability } from "../../../api/placeService";
+import ExchangePlace, { PlaceType } from "../../../types/ExchangePlace";
 import { logEvent } from "../../../utilities/LogWrapper";
 import {
   USER_INTERACTION, UISections, UI_SECTION, DESCRIPTION, IMPORTANT_ACTION, ImportantActions,
@@ -23,9 +22,9 @@ import { TimePickerChangeHandler, TimePickerContext, TimePickerProvider } from "
 import DatePickerPrimary from "../../../utilities/datePickerPrimary";
 import PlaceAmmenities from "./PlaceAmmenities";
 import BookPlaceModalStyles from "../styles/BookPlaceModalStyles";
-import { usePlacePhotos } from "../../../providers/PlacePhotosProvider";
 import { useConvergeSettingsContextProvider } from "../../../providers/ConvergeSettingsProvider";
-import { setSettings } from "../../../api/meService";
+import { useApiProvider } from "../../../providers/ApiProvider";
+import { PlacePhotosResult } from "../../../api/buildingService";
 
 type Props = {
   place: ExchangePlace,
@@ -57,12 +56,14 @@ const BookPlaceModal: React.FC<Props> = (props) => {
     setIsAllDay,
     isFlexible,
   } = props;
+  const {
+    meService,
+    placeService,
+    buildingService,
+  } = useApiProvider();
   const [maxReserved, setMaxReserved] = useState<number>(0);
   const [isAvailable, setIsAvailable] = useState<boolean>(true);
-  const [,
-    placePhotos,,
-    getPlacePhotos,
-  ] = usePlacePhotos();
+  const [placePhotos, setPlacePhotos] = useState<PlacePhotosResult | undefined>(undefined);
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(undefined);
   const [floorPlanUrl, setFloorPlanUrl] = useState<string | undefined>(undefined);
   const [otherPhotos, setOtherPhotos] = useState<string[]>([]);
@@ -157,44 +158,38 @@ const BookPlaceModal: React.FC<Props> = (props) => {
     }
     if (place.type === PlaceType.Space) {
       if (start.utc().toISOString() <= end.utc().toISOString()) {
-        getPlaceMaxReserved(
+        placeService.getPlaceMaxReserved(
           place.identity,
           dayjs(startDay).utc().toISOString(),
           dayjs(endDay).utc().toISOString(),
         ).then(setMaxReserved);
       }
     } else if (start.utc().toISOString() <= end.utc().toISOString()) {
-      getRoomAvailability(
+      placeService.getRoomAvailability(
         place.identity,
-        dayjs(startDay).utc().toISOString(),
-        dayjs(endDay).utc().toISOString(),
+        dayjs(start).utc().toISOString(),
+        dayjs(end).utc().toISOString(),
       ).then(setIsAvailable);
     }
   }, [isAllDay, start, end]);
 
   useEffect(() => {
-    if (placePhotos && placePhotos.length === 1) {
-      const cover = placePhotos[0].photos.find((p) => p.photoType === PhotoType.Cover);
-      const floorPlan = placePhotos[0].photos.find((p) => p.photoType === PhotoType.FloorPlan);
-      const allOtherPhotos = placePhotos[0].photos.filter(
-        (p) => p.photoType !== PhotoType.FloorPlan && p.photoType !== PhotoType.Cover,
-      ).map((p) => p.url);
-
-      if (cover) {
-        setPhotoUrl(cover.url);
+    if (placePhotos) {
+      if (placePhotos.coverPhoto?.url) {
+        setPhotoUrl(placePhotos.coverPhoto.url);
       }
-      if (floorPlan) {
-        setFloorPlanUrl(floorPlan.url);
+      if (placePhotos.floorPlan) {
+        setFloorPlanUrl(placePhotos.floorPlan.url);
       }
-      if (allOtherPhotos.length) {
-        setOtherPhotos(allOtherPhotos);
+      if (placePhotos.allOtherPhotos.length) {
+        setOtherPhotos(placePhotos.allOtherPhotos.map((photo) => photo.url));
       }
     }
   }, [placePhotos]);
 
   useEffect(() => {
     if (place.sharePointID) {
-      getPlacePhotos([place.sharePointID]);
+      buildingService.getPlacePhotos(place.sharePointID).then(setPlacePhotos);
     }
   }, [place.sharePointID]);
 
@@ -397,7 +392,7 @@ const BookPlaceModal: React.FC<Props> = (props) => {
                   favoriteCampusesToCollaborate,
                 };
                 setConvergeSettings(newSettings);
-                setSettings(newSettings)
+                meService.setSettings(newSettings)
                   .then(() => {
                     if (!isFavorite) {
                       logEvent(USER_INTERACTION, [

@@ -1,26 +1,27 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-import { Loader } from "@fluentui/react-northstar";
+import {
+  Alert, Button, Flex, Loader, Text,
+} from "@fluentui/react-northstar";
 import { GeoCoordinates } from "@microsoft/microsoft-graph-types";
 import React, {
   useContext, useEffect, useReducer, useState,
 } from "react";
-import {
-  getBuildingsByDistance, getSearchForBuildings, getBuildingsByName,
-} from "../api/buildingService";
-import getSettings, {
-  getFavoritePlaces, getRecentBuildingsBasicDetails, setSettings, setupNewUser,
-} from "../api/meService";
 import BuildingBasicInfo from "../types/BuildingBasicInfo";
 import ConvergeSettings from "../types/ConvergeSettings";
 import UpcomingBuildingsResponse from "../types/UpcomingBuildingsResponse";
-import { useProvider as errorAlertProvider, helpers } from "./ErrorAlertProvider";
 import ExchangePlace from "../types/ExchangePlace";
+import {
+  USER_INTERACTION, UI_SECTION, UISections, DESCRIPTION,
+} from "../types/LoggerTypes";
+import { logEvent } from "../utilities/LogWrapper";
+import { useApiProvider } from "./ApiProvider";
 
 type IBuildingState = {
   buildingsList: BuildingBasicInfo[];
   buildingListLoading: boolean;
+  clickBuildingListLoading:boolean;
   buildingsByRadiusDistance: number,
   loadMoreBuildingsByDistance: boolean,
   buildingsListError: boolean;
@@ -41,6 +42,7 @@ interface IConvergeContext {
   loadBuildingsByDistance: (geoCoordinates: GeoCoordinates) => void;
   loadBuildingsByName: () => void;
   setBuildingListLoading: (currentState: boolean) => void;
+  setClickBuildingListLoading: (currentState: boolean) => void;
   setBuildingsByDistanceRadius: (upcomingReservationDistance: number) => void;
   setBuildingsListError: (currentState: boolean) => void;
   updateSearchString: (searchString?: string) => void;
@@ -48,7 +50,7 @@ interface IConvergeContext {
     searchString?: string,
     presetBuildings?: string[],
     ) => void;
-  updateRecentBuildings: (recentBuildings: BuildingBasicInfo[]) => void;
+  getRecentBuildings: () => Promise<void>;
 }
 
 const ConvergeSettingsContext = React.createContext<IConvergeContext>(
@@ -114,6 +116,7 @@ function convergeSettingsReducer(
 
 const UPDATE_BUILDINGS_LIST = "UPDATE_BUILDINGS_LIST";
 const UPDATE_BUILDINGS_LIST_LOADING = "UPDATE_BUILDINGS_LIST_LOADING";
+const CLICK_UPDATE_BUILDINGS_LIST_LOADING = "CLICK_UPDATE_BUILDINGS_LIST_LOADING";
 const SET_BUILDINGS_DISTANCE = "SET_BUILDINGS_DISTANCE";
 const LOAD_MORE_BUILDINGS = "LOAD_MORE_BUILDINGS";
 const UPDATE_BUILDINGS_LIST_ERROR = "UPDATE_BUILDINGS_LIST_ERROR";
@@ -129,6 +132,11 @@ interface loadBuildingsByDistanceAction {
 
 interface UpdateBuildingsListLoadingAction {
   type: typeof UPDATE_BUILDINGS_LIST_LOADING,
+  payload: boolean;
+}
+
+interface ClickUpdateBuildingsListLoadingAction {
+  type: typeof CLICK_UPDATE_BUILDINGS_LIST_LOADING,
   payload: boolean;
 }
 
@@ -169,6 +177,7 @@ interface UpdateRecentBuildingsAction {
 
 type IBuildingAction = loadBuildingsByDistanceAction
 | UpdateBuildingsListLoadingAction
+| ClickUpdateBuildingsListLoadingAction
 | SetUpcomingBuildingDistanceAction
 | LoadMoreBuildingsAction
 | UpdateBuildingsListErrorAction
@@ -194,6 +203,7 @@ type IPlaceAction = GetFavoriteCampusesRequestAction | GetFavoriteCampusesRespon
 const iState: IBuildingState = {
   buildingsList: [],
   buildingListLoading: false,
+  clickBuildingListLoading: false,
   buildingsByRadiusDistance: 10,
   loadMoreBuildingsByDistance: true,
   buildingsListError: false,
@@ -221,6 +231,16 @@ const reducer = (state: IBuildingState, action: IBuildingAction): IBuildingState
       const newState = {
         ...state,
         buildingListLoading: action.payload,
+      };
+      return {
+        ...newState,
+      };
+    }
+
+    case CLICK_UPDATE_BUILDINGS_LIST_LOADING: {
+      const newState = {
+        ...state,
+        clickBuildingListLoading: action.payload,
       };
       return {
         ...newState,
@@ -313,6 +333,10 @@ function favoriteCampusesReducer(state: ExchangePlace[], action: IPlaceAction): 
 }
 
 const ConvergeSettingsProvider: React.FC = ({ children }) => {
+  const {
+    buildingService,
+    meService,
+  } = useApiProvider();
   const [convergeSettings, convergeSettingsDispatch] = useReducer<
     ConvergeSettings | null, ConvergeSettingsAction>(
       convergeSettingsReducer,
@@ -328,50 +352,32 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     favoriteCampusesReducer, [],
   );
 
-  const { errorDispatch } = errorAlertProvider();
-
   const getConvergeSettings = (): Promise<void> => {
     convergeSettingsDispatch({ type: GET_CONVERGE_SETTINGS_REQUEST });
-    return getSettings()
+    return meService.getSettings()
       .then((settings) => {
         convergeSettingsDispatch(
           { type: GET_CONVERGE_SETTINGS_RESPONSE, convergeSettings: settings },
         );
-      })
-      .catch((error) => {
-        errorDispatch({
-          type: "SET_ERROR_ALERT",
-          payload: helpers.getDefaultToastObject(error.message, "getSettings"),
-        });
       });
   };
 
-  const setConvergeSettings = (settings: ConvergeSettings): Promise<void> => setSettings(settings)
+  const setConvergeSettings = (settings: ConvergeSettings): Promise<void> => meService
+    .setSettings(settings)
     .then(() => convergeSettingsDispatch({
       type: SET_CONVERGE_SETTINGS_REQUEST,
       convergeSettings: settings,
-    }))
-    .catch((error) => {
-      errorDispatch({
-        type: "SET_ERROR_ALERT",
-        payload: helpers.getDefaultToastObject(error.message, "setSettings"),
-      });
-    });
+    }));
 
-  const setupNewUserWrapper = (settings: ConvergeSettings): Promise<void> => setupNewUser(settings)
+  const setupNewUserWrapper = (settings: ConvergeSettings): Promise<void> => meService
+    .setupNewUser(settings)
     .then(() => {
       convergeSettingsDispatch({ type: SETUP_NEW_USER_RESPONSE, convergeSettings: settings });
-    })
-    .catch((error) => {
-      errorDispatch({
-        type: "SET_ERROR_ALERT",
-        payload: helpers.getDefaultToastObject(error.message, "setupNewUser"),
-      });
     });
 
   const getFavoriteCampusesWrapper = (): Promise<void> => {
     favoriteCampusesDispatch({ type: GET_FAVORITE_CAMPUSES_REQUEST });
-    return getFavoritePlaces()
+    return meService.getFavoritePlaces()
       .then((favs) => {
         favoriteCampusesDispatch({ type: GET_FAVORITE_CAMPUSES_RESPONSE, favoriteCampuses: favs });
       });
@@ -380,6 +386,13 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
   const setBuildingListLoading = (isLoading: boolean) => {
     dispatch({
       type: UPDATE_BUILDINGS_LIST_LOADING,
+      payload: isLoading,
+    });
+  };
+
+  const setClickBuildingListLoading = (isLoading: boolean) => {
+    dispatch({
+      type: CLICK_UPDATE_BUILDINGS_LIST_LOADING,
       payload: isLoading,
     });
   };
@@ -401,8 +414,9 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
 
   const loadBuildingsByDistance = (geoCoordinates: GeoCoordinates) => {
     setBuildingListLoading(true);
+    setClickBuildingListLoading(true);
     setBuildingsLoadingMessage("No nearby results, expanding search.");
-    getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, 10)
+    buildingService.getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, 10)
       .then((response) => {
         if (response.buildingsList.length === 0 && state.buildingsByRadiusDistance < 1000) {
           setBuildingsByDistanceRadius(state.buildingsByRadiusDistance * 10);
@@ -410,17 +424,21 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
           setBuildingsByDistanceRadius(state.buildingsByRadiusDistance + 1000);
         }
         dispatch({ type: UPDATE_BUILDINGS_LIST, payload: response });
+        if (response.buildingsList.length !== 0) {
+          setBuildingListLoading(false);
+          setClickBuildingListLoading(false);
+          setBuildingsLoadingMessage(undefined);
+        }
       })
-      .finally(() => {
+      .catch(() => {
         setBuildingListLoading(false);
-        setBuildingsLoadingMessage(undefined);
-      })
-      .catch(() => setBuildingsListError(true));
+        setBuildingsListError(true);
+      });
   };
 
   const loadBuildingsByName = () => {
     setBuildingListLoading(true);
-    getBuildingsByName()
+    buildingService.getBuildingsByName()
       .then((response) => {
         dispatch({ type: UPDATE_BUILDINGS_LIST, payload: response });
       })
@@ -428,13 +446,26 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
       .catch(() => setBuildingsListError(true));
   };
 
-  const loadMoreBuildingsByDistance = (geoCoordinates: GeoCoordinates, distance: number) => {
-    setBuildingListLoading(true);
-    getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, distance)
+  const loadMoreBuildingsByDistance = (geoCoordinates: GeoCoordinates, distance: number,
+    buildingLoading:boolean) => {
+    if (buildingLoading === true) {
+      setClickBuildingListLoading(true);
+    } else {
+      setBuildingListLoading(true);
+    }
+    buildingService.getBuildingsByDistance(`${geoCoordinates.latitude},${geoCoordinates.longitude}`, distance)
       .then((response) => {
+        if (response.buildingsList.length === 0 && state.buildingsByRadiusDistance < 1000) {
+          setBuildingsByDistanceRadius(state.buildingsByRadiusDistance * 10);
+        } else if (response.buildingsList.length === 0 && state.buildingsByRadiusDistance < 4000) {
+          setBuildingsByDistanceRadius(state.buildingsByRadiusDistance + 1000);
+        }
         dispatch({ type: UPDATE_BUILDINGS_LIST, payload: response });
+        if (response.buildingsList.length !== 0) {
+          setBuildingListLoading(false);
+          setClickBuildingListLoading(false);
+        }
       })
-      .finally(() => setBuildingListLoading(false))
       .catch(() => setBuildingsListError(true));
   };
 
@@ -442,7 +473,7 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     searchString?: string,
   ) => {
     setBuildingListLoading(true);
-    getSearchForBuildings(searchString).then((data) => {
+    buildingService.getSearchForBuildings(searchString).then((data) => {
       dispatch({
         type: UPDATE_SEARCH_BUILDINGS_LIST,
         payload: data.buildingInfoList,
@@ -467,27 +498,30 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
     dispatch({ type: UPDATE_RECENT_BUILDINGS, payload: recentBuildings });
   };
 
+  const getRecentBuildings = () => meService
+    .getRecentBuildingsBasicDetails()
+    .then(updateRecentBuildings);
+
   useEffect(() => {
     if (state.buildingsByRadiusDistance !== 10 && convergeSettings?.geoCoordinates) {
-      loadMoreBuildingsByDistance(convergeSettings.geoCoordinates, state.buildingsByRadiusDistance);
+      if (state.clickBuildingListLoading === true) {
+        loadMoreBuildingsByDistance(convergeSettings.geoCoordinates,
+          state.buildingsByRadiusDistance, true);
+      } else {
+        loadMoreBuildingsByDistance(convergeSettings.geoCoordinates,
+          state.buildingsByRadiusDistance, false);
+      }
     }
   }, [state.buildingsByRadiusDistance]);
 
   const [loading, setLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     getConvergeSettings()
+      .catch(() => setIsError(true))
       .finally(() => setLoading(false));
-    getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
-      updateRecentBuildings(basicRecentBuildings);
-    });
   }, []);
-
-  useEffect(() => {
-    getRecentBuildingsBasicDetails().then((basicRecentBuildings) => {
-      updateRecentBuildings(basicRecentBuildings);
-    });
-  }, [convergeSettings?.recentBuildingUpns]);
 
   return (
     <ConvergeSettingsContext.Provider
@@ -500,16 +534,59 @@ const ConvergeSettingsProvider: React.FC = ({ children }) => {
         favoriteCampuses,
         getFavoriteCampuses: getFavoriteCampusesWrapper,
         setBuildingListLoading,
+        setClickBuildingListLoading,
         loadBuildingsByDistance,
         loadBuildingsByName,
         setBuildingsByDistanceRadius,
         setBuildingsListError,
         searchMoreBuildings,
         updateSearchString,
-        updateRecentBuildings,
+        getRecentBuildings,
       }}
     >
-      {loading ? <Loader /> : children}
+      {loading && <Loader />}
+      {!loading && isError && (
+        <Alert
+          danger
+          styles={{ margin: "36px" }}
+          content={(
+            <Flex hAlign="center">
+              <Text
+                content="The application was unable to load."
+                styles={{
+                  minWidth: "0px !important",
+                  paddingTop: "0.4rem",
+                }}
+              />
+              <Button
+                content={(
+                  <Text
+                    content="Try again"
+                    styles={{
+                      minWidth: "0px !important",
+                      paddingTop: "0.4rem",
+                      textAlign: "center",
+                    }}
+                  />
+                  )}
+                text
+                onClick={() => {
+                  logEvent(USER_INTERACTION, [
+                    { name: UI_SECTION, value: UISections.ApplicationUnavailable },
+                    { name: DESCRIPTION, value: "refreshHomePage" },
+                  ]);
+                  window.location.reload();
+                }}
+                color="red"
+                styles={{
+                  minWidth: "0px !important", paddingTop: "0.2rem", textDecoration: "UnderLine", color: "rgb(196, 49, 75)",
+                }}
+              />
+            </Flex>
+          )}
+        />
+      )}
+      {!loading && !isError && children}
     </ConvergeSettingsContext.Provider>
   );
 };

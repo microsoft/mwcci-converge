@@ -9,13 +9,14 @@ import CollaborateFurther from "./components/CollaborateFurther";
 import CollaborateHeader from "./CollaborateHeader";
 import Map from "./components/Map";
 import { useSearchContextProvider } from "../../providers/SearchProvider";
-import getCollaborator from "../../api/userService";
 import { deserializeSubEntityId } from "../../utilities/deepLink";
 import { MapProvider } from "../../providers/MapProvider";
 import useRecord from "../../hooks/useRecord";
 import { useTeamsContext } from "../../providers/TeamsContextProvider";
+import { useApiProvider } from "../../providers/ApiProvider";
 
 const Collaborate: React.FC = () => {
+  const { userService } = useApiProvider();
   const [loading, setLoading] = useState<boolean>(true);
   const {
     setStartTime,
@@ -33,7 +34,7 @@ const Collaborate: React.FC = () => {
       if (!inCache) cacheMisses.push(name);
       return inCache;
     }).map((name) => userRecord[name]);
-    const su = await Promise.all(cacheMisses.map(getCollaborator));
+    const su = await Promise.all(cacheMisses.map(userService.getCollaborator));
 
     // Add new users to cache
     su.filter((user) => !!user.userPrincipalName)

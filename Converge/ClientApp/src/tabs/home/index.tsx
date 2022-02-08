@@ -10,28 +10,12 @@ import { TeammateFilterProvider } from "../../providers/TeammateFilterProvider";
 import { PlaceContextProvider } from "../../providers/PlaceFilterProvider";
 import NPSDialog from "./components/NPSDialog";
 import UnknownZipcodeAlert from "./UnknownZipcodeAlert";
-import { logEvent } from "../../utilities/LogWrapper";
 import { useConvergeSettingsContextProvider } from "../../providers/ConvergeSettingsProvider";
-import { ImportantActions, IMPORTANT_ACTION, USER_INTERACTION } from "../../types/LoggerTypes";
 
 const Home: React.FC = () => {
   const {
     convergeSettings,
-    setupNewUser,
   } = useConvergeSettingsContextProvider();
-
-  const handleZipCodeSubmission = (zipCode: string): Promise<void> => setupNewUser({
-    ...convergeSettings,
-    isConvergeUser: true,
-    zipCode,
-  })
-    .then(() => {
-      if (zipCode && zipCode !== "") {
-        logEvent(USER_INTERACTION, [
-          { name: IMPORTANT_ACTION, value: ImportantActions.AddZipCode },
-        ]);
-      }
-    });
 
   return (
     <>
@@ -67,7 +51,7 @@ const Home: React.FC = () => {
           </Box>
         </>
       ) : (
-        <Welcome onZipCodeSubmission={handleZipCodeSubmission} />
+        <Welcome />
       )}
     </>
   );

@@ -27,11 +27,21 @@ namespace ConvergeUnitTests.Helpers
                     {
                         new Attendee
                         {
-                            EmailAddress = new EmailAddress(),
+                            EmailAddress = new EmailAddress
+                            {
+                                Address="organizer@example.com"
+                            },
                             Status = new ResponseStatus()
                             {
                                 Response = ResponseType.Accepted,
                             },
+                        }
+                    },
+                    Organizer = new Recipient
+                    {
+                        EmailAddress = new EmailAddress
+                        {
+                            Address = "organizer@example.com"
                         }
                     }
                 }
@@ -54,11 +64,21 @@ namespace ConvergeUnitTests.Helpers
                     {
                         new Attendee
                         {
-                            EmailAddress = new EmailAddress(),
+                            EmailAddress = new EmailAddress
+                            {
+                                Address="organizer@example.com"
+                            },
                             Status = new ResponseStatus()
                             {
                                 Response = ResponseType.Accepted,
                             },
+                        }
+                    },
+                    Organizer= new Recipient
+                    {
+                        EmailAddress= new EmailAddress
+                        {
+                            Address = "organizer@example.com"
                         }
                     }
                 }

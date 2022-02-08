@@ -3,12 +3,12 @@
 
 import { Flex, Divider } from "@fluentui/react-northstar";
 import React, { useEffect, useState } from "react";
-import { getReviews } from "../../../api/searchService";
 import YelpReview from "../../../types/Review";
 
 import VenueToCollaborate from "../../../types/VenueToCollaborate";
 import Review from "./Review";
 import VenueReviewsStyles from "../styles/VenueReviewsStyles";
+import { useApiProvider } from "../../../providers/ApiProvider";
 
 interface Props {
   place: VenueToCollaborate;
@@ -16,10 +16,11 @@ interface Props {
 
 const VenueReviews:React.FC<Props> = (props) => {
   const { place } = props;
+  const { searchService } = useApiProvider();
   const classes = VenueReviewsStyles();
   const [reviews, setReviews] = useState<YelpReview[]>([]);
   useEffect(() => {
-    getReviews(place.venueId).then((yelpReviews) => {
+    searchService.getReviews(place.venueId).then((yelpReviews) => {
       setReviews(yelpReviews.response.reviews);
     });
   }, [place.venueId]);

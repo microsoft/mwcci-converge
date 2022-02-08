@@ -22,16 +22,22 @@ namespace Converge.Services
         private readonly IConfiguration configuration;
         private readonly AppGraphService appGraphService;
         private readonly ScheduleService scheduleService;
+        private readonly CacheSharePointContentService cacheSharePointContentService;
+        private readonly CachePlacesProviderService cachePlacesProviderService;
 
         public PlacesService(ILogger<PlacesService> logger, 
                                 IConfiguration configuration, 
                                 AppGraphService appGraphService, 
-                                ScheduleService scheduleService)
+                                ScheduleService scheduleService,
+                                CacheSharePointContentService cacheSharePointContentService,
+                                CachePlacesProviderService cachePlacesProviderService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.configuration = configuration;
             this.appGraphService = appGraphService;
             this.scheduleService = scheduleService;
+            this.cacheSharePointContentService = cacheSharePointContentService;
+            this.cachePlacesProviderService = cachePlacesProviderService;
         }
 
         public async Task<int> GetMaxReserved(string upn, string start, string end)
@@ -51,7 +57,7 @@ namespace Converge.Services
 
         public async Task<GraphExchangePlacesResponse> GetPlacesBySortRequest(CampusSortRequest buildingSortRequest, PlaceType? placeType = null)
         {
-            GraphListItemsResponse graphListItemsResponse = await appGraphService.GetListItemsBySortRequest(buildingSortRequest, placeType);
+            GraphListItemsResponse graphListItemsResponse = await appGraphService.GetListItemsByGPSRange(buildingSortRequest.GetCoordinatesRange(), placeType);
 
             GraphExchangePlacesResponse exchangePlacesResponse = CollectExchangePlaces(graphListItemsResponse);
             return exchangePlacesResponse;
@@ -59,7 +65,7 @@ namespace Converge.Services
 
         private GraphExchangePlacesResponse CollectExchangePlaces(GraphListItemsResponse graphListItemsResponse)
         {
-            if (graphListItemsResponse == null || graphListItemsResponse.GraphListItems == null || graphListItemsResponse.GraphListItems.Count == 0)
+            if (graphListItemsResponse == null || graphListItemsResponse.GraphListItems == null || graphListItemsResponse.GraphListItems.Count() == 0)
             {
                 return new GraphExchangePlacesResponse(new List<ExchangePlace>(), null);
             }
@@ -71,12 +77,16 @@ namespace Converge.Services
             {
                 ExchangePlace place = DeserializeHelper.DeserializeExchangePlace(gli.ListItem.Fields.AdditionalData, logger);
                 place.SharePointID = gli.ListItem.Fields.Id;
-
-                if (string.IsNullOrWhiteSpace(place.Building))
+                // try the cache first
+                BuildingBasicInfo building = cachePlacesProviderService.GetBuildingFromCache(place.Locality);
+                string buildingName = building?.DisplayName;
+                if (building == null)
                 {
                     Place targetRoom = appGraphService.GetRoomListById(place.Locality).Result;
-                    place.Building = targetRoom?.DisplayName;
+                    buildingName = targetRoom?.DisplayName;
                 }
+
+                place.Building = buildingName;
 
                 lock (p)
                 {
@@ -151,10 +161,16 @@ namespace Converge.Services
 
         public async Task<List<ExchangePlacePhoto>> GetPlacePhotos(string placeSharePointID)
         {
+            List<ExchangePlacePhoto> result = cacheSharePointContentService.GetExchangePlacePhotoUrlsFromCache(placeSharePointID);
+            if (result != null)
+            {
+                return result;
+            }
             string sharePointSiteId = configuration["SharePointSiteId"];
             string sharePointPhotoListId = configuration["SharePointPhotoListId"];
             List photosList = await appGraphService.GetList(sharePointSiteId, sharePointPhotoListId);
-            List<ExchangePlacePhoto> result = new List<ExchangePlacePhoto>();
+
+            result = new List<ExchangePlacePhoto>();
             if (photosList != null)
             {
                 List<ListItem> photoItems = await appGraphService.GetPhotoItems(sharePointSiteId, photosList.Id, placeSharePointID);
@@ -182,6 +198,8 @@ namespace Converge.Services
                     }
                 }
             }
+
+            cacheSharePointContentService.AddExchangePlacePhotoUrlsToCache(placeSharePointID, result);
             return result;
         }
     }

@@ -3,7 +3,6 @@
 
 using Converge.Helpers;
 using Converge.Models;
-using Converge.Models.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
@@ -304,7 +303,7 @@ namespace Converge.Services
             var installedApps = request.CurrentPage as List<UserScopeTeamsAppInstallation>;
             foreach (UserScopeTeamsAppInstallation app in installedApps)
             {
-                if (app.TeamsAppDefinition.DisplayName == ConvergeDisplayName)
+                if (app.TeamsAppDefinition.DisplayName.SameAs(ConvergeDisplayName))
                 {
                     return true;
                 }
@@ -441,41 +440,51 @@ namespace Converge.Services
             }
         }
 
-        public virtual async Task<List<Place>> GetRoomLists()
+        public virtual async Task<List<Place>> GetAllRoomLists()
         {
-            var placesUrl = appGraphServiceClient.Places.AppendSegmentToRequestUrl("microsoft.graph.roomList");
-            var places = await new GraphServicePlacesCollectionRequestBuilder(placesUrl, appGraphServiceClient)
+            var url = appGraphServiceClient.Places.AppendSegmentToRequestUrl("microsoft.graph.roomList");
+            var roomLists = await new GraphServicePlacesCollectionRequestBuilder(url, appGraphServiceClient)
                 .Request()
                 .GetAsync();
 
-            List<Place> placeList = places.CurrentPage as List<Place>;
-            return placeList;
+            List<Place> result = new List<Place>();
+
+            var pageIterator = PageIterator<Place>
+                .CreatePageIterator(
+                    appGraphServiceClient,
+                    roomLists,
+                    (room) =>
+                    {
+                        result.Add(room);
+                        return true;
+                    }
+                );
+
+            await pageIterator.IterateAsync();
+            return result;
         }
 
-        public async Task<GraphRoomsListResponse> GetRoomListsConstrained(CampusSortRequest buildingSortRequest)
+        public async Task<List<Place>> GetRoomListsByDisplayName(List<string> roomListsDisplayNames)
         {
-            var queryOptions = new List<QueryOption>
+            StringBuilder predicateBuilder = new StringBuilder();
+            for (int index = 0; index < roomListsDisplayNames.Count; ++index)
             {
-                new QueryOption("$count", "true")
-            };
+                predicateBuilder.Append($"displayName eq '{roomListsDisplayNames[index]}'");
+                if (index + 1 < roomListsDisplayNames.Count)
+                {
+                    predicateBuilder.Append(" or ");
+                }
+            }
 
             var placesUrl = appGraphServiceClient.Places.AppendSegmentToRequestUrl("microsoft.graph.roomList");
-            var placesCollRequest = new GraphServicePlacesCollectionRequestBuilder(placesUrl, appGraphServiceClient)
-                                                                        .Request(queryOptions)
-                                                                        .Header("ConsistencyLevel", "Eventual")
-                                                                        .Filter($"emailAddress ne ''");
-            if (buildingSortRequest.SortByType == CampusSortByType.DisplayName)
-            {
-                placesCollRequest = placesCollRequest.OrderBy("displayName")
-                                                        .Top(buildingSortRequest.TopCount.Value);
-            }
-            var placesCollPage = await placesCollRequest.GetAsync();
+            var placesCollPage = await new GraphServicePlacesCollectionRequestBuilder(placesUrl, appGraphServiceClient)
+                                                                        .Request()
+                                                                        .Filter(predicateBuilder.ToString())
+                                                                        .OrderBy("displayName")
+                                                                        .GetAsync();
 
-            List<Place> placeList = placesCollPage.CurrentPage as List<Place>;
-            QueryOption skipToken = placesCollPage.NextPageRequest?
-                                    .QueryOptions.FirstOrDefault(x => x.Name.SameAs("$skiptoken"));
-
-            return new GraphRoomsListResponse(placeList, skipToken);
+            List<Place> placesList = placesCollPage.CurrentPage as List<Place>;
+            return placesList;
         }
 
         public async Task<Place> GetRoomListById(string roomListIdentity)
@@ -506,7 +515,7 @@ namespace Converge.Services
             return (places == null || places.Count == 0) ? null : places.CurrentPage as List<Place>;
         }
 
-        public async Task<GraphListItemsResponse> GetListItemsBySortRequest(CampusSortRequest buildingSortRequest, PlaceType? placeType)
+        public async Task<GraphListItemsResponse> GetListItemsByGPSRange(GPSCoordinates[] gpsCoordinatesRange, PlaceType? placeType)
         {
             string siteId = configuration["SharePointSiteId"];
             string listId = configuration["SharePointListId"];
@@ -515,13 +524,6 @@ namespace Converge.Services
             {
                 this.logger.LogError($"Places list is empty for SharePoint-Site-id and SharePoint-List-id.");
                 return null;
-            }
-
-            GPSCoordinates[] gpsCoordinatesRange = null;
-            if (buildingSortRequest.SortByType == CampusSortByType.Distance 
-                && buildingSortRequest.DistanceFromSource > 0.0 && buildingSortRequest.SourceGpsCoordinates != null)
-            {
-                gpsCoordinatesRange = buildingSortRequest.GetCoordinatesRange();
             }
 
             StringBuilder predicateBuilder = new StringBuilder($"(fields/EmailAddress ne '')");
@@ -538,11 +540,7 @@ namespace Converge.Services
                 predicateBuilder.Append($" and fields/Latitude le {gpsCoordinatesRange[1].Latitude} and fields/Longitude le {gpsCoordinatesRange[1].Longitude})");
             }
 
-            IListItemsCollectionRequest listItemsCollRequest = BuildListItemsCollectionRequest(siteId, placesList.Id, predicateBuilder.ToString(), skipToken: buildingSortRequest.SkipToken);
-            if (buildingSortRequest.SortByType == CampusSortByType.DisplayName)
-            {
-                listItemsCollRequest = listItemsCollRequest.OrderBy("fields/Locality");
-            }
+            IListItemsCollectionRequest listItemsCollRequest = BuildListItemsCollectionRequest(siteId, placesList.Id, predicateBuilder.ToString());
 
             try
             {
@@ -743,61 +741,6 @@ namespace Converge.Services
             {
                 return null;
             }
-        }
-
-        public async Task<GraphRoomsListResponse> SearchRoomLists(string searchString, int? topCount = null, QueryOption skipToken = null)
-        {
-            topCount ??= 10;
-            var placesUrl = appGraphServiceClient.Places.AppendSegmentToRequestUrl("microsoft.graph.roomList");
-
-            //Extending on the search by transforming the search-string to all-lower-case, ALL-UPPER-CASE and also to Proper/Pascal-case.
-            //Eg. "San FRANcisco" transformed to "san francisco", "SAN FRANCISCO" and "San Francisco", besides search for the actual string.
-            string allLowerCase = searchString.ToLower();
-            string allUpperCase = searchString.ToUpper();
-            string properCase = searchString;
-            string[] multiWords = searchString.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            foreach(var word in multiWords)
-            {
-                var pascalCase = new StringBuilder(word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower());
-                properCase = properCase.Replace(word, pascalCase.ToString(), StringComparison.InvariantCultureIgnoreCase);
-            }
-
-            //Search for actual-string, all-lower-case, ALL-UPPER-CASE and Proper/Pascal-case.
-            StringBuilder predicateBuilder = new StringBuilder($"emailAddress ne ''");
-            predicateBuilder.Append($" and (");
-            predicateBuilder.Append($"contains(displayName, '{searchString}')");
-            predicateBuilder.Append($" or contains(displayName, '{properCase}')");
-            predicateBuilder.Append($" or contains(displayName, '{allLowerCase}')");
-            predicateBuilder.Append($" or contains(displayName, '{allUpperCase}')");
-            predicateBuilder.Append($" or contains(address/city, '{searchString}')");
-            predicateBuilder.Append($" or contains(address/city, '{properCase}')");
-            predicateBuilder.Append($" or contains(address/city, '{allLowerCase}')");
-            predicateBuilder.Append($" or contains(address/city, '{allUpperCase}')");
-            predicateBuilder.Append($")");
-
-
-            //Now lets build the request.
-            var placesCollRequestBuilder = new GraphServicePlacesCollectionRequestBuilder(placesUrl, appGraphServiceClient);
-            IGraphServicePlacesCollectionRequest placesCollRequest;
-            if (skipToken == null)
-            {
-                placesCollRequest = placesCollRequestBuilder.Request();
-            }
-            else
-            {
-                placesCollRequest = placesCollRequestBuilder.Request(new List<QueryOption> { skipToken });
-            }
-            placesCollRequest = placesCollRequest.Header("ConsistencyLevel", "Eventual")
-                                                    .Filter(predicateBuilder.ToString())
-                                                    .OrderBy("displayName")
-                                                    .Top(topCount.Value);
-            var placesCollPage = await placesCollRequest.GetAsync();
-
-            List<Place> placeList = placesCollPage.CurrentPage as List<Place>;
-            placeList = placeList.Where(r => r.AdditionalData != null && r.AdditionalData["emailAddress"] != null).ToList();
-            skipToken = placesCollPage.NextPageRequest?.QueryOptions.FirstOrDefault(x => x.Name.SameAs("$skiptoken"));
-
-            return new GraphRoomsListResponse(placeList, skipToken);
         }
     }
 }

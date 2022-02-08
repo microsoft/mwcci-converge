@@ -5,8 +5,7 @@ import React, {
   createContext, useContext, useMemo, useReducer,
 } from "react";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
-
-import getCollaborator, { createUserPhotoService } from "../api/userService";
+import { useApiProvider } from "./ApiProvider";
 
 const GET_USER_RESPONSE = "GET_USER_RESPONSE";
 const GET_PHOTO_RESPONSE = "GET_PHOTO_RESPONSE";
@@ -67,7 +66,11 @@ const reducer = (state: MapState, action: MapProviderAction): MapState => {
 };
 
 const MapProvider: React.FC = ({ children }) => {
-  const photoService = useMemo(() => createUserPhotoService(), [createUserPhotoService]);
+  const { userService } = useApiProvider();
+  const photoService = useMemo(
+    () => userService.createUserPhotoService(),
+    [userService.createUserPhotoService],
+  );
   const [state, dispatch] = useReducer(
     reducer,
     initialState,
@@ -95,7 +98,7 @@ const MapProvider: React.FC = ({ children }) => {
     if (state.users[userPrincipalName]) {
       return Promise.resolve(state.users[userPrincipalName]);
     }
-    return getCollaborator(userPrincipalName)
+    return userService.getCollaborator(userPrincipalName)
       .then((user) => {
         dispatch({
           type: GET_USER_RESPONSE,

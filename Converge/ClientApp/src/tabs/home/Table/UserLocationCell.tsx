@@ -4,7 +4,7 @@
 import { Loader } from "@fluentui/react-northstar";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import { getLocation } from "../../../api/userService";
+import { useApiProvider } from "../../../providers/ApiProvider";
 import { Teammate, useTeammateProvider } from "../../../providers/TeammateFilterProvider";
 
 interface Props {
@@ -13,13 +13,15 @@ interface Props {
 
 const UserLocationCell: React.FC<Props> = (props) => {
   const { teammate } = props;
+  const { userService } = useApiProvider();
   const [loading, setLoading] = useState<boolean>(true);
   const { state, setTeammateLocation } = useTeammateProvider();
   const [isError, setIsError] = React.useState(false);
   useEffect(() => {
+    setLoading(true);
     if (teammate.user.id) {
       const day = dayjs.utc(state.date);
-      getLocation(teammate.user.id, day.year(), day.month() + 1, day.date())
+      userService.getLocation(teammate.user.id, day.year(), day.month() + 1, day.date())
         .then((loc) => {
           if (teammate.user.id) {
             setTeammateLocation(teammate.user.id, loc);
@@ -30,11 +32,8 @@ const UserLocationCell: React.FC<Props> = (props) => {
       setLoading(false);
     }
   }, [teammate.user.id, state.date]);
-  if (loading) {
-    return <Loader />;
-  }
-  return (
-    <span>{isError ? "Unknown" : teammate.location}</span>
+  return (loading ? (<Loader />)
+    : (<span>{isError ? "Unknown" : teammate.location}</span>)
   );
 };
 

@@ -5,25 +5,20 @@ using Converge.Models;
 using Converge.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/search")]
+    [Route("api/v1.0/search")]
     [ApiController]
-    public class SearchController : Controller
+    public class SearchV1Controller : Controller
     {
-        private readonly ILogger<SearchController> logger;
         private readonly SearchService searchService;
 
-        public SearchController(ILogger<SearchController> logger, SearchService searchSvc)
+        public SearchV1Controller(SearchService searchSvc)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             searchService = searchSvc;
         }
 
@@ -40,19 +35,11 @@ namespace Converge.Controllers
         {
             searchService.SetPrincipalUserIdentity(User.Identity);
 
-            try
+            List<VenuesToCollaborate> venuesToCollaborateList = await searchService.GetVenuesToCollaborate(request);
+            return new VenuesToCollaborateResponse()
             {
-                List<VenuesToCollaborate> venuesToCollaborateList = await searchService.GetVenuesToCollaborate(request);
-                return new VenuesToCollaborateResponse()
-                {
-                    VenuesToCollaborateList = venuesToCollaborateList
-                };
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Venues list for request: {JsonConvert.SerializeObject(request)}.");
-                throw;
-            }
+                VenuesToCollaborateList = venuesToCollaborateList
+            };
         }
 
         /// <summary>
@@ -65,15 +52,7 @@ namespace Converge.Controllers
         [Route("venues/{venueId}/details")]
         public async Task<VenueDetails> GetVenueDetails(string venueId)
         {
-            try
-            {
-                return await searchService.GetVenueDetails(venueId);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Venue details for venue-id: {venueId}.");
-                throw;
-            }
+            return await searchService.GetVenueDetails(venueId);
         }
 
         /// <summary>
@@ -87,15 +66,7 @@ namespace Converge.Controllers
         [Route("venues/{venueId}/reviews")]
         public async Task<ServiceJsonResponse> GetVenueReviews(string venueId)
         {
-            try
-            {
-                return await searchService.GetVenueReviews(venueId);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Venue reviews for venue-id: {venueId}.");
-                throw;
-            }
+            return await searchService.GetVenueReviews(venueId);
         }
 
         /// <summary>
@@ -110,15 +81,7 @@ namespace Converge.Controllers
         {
             searchService.SetPrincipalUserIdentity(User.Identity);
 
-            try
-            {
-                return await searchService.GetCampusesListToCollaborate(request);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Campuses for request: {JsonConvert.SerializeObject(request)}.");
-                throw;
-            }
+            return await searchService.GetCampusesListToCollaborate(request);
         }
     }
 }

@@ -5,7 +5,6 @@ using Converge.Models;
 using Converge.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,16 +12,14 @@ using System.Threading.Tasks;
 namespace Converge.Controllers
 {
     [Authorize]
-    [Route("api/places")]
+    [Route("api/v1.0/places")]
     [ApiController]
-    public class PlacesController : Controller
+    public class PlacesV1Controller : Controller
     {
-        private readonly ILogger<PlacesController> logger;
         private readonly PlacesService placesService;
 
-        public PlacesController(ILogger<PlacesController> logger, PlacesService placesService)
+        public PlacesV1Controller(PlacesService placesService)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.placesService = placesService;
         }
 
@@ -38,15 +35,7 @@ namespace Converge.Controllers
         [Route("{upn}/maxReserved")]
         public async Task<ActionResult<int>> GetMaxReserved(string upn, string start, string end)
         {
-            try
-            {
-                return await placesService.GetMaxReserved(upn, start, end);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Max-Reserved for upn:{upn} with start:{start} and end:{end}.");
-                throw;
-            }
+            return await placesService.GetMaxReserved(upn, start, end);
         }
 
         /// <summary>
@@ -60,15 +49,7 @@ namespace Converge.Controllers
         [Route("{upn}/availability")]
         public async Task<ActionResult<bool>> GetAvailability(string upn, string start, string end)
         {
-            try
-            {
-                return await placesService.GetAvailability(upn, start, end);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Availability for upn:{upn} with start:{start} and end:{end}.");
-                throw;
-            }
+            return await placesService.GetAvailability(upn, start, end);
         }
 
         /// <summary>
@@ -82,15 +63,7 @@ namespace Converge.Controllers
         [Route("{upn}/details")]
         public async Task<ActionResult<ExchangePlace>> GetPlaceDetails(string upn, DateTime start, DateTime end)
         {
-            try
-            {
-                return await placesService.GetPlace(upn, start, end);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting Place-details for placeUpn:{upn} with start:{start} and end:{end}.");
-                throw;
-            }
+            return await placesService.GetPlace(upn, start, end);
         }
 
         /// <summary>
@@ -102,15 +75,7 @@ namespace Converge.Controllers
         [Route("{sharePointID}/photos")]
         public async Task<ActionResult<List<ExchangePlacePhoto>>> GetPlacePhotos(string sharePointID)
         {
-            try
-            {
-                return await placesService.GetPlacePhotos(sharePointID);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Error occurred while getting place photos for sharepoint-id:{sharePointID}.");
-                throw;
-            }
+            return await placesService.GetPlacePhotos(sharePointID);
         }
     }
 }
