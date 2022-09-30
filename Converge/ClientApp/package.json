@@ -36,7 +36,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "5.0.0",
     "typescript": "3.9.9",
-    "victory": "35.8.5"
+    "victory": "36.6.8"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "1.40.0",
